@@ -59,6 +59,10 @@
 		{{ i18n.ts.displaySensitiveEmoji }}
 	</MkSwitch>
 
+	<MkRange v-model="reactionPickerSearchLimit" :min="15" :max="501" :step="1" :textConverter="(v) => v === 501 ? '∞' : `${v}`">
+		<template #label>{{ i18n.ts.emojiSearchLimit }}</template>
+	</MkRange>
+
 	<FormSection>
 		<div class="_buttons">
 			<MkButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
@@ -76,6 +80,7 @@ import FromSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkRange from '@/components/MkRange.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -89,6 +94,7 @@ const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPic
 const reactionPickerHeight = $computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = $computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
 const reactionPickerDisplaySensitiveEmoji = $computed(defaultStore.makeGetterSetter('displaySensitiveEmoji'));
+const reactionPickerSearchLimit = $computed(defaultStore.makeGetterSetter('emojiSearchLimit'));
 
 function save() {
 	defaultStore.set('reactions', reactions);

@@ -137,7 +137,9 @@ watch(q, () => {
 
 	const newQ = q.value.replace(/:/g, '').toLowerCase();
 
+	const max = defaultStore.state.emojiSearchLimit === 501 ? Number.MAX_SAFE_INTEGER : defaultStore.state.emojiSearchLimit;
 	const searchCustom = () => {
+		// maxは501の時無限に検索する、そこらへんはsettings/reactionの兼ね合いで調整
 		const emojis = defaultStore.state.displaySensitiveEmoji ? customEmojis.value : customEmojis.value.filter(v => !v.isSensitive);
 		const matches = new Set<Misskey.entities.CustomEmoji>();
 
@@ -151,37 +153,47 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword))) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
+			if (matches.size >= max) return matches;
 
 			// 名前またはエイリアスにキーワードが含まれている
 			for (const emoji of emojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
 		} else {
 			for (const emoji of emojis) {
 				if (emoji.name.startsWith(newQ)) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
+			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
 				if (emoji.aliases.some(alias => alias.startsWith(newQ))) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
+			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
 				if (emoji.name.includes(newQ)) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
+			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
 				if (emoji.aliases.some(alias => alias.includes(newQ))) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
 		}
@@ -202,13 +214,16 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword))) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
+			if (matches.size >= max) return matches;
 
 			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
 					if (keywords.every(keyword => index[emoji.char].some(k => k.includes(keyword)))) {
 						matches.add(emoji);
+						if (matches.size >= max) break;
 					}
 				}
 			}
@@ -216,13 +231,16 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (emoji.name.startsWith(newQ)) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
+			if (matches.size >= max) return matches;
 
 			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
 					if (index[emoji.char].some(k => k.startsWith(newQ))) {
 						matches.add(emoji);
+						if (matches.size >= max) break;
 					}
 				}
 			}
@@ -230,13 +248,16 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (emoji.name.includes(newQ)) {
 					matches.add(emoji);
+					if (matches.size >= max) break;
 				}
 			}
+			if (matches.size >= max) return matches;
 
 			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
 					if (index[emoji.char].some(k => k.includes(newQ))) {
 						matches.add(emoji);
+						if (matches.size >= max) break;
 					}
 				}
 			}
