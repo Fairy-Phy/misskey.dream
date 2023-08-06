@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
+import type { DriveFilesRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -26,6 +26,11 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: '14fb9fd9-0731-4e2f-aeb9-f09e4740333d',
 		},
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '2b730f78-1179-461b-88ad-d24c9af1a5ce',
+		},
 		sameNameEmojiExists: {
 			message: 'Emoji that have same name already exists.',
 			code: 'SAME_NAME_EMOJI_EXISTS',
@@ -35,6 +40,11 @@ export const meta = {
 			message: 'You are not this emoji owner or not assigned to a required role.',
 			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
 			id: '73952b00-d3e3-4038-b2c6-f4b4532e3906'
+		},
+		rolePermissionDenied: {
+			message: 'You are not assigned to a emoji moderator role.',
+			code: 'ROLE_PERMISSION_DENIED',
+			id: '43049d5b-e1c4-4b90-9c16-0e46cf06f18b',
 		},
 	},
 } as const;
@@ -58,7 +68,9 @@ export const paramDef = {
 		localOnly: { type: 'boolean' },
 		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
 			type: 'string',
-		} },
+		}
+		},
+		userId: { type: 'string' },
 	},
 	required: ['id', 'name', 'aliases'],
 } as const;
@@ -72,6 +84,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private roleService: RoleService,
 
@@ -110,6 +125,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
+			if (ps.userId && oldEmoji.userId !== ps.userId) {
+				if (!isEmojiModerator)
+					throw new ApiError(meta.errors.rolePermissionDenied);
+
+				if (await this.usersRepository.countBy({ id: ps.userId }) === 0)
+					throw new ApiError(meta.errors.noSuchUser);
+			}
+
 			if ((
 				driveFile ||
 				oldEmoji.name !== ps.name ||
@@ -133,6 +156,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
+				...(ps.userId && oldEmoji.userId !== ps.userId ? { userId: ps.userId } : {}),
 			});
 
 			const changes: LogInfoValue[] = [];
@@ -187,6 +211,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					changeInfo: {
 						before: oldEmoji.localOnly,
 						after: ps.localOnly,
+					},
+				});
+			}
+			if (ps.userId && oldEmoji.userId !== ps.userId) {
+				await this.usersRepository.increment({ id: ps.userId }, 'emojiCount', 1);
+				await this.usersRepository.decrement({ id: oldEmoji.userId }, 'emojiCount', 1);
+				changes.push({
+					type: 'userId',
+					changeInfo: {
+						before: oldEmoji.userId,
+						after: ps.userId,
 					},
 				});
 			}
