@@ -64,6 +64,7 @@ const typeToi18n = {
 	license: i18n.ts.license,
 	localOnly: i18n.ts.localOnly,
 	isSensitive: i18n.ts.markAsSensitive,
+	userId: 'userId',
 };
 
 const props = defineProps<{

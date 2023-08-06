@@ -93,6 +93,9 @@
 				</MkFolder>
 				<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
+				<MkInput v-if="emoji" v-model="userId">
+					<template #label>userId</template>
+				</MkInput>
 				<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</MkSpacer>
@@ -154,6 +157,7 @@ let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
 let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<misskey.entities.DriveFile>();
+let userId: string = $ref(props.emoji && props.emoji.userId ? props.emoji.userId : '');
 
 const pagination: Paging = {
 	endpoint: 'admin/emoji/get-emoji-log' as const,
@@ -231,6 +235,7 @@ async function done() {
 		isSensitive,
 		localOnly,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
+		...((props.emoji && props.emoji.userId ? props.emoji.userId : '') !== userId ? { userId } : {}),
 	};
 
 	if (file) {
