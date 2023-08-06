@@ -100,7 +100,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 
 			await this.usersRepository.increment({ id: data.userId }, 'emojiCount', 1);
-			await this.emojiModerationLogService.insertEmojiModerationLog(me, emoji, 'Add');
+			await this.emojiModerationLogService.insertEmojiModerationLog({ id: data.userId }, emoji, 'Add');
 		}
 
 		return emoji;
