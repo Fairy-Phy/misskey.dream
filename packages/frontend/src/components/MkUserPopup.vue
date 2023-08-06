@@ -38,6 +38,10 @@
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
 				</div>
+				<div :class="$style.statusItem">
+					<div :class="$style.statusItemLabel">{{ i18n.ts.emojiCounts }}</div>
+					<div>{{ number(user.emojiCount) }}</div>
+				</div>
 			</div>
 			<button class="_button" :class="$style.menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
@@ -202,11 +206,12 @@ onMounted(() => {
 
 .status {
 	padding: 16px 26px 16px 26px;
+	display: flex;
 }
 
 .statusItem {
 	display: inline-block;
-	width: 33%;
+	flex: 1;
 	text-align: center;
 }
 

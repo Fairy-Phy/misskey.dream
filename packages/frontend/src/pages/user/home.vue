@@ -112,6 +112,10 @@
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ i18n.ts.followers }}</span>
 						</MkA>
+						<div>
+							<b>{{ number(user.emojiCount) }}</b>
+							<span>{{ i18n.ts.emojiCounts }}</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -533,7 +537,7 @@ onUnmounted(() => {
 					padding: 24px;
 					border-top: solid 0.5px var(--divider);
 
-					> a {
+					> a, > div {
 						flex: 1;
 						text-align: center;
 

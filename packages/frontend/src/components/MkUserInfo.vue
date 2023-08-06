@@ -23,6 +23,9 @@
 		<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
 		</div>
+		<div :class="$style.statusItem">
+			<p :class="$style.statusItemLabel">{{ i18n.ts.emojiCounts }}</p><span :class="$style.statusItemValue">{{ number(user.emojiCount) }}</span>
+		</div>
 	</div>
 	<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
 </div>
