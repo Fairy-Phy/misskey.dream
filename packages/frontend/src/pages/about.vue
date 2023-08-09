@@ -49,6 +49,9 @@
 						</ol>
 					</MkFolder>
 					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
+					<FormLink to="https://secinet.jp/misskey-dream/emoji-guideline" external>{{ i18n.ts.emojiGuideline }}</FormLink>
+					<FormLink to="https://status_kuma.secinet.jp/status/misskey-dream" external>{{ i18n.ts.serverStatus }}</FormLink>
+					<FormLink to="https://status.secinet.jp/grafana" external>{{ i18n.ts.serverStatusDetails }}</FormLink>
 				</div>
 			</FormSection>
 

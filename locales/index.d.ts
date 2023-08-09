@@ -158,6 +158,9 @@ export interface Locale {
     "addEmoji": string;
     "emojiCounts": string;
     "emojiSearchLimit": string;
+    "emojiGuideline": string;
+    "serverStatus": string;
+    "serverStatusDetails": string;
     "removedAliases": string;
     "addedAliases": string;
     "settingGuide": string;
