@@ -136,6 +136,11 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			relationalDate: {
+				type: 'string',
+				format: 'date-time',
+				optional: false, nullable: false,
+			},
 			hcaptchaSecretKey: {
 				type: 'string',
 				optional: true, nullable: true,
@@ -341,6 +346,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				blockedHosts: instance.blockedHosts,
 				sensitiveWords: instance.sensitiveWords,
 				preservedUsernames: instance.preservedUsernames,
+				relationalDate: instance.relationalDate.toISOString(),
 				hcaptchaSecretKey: instance.hcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
 				turnstileSecretKey: instance.turnstileSecretKey,

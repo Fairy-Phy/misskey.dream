@@ -249,6 +249,26 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
+		// RelationalはApのときはpublic、それ以外では専用の投稿範囲
+		if (note.visibility === 'relational') {
+			if (meId == null) {
+				return false;
+			} else if (meId === note.userId) {
+				return true;
+			} else if (note.reply && (meId === note.reply.userId)) {
+				// 自分の投稿に対するリプライ
+				return true;
+			} else if (note.mentions && note.mentions.some(id => meId === id)) {
+				// 自分へのメンション
+				return true;
+			} else {
+				const user = await this.usersRepository.findOneByOrFail({ id: meId });
+
+				// 登録日が指定の日時になっている、もしくは、ローカルではない
+				return user.createdAt <  || (note.userHost != null && user.host != null);
+			}
+		}
+
 		return true;
 	}
 

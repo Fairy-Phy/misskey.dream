@@ -229,7 +229,7 @@ export class ReactionService {
 				dm.addDirectRecipe(reactee as RemoteUser);
 			}
 
-			if (['public', 'home', 'followers'].includes(note.visibility)) {
+			if (['public', 'relational', 'home', 'followers'].includes(note.visibility)) {
 				dm.addFollowersRecipe();
 			} else if (note.visibility === 'specified') {
 				const visibleUsers = await Promise.all(note.visibleUserIds.map(id => this.usersRepository.findOneBy({ id })));

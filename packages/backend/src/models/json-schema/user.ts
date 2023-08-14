@@ -23,6 +23,11 @@ export const packedUserLiteSchema = {
 			example: 'misskey.example.com',
 			description: 'The local host is represented with `null`.',
 		},
+		createdAt: {
+			type: 'string',
+			nullable: false, optional: false,
+			format: 'date-time',
+		},
 		avatarUrl: {
 			type: 'string',
 			format: 'url',
@@ -93,11 +98,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 				nullable: false,
 				optional: false,
 			},
-		},
-		createdAt: {
-			type: 'string',
-			nullable: false, optional: false,
-			format: 'date-time',
 		},
 		updatedAt: {
 			type: 'string',

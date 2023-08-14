@@ -109,6 +109,7 @@ export class Note {
 
 	/**
 	 * public ... 公開
+	 * relational ... サーバー設立から指定の日時までに登録したユーザーのみ
 	 * home ... ホームタイムライン(ユーザーページのタイムライン含む)のみに流す
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ

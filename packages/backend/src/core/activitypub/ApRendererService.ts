@@ -356,7 +356,7 @@ export class ApRendererService {
 		let to: string[] = [];
 		let cc: string[] = [];
 
-		if (note.visibility === 'public') {
+		if (note.visibility === 'public' || note.visibility === 'relational') {
 			to = ['https://www.w3.org/ns/activitystreams#Public'];
 			cc = [`${attributedTo}/followers`].concat(mentions);
 		} else if (note.visibility === 'home') {

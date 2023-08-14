@@ -106,7 +106,7 @@ export class SearchService {
 	@bindThis
 	public async indexNote(note: Note): Promise<void> {
 		if (note.text == null && note.cw == null) return;
-		if (!['home', 'public'].includes(note.visibility)) return;
+		if (!['home', 'public', 'relational'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
 			switch (this.meilisearchIndexScope) {
@@ -141,7 +141,7 @@ export class SearchService {
 
 	@bindThis
 	public async unindexNote(note: Note): Promise<void> {
-		if (!['home', 'public'].includes(note.visibility)) return;
+		if (!['home', 'public', 'relational'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.deleteDocument(note.id);

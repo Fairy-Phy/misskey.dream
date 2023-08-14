@@ -248,7 +248,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
-		if (data.renote && data.renote.visibility !== 'public' && data.renote.visibility !== 'home' && data.renote.userId !== user.id) {
+		// Relational以外でも
+		if (data.renote && data.renote.visibility !== 'public' && data.renote.visibility !== 'home' && data.renote.visibility !== 'relational' && data.renote.userId !== user.id) {
 			throw new Error('Renote target is not public or home');
 		}
 
@@ -262,9 +263,17 @@ export class NoteCreateService implements OnApplicationShutdown {
 			data.visibility = 'followers';
 		}
 
+		if (data.renote && data.renote.visibility === 'relational') {
+			data.visibility = 'relational';
+		}
+
 		// 返信対象がpublicではないならhomeにする
 		if (data.reply && data.reply.visibility !== 'public' && data.visibility === 'public') {
 			data.visibility = 'home';
+		}
+
+		if (data.reply && data.reply.visibility === 'relational') {
+			data.visibility = 'relational';
 		}
 
 		// ローカルのみをRenoteしたらローカルのみにする
@@ -639,7 +648,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					}
 
 					// フォロワーに配送
-					if (['public', 'home', 'followers'].includes(note.visibility)) {
+					if (['public', 'relational', 'home', 'followers'].includes(note.visibility)) {
 						dm.addFollowersRecipe();
 					}
 

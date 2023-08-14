@@ -101,6 +101,7 @@ export const paramDef = {
 		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
+		relationalDate: { type: 'string', format: 'date-time' },
 	},
 	required: [],
 } as const;
@@ -420,6 +421,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.preservedUsernames !== undefined) {
 				set.preservedUsernames = ps.preservedUsernames;
+			}
+
+			if (ps.relationalDate !== undefined) {
+				set.relationalDate = new Date(ps.relationalDate);
 			}
 
 			await this.metaService.update(set);
