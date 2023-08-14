@@ -2,13 +2,14 @@
 <XColumn :menu="menu" :column="column" :isStacked="isStacked">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
+		<i v-else-if="column.tl === 'relational'" class="ti ti-circles-relation"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
 		<i v-else-if="column.tl === 'social'" class="ti ti-rocket"></i>
 		<i v-else-if="column.tl === 'global'" class="ti ti-whirl"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="(((column.tl === 'local' || column.tl === 'social') && !isLocalTimelineAvailable) || (column.tl === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
+	<div v-if="((column.tl === 'relational' && !isRelationalAvailable) || ((column.tl === 'local' || column.tl === 'social') && !isLocalTimelineAvailable) || (column.tl === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-circle-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -38,12 +39,14 @@ let disabled = $ref(false);
 
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
+const isRelationalAvailable = $i != null && (new Date($i.createdAt) < new Date(instance.relationalDate));
 
 onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
 	} else if ($i) {
 		disabled = (
+			((new Date($i.createdAt) > new Date(instance.relationalDate)) && ['relational'].includes(props.column.tl)) ||
 			(!((instance.policies.ltlAvailable) || ($i.policies.ltlAvailable)) && ['local', 'social'].includes(props.column.tl)) ||
 			(!((instance.policies.gtlAvailable) || ($i.policies.gtlAvailable)) && ['global'].includes(props.column.tl)));
 	}
@@ -54,6 +57,8 @@ async function setType() {
 		title: i18n.ts.timeline,
 		items: [{
 			value: 'home' as const, text: i18n.ts._timelines.home,
+		}, {
+			value: 'relational' as const, text: i18n.ts._timelines.relational,
 		}, {
 			value: 'local' as const, text: i18n.ts._timelines.local,
 		}, {

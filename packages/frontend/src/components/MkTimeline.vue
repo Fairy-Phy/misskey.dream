@@ -73,6 +73,15 @@ if (props.src === 'antenna') {
 	connection.on('note', prepend);
 
 	connection2 = stream.useChannel('main');
+} else if (props.src === 'relational') {
+	endpoint = 'notes/relational-timeline';
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('relationalTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
+	connection.on('note', prepend);
 } else if (props.src === 'local') {
 	endpoint = 'notes/local-timeline';
 	query = {

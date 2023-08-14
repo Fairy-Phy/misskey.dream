@@ -40,6 +40,7 @@ const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
+const isRelationalAvailable = $i != null && (new Date($i.createdAt) < new Date(instance.relationalDate));
 const keymap = {
 	't': focus,
 };
@@ -95,7 +96,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
+function saveSrc(newSrc: 'home' | 'relational' | 'local' | 'social' | 'global'): void {
 	defaultStore.set('tl', {
 		...defaultStore.state.tl,
 		src: newSrc,
@@ -123,7 +124,12 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._timelines.home,
 	icon: 'ti ti-home',
 	iconOnly: true,
-}, ...(isLocalTimelineAvailable ? [{
+}, ...(isRelationalAvailable ? [{
+	key: 'relational',
+	title: i18n.ts._timelines.relational,
+	icon: 'ti ti-circles-relation',
+	iconOnly: true,
+}] : []),...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
 	icon: 'ti ti-planet',
@@ -172,7 +178,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-planet' : src === 'social' ? 'ti ti-rocket' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
+	icon: src === 'local' ? 'ti ti-planet' : src === 'relational' ? 'ti ti-circles-relation' : src === 'social' ? 'ti ti-rocket' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
 })));
 </script>
 

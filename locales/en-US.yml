@@ -1905,6 +1905,7 @@ _instanceCharts:
   filesTotal: "Cumulative number of files"
 _timelines:
   home: "Home"
+  relational: "Relational"
   local: "Local"
   social: "Social"
   global: "Global"
@@ -2058,3 +2059,5 @@ _webhookSettings:
     renote: "When renoted"
     reaction: "When receiving a reaction"
     mention: "When being mentioned"
+
+relationalDate: "Registration datetime to allow RTL"

@@ -2035,6 +2035,7 @@ export interface Locale {
     };
     "_timelines": {
         "home": string;
+        "relational": string;
         "local": string;
         "social": string;
         "global": string;
@@ -2204,6 +2205,8 @@ export interface Locale {
             "mention": string;
         };
     };
+
+    "relationalDate": string;
 }
 declare const locales: {
     [lang: string]: Locale;

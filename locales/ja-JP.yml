@@ -1951,6 +1951,7 @@ _instanceCharts:
 
 _timelines:
   home: "ホーム"
+  relational: "リレーショナル"
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
@@ -2117,3 +2118,5 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+
+relationalDate: "RTLを許可する登録日時"

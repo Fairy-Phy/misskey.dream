@@ -148,6 +148,11 @@ export const meta = {
 				type: 'number',
 				optional: false, nullable: false,
 			},
+			relationalDate: {
+				type: 'string',
+				format: 'date-time',
+				optional: false, nullable: false,
+			},
 			ads: {
 				type: 'array',
 				optional: false, nullable: false,
@@ -312,6 +317,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				// クライアントの手間を減らすためあらかじめJSONに変換しておく
 				defaultLightTheme: instance.defaultLightTheme ? JSON.stringify(JSON5.parse(instance.defaultLightTheme)) : null,
 				defaultDarkTheme: instance.defaultDarkTheme ? JSON.stringify(JSON5.parse(instance.defaultDarkTheme)) : null,
+				relationalDate: instance.relationalDate.toISOString(),
 				ads: ads.map(ad => ({
 					id: ad.id,
 					url: ad.url,

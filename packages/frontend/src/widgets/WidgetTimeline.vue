@@ -2,6 +2,7 @@
 <MkContainer :showHeader="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" data-cy-mkw-timeline class="mkw-timeline">
 	<template #icon>
 		<i v-if="widgetProps.src === 'home'" class="ti ti-home"></i>
+		<i v-else-if="widgetProps.src === 'relational'" class="ti ti-circles-relation"></i>
 		<i v-else-if="widgetProps.src === 'local'" class="ti ti-planet"></i>
 		<i v-else-if="widgetProps.src === 'social'" class="ti ti-rocket"></i>
 		<i v-else-if="widgetProps.src === 'global'" class="ti ti-whirl"></i>
@@ -15,7 +16,7 @@
 		</button>
 	</template>
 
-	<div v-if="(((widgetProps.src === 'local' || widgetProps.src === 'social') && !isLocalTimelineAvailable) || (widgetProps.src === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
+	<div v-if="((widgetProps.src === 'relational' && !isRelationalAvailable) || ((widgetProps.src === 'local' || widgetProps.src === 'social') && !isLocalTimelineAvailable) || (widgetProps.src === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -42,6 +43,7 @@ import { instance } from '@/instance';
 const name = 'timeline';
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
 const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
+const isRelationalAvailable = $i != null && (new Date($i.createdAt) < new Date(instance.relationalDate));
 
 const widgetPropsDef = {
 	showHeader: {
@@ -113,6 +115,10 @@ const choose = async (ev) => {
 		text: i18n.ts._timelines.home,
 		icon: 'ti ti-home',
 		action: () => { setSrc('home'); },
+	}, {
+		text: i18n.ts._timelines.relational,
+		icon: 'ti ti-circles-relation',
+		action: () => { setSrc('relational'); },
 	}, {
 		text: i18n.ts._timelines.local,
 		icon: 'ti ti-planet',

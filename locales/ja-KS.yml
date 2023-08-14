@@ -1879,6 +1879,7 @@ _instanceCharts:
   filesTotal: "ファイル数の累積"
 _timelines:
   home: "ホーム"
+  relational: "リレーショナル"
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
@@ -2031,3 +2032,5 @@ _webhookSettings:
     renote: "Renoteされるとき～！"
     reaction: "ツッコミがあるとき～！"
     mention: "メンションがあるとき～！"
+
+relationalDate: "RTLを許可する登録日時"

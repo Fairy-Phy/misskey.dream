@@ -29,6 +29,10 @@
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
 					</MkTextarea>
 
+					<MkInput v-model="relationalDate">
+						<template #label>{{ i18n.ts.relationalDate }}</template>
+					</MkInput>
+
 					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
 
@@ -116,6 +120,7 @@ let name: string | null = $ref(null);
 let description: string | null = $ref(null);
 let maintainerName: string | null = $ref(null);
 let maintainerEmail: string | null = $ref(null);
+let relationalDate: string | null = $ref(null);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
 let cacheRemoteSensitiveFiles: boolean = $ref(false);
@@ -125,12 +130,16 @@ let swPrivateKey: any = $ref(null);
 let deeplAuthKey: string = $ref('');
 let deeplIsPro: boolean = $ref(false);
 
+let prevDate = "";
+
 async function init(): Promise<void> {
 	const meta = await os.api('admin/meta');
 	name = meta.name;
 	description = meta.description;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
+	relationalDate = meta.relationalDate;
+	prevDate = meta.relationalDate;
 	pinnedUsers = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles = meta.cacheRemoteFiles;
 	cacheRemoteSensitiveFiles = meta.cacheRemoteSensitiveFiles;
@@ -155,6 +164,7 @@ function save(): void {
 		swPrivateKey,
 		deeplAuthKey,
 		deeplIsPro,
+		...(relationalDate != null && relationalDate.trim().length !== 0 && prevDate !== relationalDate ? { relationalDate: relationalDate.trim() } : {}),
 	}).then(() => {
 		fetchInstance();
 	});
