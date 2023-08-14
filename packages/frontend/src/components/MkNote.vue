@@ -215,7 +215,7 @@ const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
+const canRenote = computed(() => ['public', 'home', 'relational'].includes(appearNote.visibility) || appearNote.userId === $i.id);
 let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
 
 const keymap = {
@@ -253,7 +253,7 @@ useTooltip(renoteButton, async (showing) => {
 	}, {}, 'closed');
 });
 
-type Visibility = 'public' | 'home' | 'followers' | 'specified';
+type Visibility = 'public' | 'relational' | 'home' | 'followers' | 'specified';
 
 // defaultStore.state.visibilityがstringなためstringも受け付けている
 function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {

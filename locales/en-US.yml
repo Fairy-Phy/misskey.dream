@@ -1837,6 +1837,8 @@ _poll:
 _visibility:
   public: "Public"
   publicDescription: "Your note will be visible for all users"
+  relational: "Relational"
+  relationalDescription: "Post to relatives timeline"
   home: "Home"
   homeDescription: "Post to home timeline only"
   followers: "Followers"

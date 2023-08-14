@@ -39,6 +39,7 @@
 			<MkFolder v-if="!rememberNoteVisibility">
 				<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
 				<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
+				<template v-else-if="defaultNoteVisibility === 'relational'" #suffix>{{ i18n.ts._visibility.relational }}</template>
 				<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
 				<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
 				<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
@@ -46,6 +47,7 @@
 				<div class="_gaps_m">
 					<MkSelect v-model="defaultNoteVisibility">
 						<option value="public">{{ i18n.ts._visibility.public }}</option>
+						<option v-if="isRelationalAvailable" value="relational">{{ i18n.ts._visibility.relational }}</option>
 						<option value="home">{{ i18n.ts._visibility.home }}</option>
 						<option value="followers">{{ i18n.ts._visibility.followers }}</option>
 						<option value="specified">{{ i18n.ts._visibility.specified }}</option>
@@ -61,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -69,8 +71,11 @@ import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
+
+const isRelationalAvailable = $i != null && (new Date($i.createdAt) < new Date(instance.relationalDate));
 
 let isLocked = $ref($i.isLocked);
 let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
@@ -81,10 +86,26 @@ let hideOnlineStatus = $ref($i.hideOnlineStatus);
 let publicReactions = $ref($i.publicReactions);
 let ffVisibility = $ref($i.ffVisibility);
 
-let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
+// セットした時にリレーショナルのデフォルトを解除する
+const makeGetSetVisible = () => {
+	const getseter = defaultStore.makeGetterSetter('defaultNoteVisibility');
+	return {
+		get: getseter.get,
+		set: (value: unknown) => {
+			defaultStore.set('changedRelationalVisible', true);
+			getseter.set(value);
+		}
+	};
+};
+
+let defaultNoteVisibility = $computed(makeGetSetVisible());
 let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
+
+if (!defaultStore.state.changedRelationalVisible && isRelationalAvailable) {
+	defaultStore.set('defaultNoteVisibility', 'relational');
+}
 
 function save() {
 	os.api('i/update', {

@@ -11,6 +11,13 @@
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
+		<button v-if="isRelationalAvailable" key="relational" class="_button" :class="[$style.item, { [$style.active]: v === 'relational' }]" data-index="1" @click="choose('relational')">
+			<div :class="$style.icon"><i class="ti ti-circles-relation"></i></div>
+			<div :class="$style.body">
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.relational }}</span>
+				<span :class="$style.itemDescription">{{ i18n.ts._visibility.relationalDescription }}</span>
+			</div>
+		</button>
 		<button key="home" class="_button" :class="[$style.item, { [$style.active]: v === 'home' }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
@@ -48,6 +55,7 @@ const props = withDefaults(defineProps<{
 	currentVisibility: typeof misskey.noteVisibilities[number];
 	localOnly: boolean;
 	src?: HTMLElement;
+	isRelationalAvailable?: boolean;
 }>(), {
 });
 

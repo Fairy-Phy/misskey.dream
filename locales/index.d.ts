@@ -1960,6 +1960,8 @@ export interface Locale {
     "_visibility": {
         "public": string;
         "publicDescription": string;
+        "relational": string;
+        "relationalDescription": string;
         "home": string;
         "homeDescription": string;
         "followers": string;
@@ -2205,7 +2207,6 @@ export interface Locale {
             "mention": string;
         };
     };
-
     "relationalDate": string;
 }
 declare const locales: {

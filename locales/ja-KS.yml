@@ -1811,6 +1811,8 @@ _poll:
 _visibility:
   public: "パブリック"
   publicDescription: "みんなに公開"
+  relational: "リレーショナル"
+  relationalDescription: "身内のタイムラインに公開するで"
   home: "ホーム"
   homeDescription: "ホームタイムラインのみに公開するで"
   followers: "フォロワー"

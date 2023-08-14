@@ -18,6 +18,7 @@
 			<template v-if="!(channel != null && fixed)">
 				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="isRelationalAvailable && visibility === 'relational'"><i class="ti ti-circles-relation"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
 					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
@@ -122,6 +123,8 @@ import { miLocalStorage } from '@/local-storage';
 import { claimAchievement } from '@/scripts/achievements';
 
 const modal = inject('modal');
+
+const isRelationalAvailable = $i != null && (new Date($i.createdAt) < new Date(instance.relationalDate));
 
 const props = withDefaults(defineProps<{
 	reply?: misskey.entities.Note;
@@ -287,13 +290,17 @@ if (props.reply && props.reply.text != null) {
 	}
 }
 
+if (isRelationalAvailable && !defaultStore.state.changedRelationalVisible) {
+	visibility = 'relational';
+}
+
 if (props.channel) {
 	visibility = 'public';
 	localOnly = true; // TODO: チャンネルが連合するようになった折には消す
 }
 
 // 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visibility)) {
+if (props.reply && ['home', 'relational', 'followers', 'specified'].includes(props.reply.visibility)) {
 	if (props.reply.visibility === 'home' && visibility === 'followers') {
 		visibility = 'followers';
 	} else if (['home', 'followers'].includes(props.reply.visibility) && visibility === 'specified') {
@@ -432,6 +439,7 @@ function setVisibility() {
 		currentVisibility: visibility,
 		localOnly: localOnly,
 		src: visibilityButton,
+		isRelationalAvailable,
 	}, {
 		changeVisibility: v => {
 			visibility = v;
