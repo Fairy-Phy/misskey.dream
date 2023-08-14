@@ -12,6 +12,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -87,13 +88,19 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
 		},
+
+		rtlDisabled: {
+			message: 'Relational timeline has been disabled.',
+			code: 'RTL_DISABLED',
+			id: '4b0e3873-8b6b-4de6-a6da-685390eeb77b',
+		},
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: 'public' },
+		visibility: { type: 'string', enum: ['public', 'relational', 'home', 'followers', 'specified'], default: 'public' },
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },
@@ -178,6 +185,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: User[] = [];
@@ -271,6 +279,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (channel == null) {
 					throw new ApiError(meta.errors.noSuchChannel);
 				}
+			}
+
+			const serverMeta = await this.metaService.fetch();
+			if (ps.visibility === 'relational' && me.createdAt > serverMeta.relationalDate) {
+				throw new ApiError(meta.errors.rtlDisabled);
 			}
 
 			// 投稿を作成

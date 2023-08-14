@@ -39,7 +39,7 @@ class RoleTimelineChannel extends Channel {
 			if (!(await this.roleservice.isExplorable({ id: this.roleId }))) {
 				return;
 			}
-			if (note.visibility !== 'public') return;
+			if (note.visibility !== 'public' && note.visibility !== 'relational') return;
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;

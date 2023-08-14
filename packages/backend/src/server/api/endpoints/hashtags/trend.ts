@@ -83,7 +83,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.where('note.createdAt > :date', { date: new Date(now.getTime() - rangeA) })
 				.andWhere(new Brackets(qb => { qb
 					.where('note.visibility = \'public\'')
-					.orWhere('note.visibility = \'home\'');
+					.orWhere('note.visibility = \'home\'')
+					.orWhere('note.visibility = \'relational\'');
 				}))
 				.andWhere('note.tags != \'{}\'')
 				.select(['note.tags', 'note.userId'])

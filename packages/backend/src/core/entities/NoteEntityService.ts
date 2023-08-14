@@ -17,6 +17,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import { MetaService } from '../MetaService.js';
 
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
@@ -54,6 +55,8 @@ export class NoteEntityService implements OnModuleInit {
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		private metaService: MetaService,
 
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
@@ -263,9 +266,10 @@ export class NoteEntityService implements OnModuleInit {
 				return true;
 			} else {
 				const user = await this.usersRepository.findOneByOrFail({ id: meId });
+				const serverMeta = await this.metaService.fetch();
 
 				// 登録日が指定の日時になっている、もしくは、ローカルではない
-				return user.createdAt <  || (note.userHost != null && user.host != null);
+				return user.createdAt < serverMeta.relationalDate || (note.userHost != null && user.host != null);
 			}
 		}
 

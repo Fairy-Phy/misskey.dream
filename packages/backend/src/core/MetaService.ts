@@ -44,7 +44,11 @@ export class MetaService implements OnApplicationShutdown {
 			const { type, body } = obj.message as StreamMessages['internal']['payload'];
 			switch (type) {
 				case 'metaUpdated': {
-					this.cache = body;
+					const cacheBody: Meta = {
+						...body,
+						relationalDate: new Date(body.relationalDate),
+					};
+					this.cache = cacheBody;
 					break;
 				}
 				default:

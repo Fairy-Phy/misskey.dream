@@ -239,7 +239,8 @@ export class QueryService {
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb
 				.where('note.visibility = \'public\'')
-				.orWhere('note.visibility = \'home\'');
+				.orWhere('note.visibility = \'home\'')
+				.orWhere('note.visibility = \'relational\'');
 			}));
 		} else {
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
@@ -250,7 +251,8 @@ export class QueryService {
 				// 公開投稿である
 				.where(new Brackets(qb => { qb
 					.where('note.visibility = \'public\'')
-					.orWhere('note.visibility = \'home\'');
+					.orWhere('note.visibility = \'home\'')
+					.orWhere('note.visibility = \'relational\'');
 				}))
 				// または 自分自身
 				.orWhere('note.userId = :meId')

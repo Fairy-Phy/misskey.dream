@@ -101,7 +101,7 @@ export const paramDef = {
 		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
-		relationalDate: { type: 'string', format: 'date-time' },
+		relationalDate: { type: 'string', /* できない format: 'date-time' */ },
 	},
 	required: [],
 } as const;

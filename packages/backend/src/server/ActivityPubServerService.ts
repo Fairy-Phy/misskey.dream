@@ -376,7 +376,8 @@ export class ActivityPubServerService {
 				.andWhere('note.userId = :userId', { userId: user.id })
 				.andWhere(new Brackets(qb => { qb
 					.where('note.visibility = \'public\'')
-					.orWhere('note.visibility = \'home\'');
+					.orWhere('note.visibility = \'home\'')
+					.orWhere('note.visibility = \'relational\'');
 				}))
 				.andWhere('note.localOnly = FALSE');
 

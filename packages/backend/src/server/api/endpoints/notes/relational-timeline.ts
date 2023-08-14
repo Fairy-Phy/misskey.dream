@@ -77,8 +77,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
 				.andWhere('(note.visibility = \'public\' OR note.visibility = \'relational\') AND (note.userHost IS NULL)')
+				.andWhere('user.createdAt < :reqDate', { reqDate: serverMeta.relationalDate.toISOString() })
 				.innerJoinAndSelect('note.user', 'user')
-				.andWhere('user.createdAt < :reqDate', { reqDate: serverMeta.relationalDate })
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
