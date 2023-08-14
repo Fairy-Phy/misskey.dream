@@ -216,7 +216,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 			if (ps.userId && oldEmoji.userId !== ps.userId) {
 				await this.usersRepository.increment({ id: ps.userId }, 'emojiCount', 1);
-				await this.usersRepository.decrement({ id: oldEmoji.userId }, 'emojiCount', 1);
+				if (oldEmoji?.userId) {
+					await this.usersRepository.decrement({ id: oldEmoji.userId }, 'emojiCount', 1);
+				}
 				changes.push({
 					type: 'userId',
 					changeInfo: {
