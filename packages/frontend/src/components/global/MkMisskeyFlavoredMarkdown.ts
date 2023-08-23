@@ -46,7 +46,7 @@ function toGradientText(args: Record<string, string>) {
 	let res = `linear-gradient(${deg}deg`;
 	for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
 		let color = colorProp.color;
-		if (!color || checkColorHex(color)) color = 'f00';
+		if (!color || !checkColorHex(color)) color = 'f00';
 		let step = parseFloat(colorProp.step ?? '');
 		let stepText = isNaN(step) ? '' : ` ${step}%`;
 		res += `, #${color}${stepText}`;
