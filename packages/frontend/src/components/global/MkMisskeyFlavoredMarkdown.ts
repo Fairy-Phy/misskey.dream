@@ -22,6 +22,38 @@ border-left: solid 3px var(--fg);
 opacity: 0.7;
 `.split('\n').join(' ');
 
+const colorRegexp = /^([0-9a-f]{3,4}?|[0-9a-f]{6}?|[0-9a-f]{8}?)$/i;
+function checkColorHex(text: string) {
+	return colorRegexp.test(text);
+}
+
+const gradientCounterRegExp = /^(color|position)(\d+)/;
+
+function toGradientText(args: Record<string, string>) {
+	const colors: { index: number; position?: string, color?: string }[] = [];
+	for (const k in args) {
+		const matches = k.match(gradientCounterRegExp);
+		if (matches == null) continue;
+		const mindex = parseInt(matches[2]);
+		let i = colors.findIndex(v => v.index === mindex);
+		if (i === -1) {
+			i = colors.length;
+			colors.push({ index: mindex });
+		}
+		colors[i][matches[1]] = args[k];
+	}
+	let deg = parseFloat(args.deg || '90');
+	let res = `linear-gradient(${deg}deg`;
+	for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
+		let color = colorProp.color;
+		if (!color || checkColorHex(color)) color = 'f00';
+		let step = parseFloat(colorProp.position ?? '');
+		let stepText = isNaN(step) ? '' : ` ${step}%`;
+		res += `, #${color}${stepText}`;
+	}
+	return res + ')';
+}
+
 export default function(props: {
 	text: string;
 	plain?: boolean;
@@ -203,15 +235,23 @@ export default function(props: {
 						scale = scale * Math.max(x, y);
 						break;
 					}
+					case 'fgg': {
+						style = `-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: ${toGradientText(token.props.args)};`
+						break;
+					}
 					case 'fg': {
 						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						if (!checkColorHex(color)) color = 'f00';
 						style = `color: #${color};`;
+						break;
+					}
+					case 'bgg': {
+						style = `background-image: ${toGradientText(token.props.args)};`
 						break;
 					}
 					case 'bg': {
 						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						if (!checkColorHex(color)) color = 'f00';
 						style = `background-color: #${color};`;
 						break;
 					}
