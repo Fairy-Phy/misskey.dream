@@ -249,6 +249,7 @@ export default function(props: {
 						break;
 					}
 					case 'fgg': {
+						if (!defaultStore.state.advancedMfm) break;
 						style = `-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: ${toGradientText(token.props.args)};`
 						break;
 					}
@@ -259,6 +260,7 @@ export default function(props: {
 						break;
 					}
 					case 'bgg': {
+						if (!defaultStore.state.advancedMfm) break;
 						style = `background-image: ${toGradientText(token.props.args)};`
 						break;
 					}
@@ -266,6 +268,9 @@ export default function(props: {
 						let color = token.props.args.color;
 						if (!checkColorHex(color)) color = 'f00';
 						style = `background-color: #${color};`;
+						break;
+					}
+					case 'clip': {
 						break;
 					}
 				}
