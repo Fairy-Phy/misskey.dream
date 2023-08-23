@@ -27,10 +27,10 @@ function checkColorHex(text: string) {
 	return colorRegexp.test(text);
 }
 
-const gradientCounterRegExp = /^(color|position)(\d+)/;
+const gradientCounterRegExp = /^(color|step)(\d+)/;
 
 function toGradientText(args: Record<string, string>) {
-	const colors: { index: number; position?: string, color?: string }[] = [];
+	const colors: { index: number; step?: string, color?: string }[] = [];
 	for (const k in args) {
 		const matches = k.match(gradientCounterRegExp);
 		if (matches == null) continue;
@@ -47,7 +47,7 @@ function toGradientText(args: Record<string, string>) {
 	for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
 		let color = colorProp.color;
 		if (!color || checkColorHex(color)) color = 'f00';
-		let step = parseFloat(colorProp.position ?? '');
+		let step = parseFloat(colorProp.step ?? '');
 		let stepText = isNaN(step) ? '' : ` ${step}%`;
 		res += `, #${color}${stepText}`;
 	}
@@ -214,7 +214,20 @@ export default function(props: {
 					}
 					case 'rotate': {
 						const degrees = parseFloat(token.props.args.deg ?? '90');
-						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+						let rotateText = `rotate(${degrees}deg)`;
+						if (token.props.args.xdeg) {
+							const degrees = parseFloat(token.props.args.xdeg ?? '0');
+							rotateText += ` rotateX(${degrees}deg)`;
+						}
+						if (token.props.args.ydeg) {
+							const degrees = parseFloat(token.props.args.ydeg ?? '0');
+							rotateText += ` rotateY(${degrees}deg)`;
+						}
+						if (token.props.args.zdeg) {
+							const degrees = parseFloat(token.props.args.zdeg ?? '0');
+							rotateText += ` rotateZ(${degrees}deg)`;
+						}
+						style = `transform: ${rotateText}; transform-origin: center center;`;
 						break;
 					}
 					case 'position': {
