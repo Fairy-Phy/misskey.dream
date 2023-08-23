@@ -518,6 +518,11 @@ hr {
 	}
 }
 
+@keyframes mfm-move {
+	0% { transform: translate3d(var(--move-fromX), var(--move-fromY), 0); }
+	100% { transform: translate3d(var(--move-toX), var(--move-toY), 0); }
+}
+
 @keyframes mfm-spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }

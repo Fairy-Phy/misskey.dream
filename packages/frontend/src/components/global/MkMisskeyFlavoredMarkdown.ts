@@ -71,7 +71,7 @@ export default function(props: {
 	const ast = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
 	const validTime = (t: string | null | undefined) => {
-		if (t == null) return null;
+		if (t == null || typeof t === 'boolean') return null;
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
 
@@ -292,6 +292,27 @@ export default function(props: {
 							path = `inset(${top}% ${right}% ${bottom}% ${left}%)`;
 						}
 						style = `clip-path: ${path};`;
+						break;
+					}
+					case 'move': {
+						const speed = validTime(token.props.args.speed) ?? '1s';
+						const fromX = parseFloat(token.props.args.fromx ?? '0');
+						const fromY = parseFloat(token.props.args.fromy ?? '0');
+						const toX = parseFloat(token.props.args.tox ?? '0');
+						const toY = parseFloat(token.props.args.toy ?? '0');
+						const ease =
+							token.props.args.ease ? 'ease' :
+							token.props.args.easein ? 'ease-in' :
+							token.props.args.easeout ? 'ease-out' :
+							token.props.args.easeinout ? 'ease-in-out' :
+							'linear';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						const direction =
+							token.props.args.rev && token.props.args.once ? 'reverse' :
+							token.props.args.rev ? 'alternate-reverse' :
+							token.props.args.once ? 'normal' :
+							'alternate';
+						style = useAnim ? `--move-fromX: ${fromX}em; --move-fromY: ${fromY}em; --move-toX: ${toX}em; --move-toY: ${toY}em; animation: ${speed} ${ease} ${delay} infinite ${direction} mfm-move;` : '';
 						break;
 					}
 				}
