@@ -215,16 +215,16 @@ export default function(props: {
 					case 'rotate': {
 						const degrees = parseFloat(token.props.args.deg ?? '90');
 						let rotateText = `rotate(${degrees}deg)`;
-						if (token.props.args.xdeg) {
-							const degrees = parseFloat(token.props.args.xdeg ?? '0');
+						if (token.props.args.x) {
+							const degrees = parseFloat(token.props.args.x ?? '0');
 							rotateText += ` rotateX(${degrees}deg)`;
 						}
-						if (token.props.args.ydeg) {
-							const degrees = parseFloat(token.props.args.ydeg ?? '0');
+						if (token.props.args.y) {
+							const degrees = parseFloat(token.props.args.y ?? '0');
 							rotateText += ` rotateY(${degrees}deg)`;
 						}
-						if (token.props.args.zdeg) {
-							const degrees = parseFloat(token.props.args.zdeg ?? '0');
+						if (token.props.args.z) {
+							const degrees = parseFloat(token.props.args.z ?? '0');
 							rotateText += ` rotateZ(${degrees}deg)`;
 						}
 						style = `transform: ${rotateText}; transform-origin: center center;`;
