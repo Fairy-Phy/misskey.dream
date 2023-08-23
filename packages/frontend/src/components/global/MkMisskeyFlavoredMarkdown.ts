@@ -197,8 +197,10 @@ export default function(props: {
 						break;
 					}
 					case 'blur': {
+						const radius = parseFloat(token.props.args.rad ?? '6');
 						return h('span', {
 							class: '_mfm_blur_',
+							style: `--blur-px: ${radius}px;`
 						}, genEl(token.children, scale));
 					}
 					case 'rainbow': {
