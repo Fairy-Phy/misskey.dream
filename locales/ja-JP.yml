@@ -2122,3 +2122,4 @@ _webhookSettings:
     mention: "メンションされたとき"
 
 relationalDate: "RTLを許可する登録日時"
+changeLog: "更新履歴"

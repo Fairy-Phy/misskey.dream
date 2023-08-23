@@ -4,6 +4,7 @@
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
 		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
+		<MkButton full @click="$refs.modal.close()" to="/dream-changelog">{{ `${i18n.ts.whatIsNew} (Dream)` }}</MkButton>
 		<MkButton :class="$style.gotIt" primary full @click="$refs.modal.close()">{{ i18n.ts.gotIt }}</MkButton>
 	</div>
 </MkModal>

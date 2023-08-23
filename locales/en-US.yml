@@ -2063,3 +2063,4 @@ _webhookSettings:
     mention: "When being mentioned"
 
 relationalDate: "Registration datetime to allow RTL"
+changeLog: "Changelog"
