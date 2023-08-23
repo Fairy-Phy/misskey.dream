@@ -484,7 +484,7 @@ hr {
 // MFM -----------------------------
 
 ._mfm_blur_ {
-	filter: blur(6px);
+	filter: blur(var(--blur-px));
 	transition: filter 0.3s;
 
 	&:hover {
