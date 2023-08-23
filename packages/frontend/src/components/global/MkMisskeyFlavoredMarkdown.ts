@@ -271,6 +271,22 @@ export default function(props: {
 						break;
 					}
 					case 'clip': {
+						if (!defaultStore.state.advancedMfm) break;
+
+						let path = '';
+						if (token.props.args.circle) {
+							const percent = parseFloat(token.props.args.circle ?? '');
+							const percentText = isNaN(percent) ? '' : `${percent}%`;
+							path = `circle(${percentText})`;
+						}
+						else {
+							const top = parseFloat(token.props.args.t ?? '0');
+							const bottom = parseFloat(token.props.args.b ?? '0');
+							const left = parseFloat(token.props.args.l ?? '0');
+							const right = parseFloat(token.props.args.r ?? '0');
+							path = `inset(${top}% ${right}% ${bottom}% ${left}%)`;
+						}
+						style = `clip-path: ${path};`;
 						break;
 					}
 				}
