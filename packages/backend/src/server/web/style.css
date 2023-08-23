@@ -30,41 +30,63 @@ html {
 
 #splashSpinner {
 	position: absolute;
+	display: flex;
+	margin: auto;
+	width: 180px;
+	height: 180px;
+	background-color: transparent;
+	justify-content: center;
+	align-items: center;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
-	margin: auto;
-	display: inline-block;
-	width: 28px;
-	height: 28px;
-	transform: translateY(70px);
-	color: var(--accent);
 }
-#splashSpinner > .spinner {
+#splashSpinner > .circle {
+	opacity: 0;
 	position: absolute;
-	top: 0;
-	left: 0;
-	width: 28px;
-	height: 28px;
-	fill-rule: evenodd;
-	clip-rule: evenodd;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	stroke-miterlimit: 1.5;
+	border-radius: 50%;
+	border-color: var(--accent);
+	border-style: solid;
 }
-#splashSpinner > .spinner.bg {
-	opacity: 0.275;
+
+#splashSpinner > .large-circle {
+	width: 180px;
+	height: 180px;
+	border-width: 5px;
+	animation: splashSpinner 4s linear .4s infinite, splashFadeIn 2s 1s forwards;
 }
-#splashSpinner > .spinner.fg {
-	animation: splashSpinner 0.5s linear infinite;
+
+#splashSpinner > .medium-circle {
+	width: 130px;
+	height: 130px;
+	border-width: 4px;
+	filter: hue-rotate(-90deg);
+	animation: splashSpinner 3s linear .2s infinite, splashFadeIn 2s 1s forwards;
+}
+
+#splashSpinner > .small-circle {
+	width: 90px;
+	height: 90px;
+	border-width: 2px;
+	filter: hue-rotate(180deg);
+	animation: splashSpinner 2s linear 0s infinite, splashFadeIn 2s 1s forwards;
 }
 
 @keyframes splashSpinner {
 	0% {
-		transform: rotate(0deg);
+		transform: rotate3d(.9, 1.2, 1.1, 360deg);
 	}
 	100% {
-		transform: rotate(360deg);
+		transform: rotate3d(360deg);
+	}
+}
+
+@keyframes splashFadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
 	}
 }
