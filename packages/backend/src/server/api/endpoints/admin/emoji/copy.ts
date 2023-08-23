@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojisRepository } from '@/models/index.js';
+import type { Emoji, EmojisRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { DI } from '@/di-symbols.js';
@@ -14,7 +14,6 @@ export const meta = {
 	tags: ["admin"],
 
 	requireCredential: true,
-	requireEmojiModerator: true,
 	requireRolePolicy: "canManageCustomEmojis",
 
 	errors: {
@@ -71,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const emoji = await this.emojisRepository.findOneBy({ id: ps.emojiId });
+			const emoji: Emoji = await this.emojisRepository.findOneBy({ id: ps.emojiId });
 
 			if (emoji == null) {
 				throw new ApiError(meta.errors.noSuchEmoji);
@@ -97,6 +96,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError();
 			}
 
+			let emojiLicense = '';
+			if (emoji.license != null && emoji.license.trim().length !== 0) {
+				emojiLicense = emoji.license;
+			}
+			else {
+				emojiLicense = `Import by ${emoji.host}`;
+			}
+
 			const copied = await this.emojisRepository.insert({
 				id: this.idService.genId(),
 				updatedAt: new Date(),
@@ -106,7 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				originalUrl: driveFile.url,
 				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
 				type: driveFile.webpublicType ?? driveFile.type,
-				license: emoji.license,
+				license: emojiLicense,
 				userId: me.id,
 			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
