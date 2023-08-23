@@ -44,7 +44,7 @@ class RelationalTimelineChannel extends Channel {
 		if (this.user?.createdAt && this.user.createdAt > serverMeta.relationalDate) return;
 
 		if (note.user.host !== null) return;
-		if (note.visibility !== 'public' && note.visibility !== 'relational') return;
+		if (note.visibility !== 'public' && !note.isRelational) return;
 		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
 		if (new Date(note.user.createdAt) > serverMeta.relationalDate) return;
 

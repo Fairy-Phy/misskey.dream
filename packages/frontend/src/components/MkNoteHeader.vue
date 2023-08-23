@@ -14,11 +14,11 @@
 			<MkA :to="notePage(note)">
 				<MkTime :time="note.createdAt" />
 			</MkA>
-			<span v-if="(note.visibility !== 'public' && note.visibility !== 'relational') || (note.visibility === 'relational' && isRelationalAvailable)" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+			<span v-if="(note.visibility !== 'public' && !note.isRelational) || (note.isRelational && isRelationalAvailable)" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-				<i v-else-if="note.visibility === 'relational' && isRelationalAvailable" class="ti ti-circles-relation"></i>
+				<i v-else-if="note.isRelational && isRelationalAvailable" class="ti ti-circles-relation"></i>
 			</span>
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>

@@ -65,6 +65,10 @@ export const packedNoteSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		isRelational: {
+			type: 'boolean',
+			optional: true, nullable: true,
+		},
 		mentions: {
 			type: 'array',
 			optional: true, nullable: false,

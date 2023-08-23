@@ -330,6 +330,9 @@ export class NoteEntityService implements OnModuleInit {
 			.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
 		const packedFiles = options?._hint_?.packedFiles;
 
+		// リレーショナルならサードパーティの互換性を重視してパブリックにする
+		const isRelational = note.visibility === 'relational';
+
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
@@ -339,7 +342,8 @@ export class NoteEntityService implements OnModuleInit {
 			}),
 			text: text,
 			cw: note.cw,
-			visibility: note.visibility,
+			visibility: note.visibility === 'relational' ? 'public' : note.visibility,
+			isRelational,
 			localOnly: note.localOnly ?? undefined,
 			reactionAcceptance: note.reactionAcceptance,
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
