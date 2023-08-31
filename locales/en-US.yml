@@ -2064,3 +2064,4 @@ _webhookSettings:
 
 relationalDate: "Registration datetime to allow RTL"
 changeLog: "Changelog"
+confirmAddEmoji: "Is there a chance that the emoji you are about to add will be used more than once by someone other than you?"

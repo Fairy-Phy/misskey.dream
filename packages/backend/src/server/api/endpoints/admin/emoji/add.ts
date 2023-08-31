@@ -74,8 +74,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (ps.license == null || ps.license.trim().length === 0) {
-				throw new ApiError(meta.errors.requireLicense);
+			let license = `@${me.username}`;
+			if (ps.license != null && ps.license.trim().length !== 0) {
+				license = ps.license.trim();
 			}
 
 			const driveFile = await this.driveFilesRepository.findOneBy({
@@ -100,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				category: ps.category ?? null,
 				aliases: ps.aliases ?? [],
 				host: null,
-				license: ps.license ?? null,
+				license: license,
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction:

@@ -71,6 +71,10 @@
 						</Sortable>
 					</div>
 				</MkFolder>
+				<MkInput v-model="aliasesText">
+					<template #label>{{ i18n.ts.tags }}(Legacy)</template>
+					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
+				</MkInput>
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
@@ -151,6 +155,15 @@ let aliases: { id: string, value: string }[] = $ref(props.emoji ? props.emoji.al
 	id: Math.random().toString(),
 	value: x,
 })) : []);
+let aliasesText = computed({
+	get: () => aliases.map(v => v.value).join(' '),
+	set: (v: string) => {
+		aliases = v.split(' ').map(x => ({
+			id: Math.random().toString(),
+			value: x,
+		}));
+	}
+});
 let license: string = $ref(props.emoji ? (props.emoji.license ?? '') : '');
 let isSensitive = $ref(props.emoji ? props.emoji.isSensitive : false);
 let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
@@ -227,6 +240,16 @@ async function removeRole(role, ev) {
 }
 
 async function done() {
+	if (!props.emoji) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.confirmAddEmoji,
+			okText: i18n.ts.yes,
+			cancelText: i18n.ts.no,
+		});
+		if (canceled) return;
+	}
+
 	const params = {
 		name,
 		category: category === '' ? null : category,

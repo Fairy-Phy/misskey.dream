@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, defineAsyncComponent } from 'vue';
 import { $i } from './account';
 import { miLocalStorage } from './local-storage';
 import { openInstanceMenu } from './ui/_common_/common';
@@ -7,6 +7,10 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
 import { unisonReload } from '@/scripts/unison-reload';
+
+const createEmoji = async () => {
+	os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {}, {}, 'closed');
+};
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -149,5 +153,12 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-user',
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
+	},
+	emojiCreate: {
+		title: i18n.ts.addEmoji,
+		icon: 'ti ti-mood-plus',
+		action: (ev) => {
+			createEmoji();
+		},
 	},
 });

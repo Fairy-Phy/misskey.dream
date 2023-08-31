@@ -2209,6 +2209,7 @@ export interface Locale {
     };
     "relationalDate": string;
     "changeLog": string;
+    "confirmAddEmoji": string;
 }
 declare const locales: {
     [lang: string]: Locale;
