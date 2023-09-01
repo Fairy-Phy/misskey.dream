@@ -11,6 +11,25 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.6.1 】]\n\
+\n\
+・ Add: ナビゲーションバーに「絵文字を追加」を追加\n\
+\n\
+・ Add: 旧タグ指定(スペース区切り)を復活\n\
+\n\
+・ Add: 絵文字追加個数が10個未満のユーザーが追加する際に警告を表示するように\n\
+\n\
+・ Change: 絵文字追加時にライセンスを指定しなくてもAcctを自動挿入されるように\n\
+\n\
+・ Add: MFM関数`skew`の追加\n\
+　・`$[skew.x=deg,y=deg ]`\n\
+\n\
+・ Remove: AiScriptのMk:apiの使用回数制限を削除\n\
+\n\
+・ Fix: relationalの場合にリアクションができない問題\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.6.0 】]\n\
 \n\
 ・ Add: ChangeLogの追加\n\
