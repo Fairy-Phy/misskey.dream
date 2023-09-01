@@ -141,6 +141,7 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 import XTabs from '@/components/global/MkPageHeader.tabs.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkEmojiLog from '@/components/MkEmojiLog.vue';
+import { $i } from '@/account';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -240,7 +241,7 @@ async function removeRole(role, ev) {
 }
 
 async function done() {
-	if (!props.emoji) {
+	if (!props.emoji && $i.emojiCount < 10) {
 		const { canceled } = await os.confirm({
 			type: 'warning',
 			text: i18n.ts.confirmAddEmoji,
