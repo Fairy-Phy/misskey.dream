@@ -253,6 +253,16 @@ export default function(props: {
 						scale = scale * Math.max(x, y);
 						break;
 					}
+					case 'skew': {
+						if (!defaultStore.state.advancedMfm) {
+							style = '';
+							break;
+						}
+						const x = parseFloat(token.props.args.x ?? '0');
+						const y = parseFloat(token.props.args.y ?? '0');
+						style = `transform: skew(${x}deg, ${y}deg);`;
+						break;
+					}
 					case 'fgg': {
 						if (!defaultStore.state.advancedMfm) break;
 						style = `-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: ${toGradientText(token.props.args)};`
