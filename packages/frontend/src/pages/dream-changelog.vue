@@ -11,6 +11,17 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.6.2 】]\n\
+\n\
+・ Add: EmojiKitchen(ソース: https://emoji.supply/kitchen)ベースのmfm関数`mix`の追加\n\
+　使い方: `$[mix <絵文字1><絵文字2>]`、尚mix内部には絵文字以外の要素は入れられません。\n\
+\n\
+・ Fix: 現タグでタグの操作を行う際に正常に入力できない問題\n\
+\n\
+・ Fix: アップデートポップアップの「更新履歴(Dream)」ボタンが正常に機能していない問題\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.6.1 】]\n\
 \n\
 ・ Add: ナビゲーションバーに「絵文字を追加」を追加\n\
