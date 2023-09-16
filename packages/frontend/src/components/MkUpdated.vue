@@ -4,7 +4,7 @@
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
 		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
-		<MkButton full @click="$refs.modal.close()" to="/dream-changelog">{{ `${i18n.ts.whatIsNew} (Dream)` }}</MkButton>
+		<MkButton :class="$style.second" full @click="toChangeLog">{{ `${i18n.ts.whatIsNew} (Dream)` }}</MkButton>
 		<MkButton :class="$style.gotIt" primary full @click="$refs.modal.close()">{{ i18n.ts.gotIt }}</MkButton>
 	</div>
 </MkModal>
@@ -18,12 +18,19 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { version } from '@/config';
 import { i18n } from '@/i18n';
 import { confetti } from '@/scripts/confetti';
+import { useRouter } from '@/router';
 
+const router = useRouter();
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
 	modal.value.close();
 	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
+};
+
+const toChangeLog = () => {
+	modal.value.close();
+	router.push('/dream-changelog');
 };
 
 onMounted(() => {
@@ -54,7 +61,11 @@ onMounted(() => {
 	margin: 1em 0;
 }
 
-.gotIt {
+.second {
 	margin: 8px 0 0 0;
+}
+
+.gotIt {
+	margin: 12px 0 0 0;
 }
 </style>
