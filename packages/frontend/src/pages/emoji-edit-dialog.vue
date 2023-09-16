@@ -159,7 +159,19 @@ let aliases: { id: string, value: string }[] = $ref(props.emoji ? props.emoji.al
 let aliasesText = computed({
 	get: () => aliases.map(v => v.value).join(' '),
 	set: (v: string) => {
-		aliases = v.split(' ').map(x => ({
+		const vs = v.split(' ');
+		if (vs.length === aliases.length) {
+			let edited = false;
+			for (let i = 0; i < vs.length; i++) {
+				const e = vs[i];
+				if (aliases[i].value !== e) {
+					edited = true;
+					break;
+				}
+			}
+			if (!edited) return;
+		}
+		aliases = vs.map(x => ({
 			id: Math.random().toString(),
 			value: x,
 		}));
