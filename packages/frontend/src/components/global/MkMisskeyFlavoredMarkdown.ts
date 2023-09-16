@@ -6,12 +6,14 @@ import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
+import MkEmojiKitchen from '@/components/global/MkEmojiKitchen.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { defaultStore } from '@/store';
+import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
 
 const QUOTE_STYLE = `
 display: block;
@@ -324,6 +326,29 @@ export default function(props: {
 							'alternate';
 						style = useAnim ? `--move-fromX: ${fromX}em; --move-fromY: ${fromY}em; --move-toX: ${toX}em; --move-toY: ${toY}em; animation: ${speed} ${ease} ${delay} infinite ${direction} mfm-move;` : '';
 						break;
+					}
+					case 'mix': {
+						const ch = token.children;
+						if (ch.length != 2 || ch.some(c => c.type !== 'unicodeEmoji')) {
+							style = null;
+							break;
+						}
+
+						const emoji1 = ch[0].props.emoji;
+						const emoji2 = ch[1].props.emoji;
+
+						const mixedEmojiUrl = mixEmoji(emoji1, emoji2);
+						if (!mixedEmojiUrl) {
+							style = null;
+							break;
+						}
+
+						return h(MkEmojiKitchen, {
+							key: Math.random(),
+							name: emoji1 + emoji2,
+							normal: props.plain,
+							url: mixedEmojiUrl
+						});
 					}
 				}
 				if (style == null) {
