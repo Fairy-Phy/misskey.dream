@@ -1,16 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, RolesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
-	tags: ['admin', 'role'],
+	tags: ['role'],
 
 	requireCredential: true,
-	requireAdmin: true,
+
+	errors: {
+		noSuchFile: {
+			message: "No such file.",
+			code: "NO_SUCH_FILE",
+			id: "fc46b5a4-6b92-4c33-ac66-b806659bb5cf",
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -20,31 +28,14 @@ export const paramDef = {
 		description: { type: 'string' },
 		color: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
-		target: { type: 'string', enum: ['manual', 'conditional'] },
-		condFormula: { type: 'object' },
 		isPublic: { type: 'boolean' },
-		permissionGroup: { type: 'string', enum: ['Admin', 'MainModerator', 'EmojiModerator', 'Normal', 'Community'] },
-		isExplorable: { type: 'boolean', default: false }, // optional for backward compatibility
-		asBadge: { type: 'boolean' },
-		canEditMembersByModerator: { type: 'boolean' },
-		displayOrder: { type: 'number' },
-		policies: {
-			type: 'object',
-		},
 	},
 	required: [
 		'name',
 		'description',
 		'color',
 		'iconUrl',
-		'target',
-		'condFormula',
 		'isPublic',
-		'permissionGroup',
-		'asBadge',
-		'canEditMembersByModerator',
-		'displayOrder',
-		'policies',
 	],
 } as const;
 
@@ -70,15 +61,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				description: ps.description,
 				color: ps.color,
 				iconUrl: ps.iconUrl,
-				target: ps.target,
-				condFormula: ps.condFormula,
+				target: 'manual',
+				condFormula: {},
 				isPublic: ps.isPublic,
-				permissionGroup: ps.permissionGroup,
-				isExplorable: ps.isExplorable,
-				asBadge: ps.asBadge,
-				canEditMembersByModerator: ps.canEditMembersByModerator,
-				displayOrder: ps.displayOrder,
-				policies: ps.policies,
+				permissionGroup: 'Community',
+				isExplorable: true,
+				asBadge: ps.iconUrl != null,
+				canEditMembersByModerator: true,
+				displayOrder: 0,
+				policies: {},
 			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.globalEventService.publishInternalEvent('roleCreated', created);

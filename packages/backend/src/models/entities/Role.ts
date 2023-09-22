@@ -91,7 +91,7 @@ export type RoleCondFormulaValue =
 	CondFormulaValueEmojiCountLessThanOrEq |
 	CondFormulaValueEmojiCountMoreThanOrEq;
 
-export type RolePermissionGroupValue = 'Admin' | 'MainModerator' | 'EmojiModerator' | 'Normal';
+export type RolePermissionGroupValue = 'Admin' | 'MainModerator' | 'EmojiModerator' | 'Normal' | 'Community';
 
 @Entity()
 export class Role {
@@ -166,7 +166,7 @@ export class Role {
 	public isAdministrator: boolean; // 後方互換
 
 	@Column('enum', {
-		enum: ['Admin', 'MainModerator', 'EmojiModerator', 'Normal'],
+		enum: ['Admin', 'MainModerator', 'EmojiModerator', 'Normal', 'Community'],
 		default: 'Normal',
 	})
 	public permissionGroup: RolePermissionGroupValue;

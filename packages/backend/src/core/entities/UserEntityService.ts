@@ -421,7 +421,7 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
-				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic && role.permissionGroup !== 'Community').sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
 					id: role.id,
 					name: role.name,
 					color: role.color,
@@ -431,6 +431,13 @@ export class UserEntityService implements OnModuleInit {
 					isModerator: false, // 互換性維持
 					permissionGroup: role.permissionGroup,
 					displayOrder: role.displayOrder,
+				}))),
+				communityRoles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.permissionGroup === 'Community').sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
+					id: role.id,
+					name: role.name,
+					color: role.color,
+					iconUrl: role.iconUrl,
+					description: role.description,
 				}))),
 				memo: meId == null ? null : await this.userMemosRepository.findOneBy({
 					userId: meId,
