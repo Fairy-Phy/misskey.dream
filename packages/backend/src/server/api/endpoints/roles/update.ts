@@ -6,16 +6,20 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
-	tags: ['admin', 'role'],
+	tags: ['role'],
 
 	requireCredential: true,
-	requireAdmin: true,
 
 	errors: {
 		noSuchRole: {
 			message: 'No such role.',
 			code: 'NO_SUCH_ROLE',
 			id: 'cd23ef55-09ad-428a-ac61-95a45e124b32',
+		},
+		accessDenied: {
+			message: 'Only administrators can edit of the role.',
+			code: 'ACCESS_DENIED',
+			id: '4266f6c5-8745-44e9-8fb8-7d464085c724',
 		},
 	},
 } as const;
@@ -28,17 +32,7 @@ export const paramDef = {
 		description: { type: 'string' },
 		color: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
-		target: { type: 'string', enum: ['manual', 'conditional'] },
-		condFormula: { type: 'object' },
 		isPublic: { type: 'boolean' },
-		permissionGroup: { type: 'string', enum: ['Admin', 'MainModerator', 'EmojiModerator', 'Normal', 'Community'] },
-		isExplorable: { type: 'boolean' },
-		asBadge: { type: 'boolean' },
-		canEditMembersByModerator: { type: 'boolean' },
-		displayOrder: { type: 'number' },
-		policies: {
-			type: 'object',
-		},
 	},
 	required: [
 		'roleId',
@@ -46,14 +40,7 @@ export const paramDef = {
 		'description',
 		'color',
 		'iconUrl',
-		'target',
-		'condFormula',
 		'isPublic',
-		'permissionGroup',
-		'asBadge',
-		'canEditMembersByModerator',
-		'displayOrder',
-		'policies',
 	],
 } as const;
 
@@ -79,15 +66,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				description: ps.description,
 				color: ps.color,
 				iconUrl: ps.iconUrl,
-				target: ps.target,
-				condFormula: ps.condFormula,
 				isPublic: ps.isPublic,
-				permissionGroup: ps.permissionGroup,
-				isExplorable: ps.isExplorable,
-				asBadge: ps.asBadge,
-				canEditMembersByModerator: ps.canEditMembersByModerator,
-				displayOrder: ps.displayOrder,
-				policies: ps.policies,
+				asBadge: ps.iconUrl != null,
 			});
 			const updated = await this.rolesRepository.findOneByOrFail({ id: ps.roleId });
 			this.globalEventService.publishInternalEvent('roleUpdated', updated);
