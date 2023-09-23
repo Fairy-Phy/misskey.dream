@@ -179,13 +179,19 @@
 					<MkFoldableSection>
 						<template #header>Manual roles</template>
 						<div class="_gaps_s">
-							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :forModeration="true"/>
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual' && x.permissionGroup !== 'Community')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
 					</MkFoldableSection>
 					<MkFoldableSection>
 						<template #header>Conditional roles</template>
 						<div class="_gaps_s">
-							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :forModeration="true"/>
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional' && x.permissionGroup !== 'Community')" :key="role.id" :role="role" :forModeration="true"/>
+						</div>
+					</MkFoldableSection>
+					<MkFoldableSection>
+						<template #header>Community roles</template>
+						<div class="_gaps_s">
+							<MkRolePreview v-for="role in roles.filter(x => x.permissionGroup === 'Community')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
 					</MkFoldableSection>
 				</div>

@@ -50,6 +50,14 @@
 							</MkA>
 						</span>
 					</div>
+					<div v-if="user.communityRoles.length > 0" class="roles">
+						<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
+								<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+								{{ role.name }}
+							</MkA>
+						</span>
+					</div>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
 							<template #label>Moderation note</template>

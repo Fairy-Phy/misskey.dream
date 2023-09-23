@@ -110,6 +110,9 @@ onMounted(() => {
 	top: var(--stickyTop, 0px);
 	-webkit-backdrop-filter: var(--blur, blur(8px));
 	backdrop-filter: var(--blur, blur(20px));
+
+	border-radius: 10px;
+	padding: 0 10px;
 }
 
 .title {

@@ -32,6 +32,7 @@
 		<option value="EmojiModerator">{{ i18n.ts.emojiModerator }}</option>
 		<option value="MainModerator">{{ i18n.ts.moderator }}</option>
 		<option value="Admin">{{ i18n.ts.administrator }}</option>
+		<option value="Community">{{ i18n.ts.community }}</option>
 	</MkSelect>
 
 	<MkSelect v-model="role.target" :readonly="readonly">

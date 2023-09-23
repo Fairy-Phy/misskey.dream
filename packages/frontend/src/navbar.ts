@@ -11,6 +11,9 @@ import { unisonReload } from '@/scripts/unison-reload';
 const createEmoji = async () => {
 	os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {}, {}, 'closed');
 };
+const roleManager = async () => {
+	os.popup(defineAsyncComponent(() => import('@/pages/role-add-dialog.vue')), {}, {}, 'closed').catch(r => console.error(r));
+};
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -159,6 +162,13 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-mood-plus',
 		action: (ev) => {
 			createEmoji();
+		},
+	},
+	roleManager: {
+		title: i18n.ts.manageRole,
+		icon: 'ti ti-tags',
+		action: (ev) => {
+			roleManager();
 		},
 	},
 });
