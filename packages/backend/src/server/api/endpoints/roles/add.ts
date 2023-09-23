@@ -6,6 +6,7 @@ import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 import { ApiError } from '../../error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['role'],
@@ -49,6 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
 		private roleEntityService: RoleEntityService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const date = new Date();
@@ -74,6 +76,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.globalEventService.publishInternalEvent('roleCreated', created);
+
+			// 自動アサイン
+			await this.roleService.assign(me.id, created.id, null);
 
 			return await this.roleEntityService.pack(created, me);
 		});

@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
