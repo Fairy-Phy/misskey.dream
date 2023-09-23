@@ -18,7 +18,10 @@ export const paramDef = {
 		},
 		communityPublicOnly: {
 			type: 'boolean'
-		}
+		},
+		ownerOnly: {
+			type: 'boolean'
+		},
 	},
 	required: [
 	],
@@ -35,6 +38,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const roles = await this.rolesRepository.findBy({
+				...(ps.ownerOnly ? {
+					userId: me.id
+				} : {}),
 				...(ps.communityOnly || ps.communityPublicOnly ? {
 					permissionGroup: 'Community',
 					...(ps.communityPublicOnly ? {

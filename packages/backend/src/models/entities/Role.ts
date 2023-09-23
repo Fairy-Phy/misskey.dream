@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
+import { User } from './User.js';
 
 type CondFormulaValueAnd = {
 	type: 'and';
@@ -195,4 +196,12 @@ export class Role {
 		priority: number;
 		value: any;
 	}>;
+
+	@Column({
+		...id(),
+		nullable: true,
+		comment: 'The owner ID.',
+		default: null,
+	})
+	public userId: User['id'] | null; // nullはCommunity外
 }
