@@ -39,11 +39,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (ps.assignedOnly) {
-				return await this.roleService.getUserRoles(me.id).then(roles => roles.filter(role => role.permissionGroup === 'Community'));
-			}
-
-			const roles = await this.rolesRepository.findBy({
+			const roles = ps.assignedOnly
+				? await this.roleService.getUserRoles(me.id).then(roles => roles.filter(role => role.permissionGroup === 'Community'))
+				: await this.rolesRepository.findBy({
 				...(ps.communityOnly || ps.communityPublicOnly ? {
 					permissionGroup: 'Community',
 					...(ps.communityPublicOnly ? {
