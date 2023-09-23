@@ -21,6 +21,11 @@ export const meta = {
 			code: 'ACCESS_DENIED',
 			id: '4266f6c5-8745-44e9-8fb8-7d464085c724',
 		},
+		notOwnerOrpermissionDenied: {
+			message: 'You are not this role owner.',
+			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
+			id: '73952b00-d3e3-4038-b2c6-f4b4532e3906'
+		},
 	},
 } as const;
 
@@ -53,10 +58,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps) => {
-			const roleExist = await this.rolesRepository.exist({ where: { id: ps.roleId } });
-			if (!roleExist) {
+		super(meta, paramDef, async (ps, me) => {
+			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
+			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
+			}
+
+			if (role.permissionGroup !== 'Community') {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+			if (role.userId != null && role.userId !== me.id) {
+
 			}
 
 			const date = new Date();

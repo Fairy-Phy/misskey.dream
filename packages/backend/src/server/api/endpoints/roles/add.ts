@@ -70,6 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				canEditMembersByModerator: true,
 				displayOrder: 0,
 				policies: {},
+				userId: me.id
 			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.globalEventService.publishInternalEvent('roleCreated', created);
