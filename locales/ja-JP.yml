@@ -2124,4 +2124,5 @@ _webhookSettings:
 relationalDate: "RTLを許可する登録日時"
 changeLog: "更新履歴"
 confirmAddEmoji: "今追加しようとしている絵文字はあなた以外の人が2回以上使用される可能性がありますか？"
-
+community: "コミュニティー"
+manageRole: "ロールの管理"
