@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RolesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['role'],
@@ -19,7 +20,7 @@ export const paramDef = {
 		communityPublicOnly: {
 			type: 'boolean'
 		},
-		ownerOnly: {
+		assignedOnly: {
 			type: 'boolean'
 		},
 	},
@@ -35,12 +36,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private rolesRepository: RolesRepository,
 
 		private roleEntityService: RoleEntityService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.assignedOnly) {
+				return await this.roleService.getUserRoles(me.id).then(roles => roles.filter(role => role.permissionGroup === 'Community'));
+			}
+
 			const roles = await this.rolesRepository.findBy({
-				...(ps.ownerOnly ? {
-					userId: me.id
-				} : {}),
 				...(ps.communityOnly || ps.communityPublicOnly ? {
 					permissionGroup: 'Community',
 					...(ps.communityPublicOnly ? {
