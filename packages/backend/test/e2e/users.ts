@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
@@ -98,6 +103,7 @@ describe('ユーザー', () => {
 			birthday: user.birthday,
 			lang: user.lang,
 			fields: user.fields,
+			verifiedLinks: user.verifiedLinks,
 			followersCount: user.followersCount,
 			followingCount: user.followingCount,
 			notesCount: user.notesCount,
@@ -127,6 +133,7 @@ describe('ユーザー', () => {
 			isBlocked: user.isBlocked ?? false,
 			isMuted: user.isMuted ?? false,
 			isRenoteMuted: user.isRenoteMuted ?? false,
+			notify: user.notify ?? 'none',
 		});
 	};
 
@@ -149,6 +156,7 @@ describe('ユーザー', () => {
 			preventAiLearning: user.preventAiLearning,
 			isExplorable: user.isExplorable,
 			isDeleted: user.isDeleted,
+			twoFactorBackupCodesStock: user.twoFactorBackupCodesStock,
 			hideOnlineStatus: user.hideOnlineStatus,
 			hasUnreadSpecifiedNotes: user.hasUnreadSpecifiedNotes,
 			hasUnreadMentions: user.hasUnreadMentions,
@@ -157,6 +165,7 @@ describe('ユーザー', () => {
 			hasUnreadChannel: user.hasUnreadChannel,
 			hasUnreadNotification: user.hasUnreadNotification,
 			hasPendingReceivedFollowRequest: user.hasPendingReceivedFollowRequest,
+			unreadAnnouncements: user.unreadAnnouncements,
 			mutedWords: user.mutedWords,
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
@@ -364,6 +373,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.birthday, null);
 		assert.strictEqual(response.lang, null);
 		assert.deepStrictEqual(response.fields, []);
+		assert.deepStrictEqual(response.verifiedLinks, []);
 		assert.strictEqual(response.followersCount, 0);
 		assert.strictEqual(response.followingCount, 0);
 		assert.strictEqual(response.notesCount, 0);
@@ -394,6 +404,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.preventAiLearning, true);
 		assert.strictEqual(response.isExplorable, true);
 		assert.strictEqual(response.isDeleted, false);
+		assert.strictEqual(response.twoFactorBackupCodesStock, 'none');
 		assert.strictEqual(response.hideOnlineStatus, false);
 		assert.strictEqual(response.hasUnreadSpecifiedNotes, false);
 		assert.strictEqual(response.hasUnreadMentions, false);
@@ -402,6 +413,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.hasUnreadChannel, false);
 		assert.strictEqual(response.hasUnreadNotification, false);
 		assert.strictEqual(response.hasPendingReceivedFollowRequest, false);
+		assert.deepStrictEqual(response.unreadAnnouncements, []);
 		assert.deepStrictEqual(response.mutedWords, []);
 		assert.deepStrictEqual(response.mutedInstances, []);
 		assert.deepStrictEqual(response.mutingNotificationTypes, []);
@@ -485,7 +497,7 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ mutedWords: [] }) },
 		{ parameters: (): object => ({ mutedInstances: ['xxxx.xxxxx'] }) },
 		{ parameters: (): object => ({ mutedInstances: [] }) },
-		{ parameters: (): object => ({ mutingNotificationTypes: ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app'] }) },
+		{ parameters: (): object => ({ mutingNotificationTypes: ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app'] }) },
 		{ parameters: (): object => ({ mutingNotificationTypes: [] }) },
 		{ parameters: (): object => ({ emailNotificationTypes: ['mention', 'reply', 'quote', 'follow', 'receiveFollowRequest'] }) },
 		{ parameters: (): object => ({ emailNotificationTypes: [] }) },

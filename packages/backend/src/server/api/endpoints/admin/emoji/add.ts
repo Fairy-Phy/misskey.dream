@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, EmojisRepository } from "@/models/index.js";
+import type { DriveFilesRepository, EmojisRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -58,9 +63,8 @@ export const paramDef = {
 
 // TODO: ロジックをサービスに切り出す
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -109,7 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 			});
 
-			this.moderationLogService.insertModerationLog(me, "addEmoji", {
+			this.moderationLogService.log(me, 'addCustomEmoji', {
 				emojiId: emoji.id,
 			});
 

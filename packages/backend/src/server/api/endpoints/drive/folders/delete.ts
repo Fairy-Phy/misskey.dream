@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFoldersRepository, DriveFilesRepository, DriveFile, User, DriveFolder } from '@/models/index.js';
+import type { DriveFoldersRepository, DriveFilesRepository, MiDriveFile, MiDriveFolder } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -43,9 +48,8 @@ export const paramDef = {
 	required: ['folderId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -79,12 +83,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// TODO: 再帰的に消す
 			if (childFoldersCount !== 0 || childFilesCount !== 0) {
-				const innerFolders: DriveFolder[] = [];
+				const innerFolders: MiDriveFolder[] = [];
 
 				let NonInnerFolderFlag = true;
-				let unCheckedInnerFolders: DriveFolder[] = [folder];
+				let unCheckedInnerFolders: MiDriveFolder[] = [folder];
 				do {
-					const newInnerFolders: DriveFolder[] = await this.driveFoldersRepository.findBy({
+					const newInnerFolders: MiDriveFolder[] = await this.driveFoldersRepository.findBy({
 						parentId: In(unCheckedInnerFolders.map(v => v.id))
 					});
 
@@ -94,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					NonInnerFolderFlag = newInnerFolders.length === 0;
 				} while (!NonInnerFolderFlag);
 
-				const files: DriveFile[] = await this.driveFilesRepository.findBy({
+				const files: MiDriveFile[] = await this.driveFilesRepository.findBy({
 					folderId: In(innerFolders.map(v => v.id))
 				});
 

@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { EmojiModerationLogsRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
-import type { Emoji } from '@/models/entities/Emoji.js';
+import type { EmojiModerationLogsRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiEmoji } from '@/models/Emoji.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
-import type { LogInfoValue, LogTypeValue } from '@/models/entities/EmojiModerationLog.js';
+import type { LogInfoValue, LogTypeValue } from '@/models/EmojiModerationLog.js';
 
 @Injectable()
 export class EmojiModerationLogService {
@@ -18,7 +18,7 @@ export class EmojiModerationLogService {
 	}
 
 	@bindThis
-	public async insertEmojiModerationLog(targetUser: { id: User['id'] }, targetEmoji: { id: Emoji['id'] }, type: LogTypeValue, info?: LogInfoValue[]) {
+	public async insertEmojiModerationLog(targetUser: { id: MiUser['id'] }, targetEmoji: { id: MiEmoji['id'] }, type: LogTypeValue, info?: LogInfoValue[]) {
 		await this.emojimoderationLogsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import {
 	packedUserLiteSchema,
 	packedUserDetailedNotMeOnlySchema,
@@ -39,6 +44,7 @@ import {
 	packedEmojiChangeLogSchema,
 	packedEmojiChangeLogsSchema,
 } from '@/models/json-schema/emoji-log.js';
+import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -50,6 +56,7 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
+	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,
@@ -173,11 +180,7 @@ type NullOrUndefined<p extends Schema, T> =
 
 // https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 // Get intersection from union
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I
-) => void
-	? I
-	: never;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 type PartialIntersection<T> = Partial<UnionToIntersection<T>>;
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
