@@ -132,6 +132,8 @@ export const defaultStore = markRaw(new Storage('base', {
 			'search',
 			'-',
 			'ui',
+			'emojiCreate',
+			'roleManager',
 		],
 	},
 	visibility: {
