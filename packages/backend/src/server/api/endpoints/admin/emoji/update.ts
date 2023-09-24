@@ -170,7 +170,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 				...(ps.userId && oldEmoji.userId !== ps.userId ? { userId: ps.userId } : {}),
-			});
+			}, oldEmoji.userId !== me.id ? me : undefined);
 
 			const changes: LogInfoValue[] = [];
 			if (driveFile) {

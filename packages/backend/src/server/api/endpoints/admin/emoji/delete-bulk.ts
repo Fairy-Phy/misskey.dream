@@ -43,11 +43,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// 一度すべての所収者を調べる
-			if (!await this.roleService.isEmojiModerator(me) && !await this.customEmojiService.isOwnerCheckBulk(ps.ids, me.id)) {
+			const isOwn = await this.customEmojiService.isOwnerCheckBulk(ps.ids, me.id);
+			if (!await this.roleService.isEmojiModerator(me) && !isOwn) {
 				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
 			}
 
-			await this.customEmojiService.deleteBulk(ps.ids);
+			if (isOwn) await this.customEmojiService.deleteBulk(ps.ids);
+			else await this.customEmojiService.deleteBulk(ps.ids, me);
 		});
 	}
 }

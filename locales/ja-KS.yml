@@ -2091,3 +2091,6 @@ changeLog: "更新履歴"
 confirmAddEmoji: "今追加しとる絵文字はあんた以外が2回以上使用される可能性があるんか？"
 community: "コミュニティー"
 manageRole: "ロールの管理"
+_moderationLogTypes:
+  suspend: "凍結"
+  resetPassword: "パスワードをリセット"
