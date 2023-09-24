@@ -1,12 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
+import type { DriveFilesRepository, EmojisRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 import { RoleService } from '@/core/RoleService.js';
-import { LogInfoValue } from '@/models/entities/EmojiModerationLog.js';
+import { LogInfoValue } from '@/models/EmojiModerationLog.js';
 import { EmojiModerationLogService } from '@/core/EmojiModerationLogService.js';
 
 export const meta = {
@@ -80,9 +85,8 @@ export const paramDef = {
 	required: ['id', 'name', 'aliases'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -166,7 +170,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 				...(ps.userId && oldEmoji.userId !== ps.userId ? { userId: ps.userId } : {}),
-			});
+			}, oldEmoji.userId !== me.id ? me : undefined);
 
 			const changes: LogInfoValue[] = [];
 			if (driveFile) {

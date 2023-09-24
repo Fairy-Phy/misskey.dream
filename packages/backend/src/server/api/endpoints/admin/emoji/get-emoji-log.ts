@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojiModerationLog, EmojiModerationLogsRepository } from "@/models/index.js";
+import type { EmojiModerationLog, EmojiModerationLogsRepository } from "@/models/_.js";
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 

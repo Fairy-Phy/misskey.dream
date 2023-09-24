@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
@@ -29,9 +34,8 @@ export const paramDef = {
 	required: ['ids'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private customEmojiService: CustomEmojiService,
 
@@ -39,11 +43,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// 一度すべての所収者を調べる
-			if (!await this.roleService.isEmojiModerator(me) && !await this.customEmojiService.isOwnerCheckBulk(ps.ids, me.id)) {
+			const isOwn = await this.customEmojiService.isOwnerCheckBulk(ps.ids, me.id);
+			if (!await this.roleService.isEmojiModerator(me) && !isOwn) {
 				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
 			}
 
-			await this.customEmojiService.deleteBulk(ps.ids);
+			if (isOwn) await this.customEmojiService.deleteBulk(ps.ids);
+			else await this.customEmojiService.deleteBulk(ps.ids, me);
 		});
 	}
 }

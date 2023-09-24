@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
-import type { EmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/_.js';
 import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
@@ -34,9 +39,8 @@ export const paramDef = {
 	required: ['id'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private customEmojiService: CustomEmojiService,
 
@@ -58,7 +62,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
 			}
 
-			await this.customEmojiService.delete(ps.id, oldEmoji.userId);
+			if (oldEmoji.userId === me.id) await this.customEmojiService.delete(ps.id, oldEmoji.userId);
+			else await this.customEmojiService.delete(ps.id, oldEmoji.userId, me);
 		});
 	}
 }

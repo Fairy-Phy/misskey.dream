@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -103,6 +108,29 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		const inboxLogger = this.logger.createSubLogger('inbox');
 		const dbLogger = this.logger.createSubLogger('db');
 		const relationshipLogger = this.logger.createSubLogger('relationship');
+
+		/*
+		this.relationshipQueueWorker
+			.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
+			.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
+			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => relationshipLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
+		//#endregion
+
+		//#region object storage
+		this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
+			switch (job.name) {
+				case 'deleteFile': return this.deleteFileProcessorService.process(job);
+				case 'cleanRemoteFiles': return this.cleanRemoteFilesProcessorService.process(job);
+				default: throw new Error(`unrecognized job type ${job.name} for objectStorage`);
+			}
+		}, {
+			...baseQueueOptions(this.config, QUEUE.OBJECT_STORAGE),
+			autorun: false,
+			concurrency: 16,
+		});*/
+
 		const objectStorageLogger = this.logger.createSubLogger('objectStorage');
 
 		this.queueService.systemQueue

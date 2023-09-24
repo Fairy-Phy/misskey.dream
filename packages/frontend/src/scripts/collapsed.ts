@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
-import { extractUrlFromMfm } from './extract-url-from-mfm';
+import * as Misskey from 'misskey-js';
+import { extractUrlFromMfm } from './extract-url-from-mfm.js';
 
 const scaleRegex = /\$\[scale\.(([xy]=[2345](\.\d)*){1}|([xy]=[12345](\.\d)*){1}(,[xy]=[2345](\.\d)*){1})/;
 

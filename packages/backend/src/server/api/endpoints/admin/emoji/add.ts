@@ -1,10 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, EmojisRepository } from "@/models/index.js";
+import type { DriveFilesRepository, EmojisRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
 
@@ -58,9 +62,8 @@ export const paramDef = {
 
 // TODO: ロジックをサービスに切り出す
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -71,7 +74,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private customEmojiService: CustomEmojiService,
 
 		private emojiEntityService: EmojiEntityService,
-		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let license = `@${me.username}`;
@@ -107,10 +109,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
 				userId: me.id,
-			});
-
-			this.moderationLogService.insertModerationLog(me, "addEmoji", {
-				emojiId: emoji.id,
 			});
 
 			return this.emojiEntityService.packDetailed(emoji);

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer>
 	<MkFoldableSection>
@@ -25,8 +30,8 @@
 import { } from 'vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 let rolesManual = $ref();
 let rolesConditional = $ref();
