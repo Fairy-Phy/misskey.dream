@@ -1491,6 +1491,8 @@ _role:
     descriptionOfRateLimitFactor: "Lower rate limits are less restrictive, higher ones more restrictive. "
     canHideAds: "Can hide ads"
     canSearchNotes: "Usage of note search"
+    canAddRoles: "Can add Community roles"
+    driveAdditionCapacity: "Increased drive capacity"
   _condition:
     isLocal: "Local user"
     isRemote: "Remote user"

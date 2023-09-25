@@ -14,10 +14,10 @@ export const meta = {
 	requireCredential: true,
 
 	errors: {
-		noSuchFile: {
-			message: "No such file.",
-			code: "NO_SUCH_FILE",
-			id: "fc46b5a4-6b92-4c33-ac66-b806659bb5cf",
+		notAllowed: {
+			message: "You are not allowed to add role.",
+			code: "NOT_ALLOWED_ADD_ROLE",
+			id: "e4575a43-1368-49d2-84e1-61637976c918",
 		},
 		emptyName: {
 			message: "Name is empty.",
@@ -59,6 +59,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.name.trim().length === 0) throw new ApiError(meta.errors.emptyName);
+
+			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
+			if (!policies.canAddRoles) {
+				throw new ApiError(meta.errors.notAllowed);
+			}
 
 			const date = new Date();
 			const created = await this.rolesRepository.insert({

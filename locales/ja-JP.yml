@@ -1499,6 +1499,8 @@ _role:
     descriptionOfRateLimitFactor: "小さいほど制限が緩和され、大きいほど制限が強化されます。"
     canHideAds: "広告の非表示"
     canSearchNotes: "ノート検索の利用可否"
+    canAddRoles: "コミュニティーロールの追加"
+    driveAdditionCapacity: "増量させるドライブ容量"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"

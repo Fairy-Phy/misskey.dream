@@ -175,6 +175,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.driveAdditionCapacity, 'driveAdditionCapacityMb'])">
+							<template #label>{{ i18n.ts._role._options.driveAdditionCapacity }}</template>
+							<template #suffix>{{ policies.driveAdditionCapacityMb }}MB</template>
+							<MkInput v-model="policies.driveAdditionCapacityMb" type="number">
+								<template #suffix>MB</template>
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canAddRoles, 'canAddRoles'])">
+							<template #label>{{ i18n.ts._role._options.canAddRoles }}</template>
+							<template #suffix>{{ policies.canAddRoles ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canAddRoles">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>

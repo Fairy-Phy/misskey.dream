@@ -1578,6 +1578,8 @@ export interface Locale {
             "descriptionOfRateLimitFactor": string;
             "canHideAds": string;
             "canSearchNotes": string;
+            "canAddRoles": string;
+            "driveAdditionCapacity": string;
         };
         "_condition": {
             "isLocal": string;

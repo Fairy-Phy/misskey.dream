@@ -44,6 +44,8 @@ export type RolePolicies = {
 	userListLimit: number;
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
+	canAddRoles: boolean;
+	driveAdditionCapacityMb: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -68,6 +70,8 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userListLimit: 10,
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
+	canAddRoles: true,
+	driveAdditionCapacityMb: 0,
 };
 
 @Injectable()
@@ -287,6 +291,8 @@ export class RoleService implements OnApplicationShutdown {
 
 			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
 
+			if (name === 'driveAdditionCapacityMb') return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
+
 			const p2 = policies.filter(policy => policy.priority === 2);
 			if (p2.length > 0) return aggregate(p2.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 
@@ -318,6 +324,8 @@ export class RoleService implements OnApplicationShutdown {
 			userListLimit: calc('userListLimit', vs => Math.max(...vs)),
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
+			canAddRoles: calc('canAddRoles', vs => vs.some(v => v === true)),
+			driveAdditionCapacityMb: calc('driveAdditionCapacityMb', vs => vs.reduce((a, c) => a + c, 0)),
 		};
 	}
 

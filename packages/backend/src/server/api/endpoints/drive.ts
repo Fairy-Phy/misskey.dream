@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const policies = await this.roleService.getUserPolicies(me.id);
 
 			return {
-				capacity: 1024 * 1024 * policies.driveCapacityMb,
+				capacity: 1024 * 1024 * (policies.driveCapacityMb + policies.driveAdditionCapacityMb),
 				usage: usage,
 			};
 		});

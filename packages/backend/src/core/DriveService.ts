@@ -516,7 +516,7 @@ export class DriveService {
 			const isLocalUser = this.userEntityService.isLocalUser(user);
 
 			const policies = await this.roleService.getUserPolicies(user.id);
-			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
+			const driveCapacity = 1024 * 1024 * (policies.driveCapacityMb + policies.driveAdditionCapacityMb);
 			this.registerLogger.debug('drive capacity override applied');
 			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 

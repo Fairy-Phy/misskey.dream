@@ -79,6 +79,8 @@ export const ROLE_POLICIES = [
 	'userListLimit',
 	'userEachUserListsLimit',
 	'rateLimitFactor',
+	'canAddRoles',
+	'driveAdditionCapacityMb',
 ] as const;
 
 // なんか動かない

@@ -493,6 +493,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.driveAdditionCapacity, 'driveAdditionCapacityMb'])">
+				<template #label>{{ i18n.ts._role._options.driveAdditionCapacity }}</template>
+				<template #suffix>
+					<span v-if="role.policies.driveAdditionCapacityMb.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.driveAdditionCapacityMb.value + 'MB' }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.driveAdditionCapacityMb)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.driveAdditionCapacityMb.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="role.policies.driveAdditionCapacityMb.value" :disabled="role.policies.driveAdditionCapacityMb.useDefault" type="number" :readonly="readonly">
+						<template #suffix>MB</template>
+					</MkInput>
+					<MkRange v-model="role.policies.driveAdditionCapacityMb.priority" :min="0" :max="0" :step="1" easing :textConverter="(v) => ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canAddRoles, 'canAddRoles'])">
+				<template #label>{{ i18n.ts._role._options.canAddRoles }}</template>
+				<template #suffix>
+					<span v-if="role.policies.canAddRoles.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canAddRoles.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canAddRoles)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.canAddRoles.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="role.policies.canAddRoles.value" :disabled="role.policies.canAddRoles.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="role.policies.canAddRoles.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 </div>
