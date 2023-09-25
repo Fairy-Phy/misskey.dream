@@ -6,9 +6,10 @@ import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
-	tags: ['role'],
+	tags: ["role"],
 
 	requireCredential: true,
 
@@ -17,6 +18,11 @@ export const meta = {
 			message: "No such file.",
 			code: "NO_SUCH_FILE",
 			id: "fc46b5a4-6b92-4c33-ac66-b806659bb5cf",
+		},
+		emptyName: {
+			message: "Name is empty.",
+			code: "EMPTY_NAME",
+			id: "e787f7ba-a46c-46ef-a6dc-44b98e499e62",
 		},
 	},
 } as const;
@@ -52,6 +58,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.name.trim().length === 0) throw new ApiError(meta.errors.emptyName);
+
 			const date = new Date();
 			const created = await this.rolesRepository.insert({
 				id: this.idService.genId(),

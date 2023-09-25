@@ -26,6 +26,11 @@ export const meta = {
 			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
 			id: '73952b00-d3e3-4038-b2c6-f4b4532e3906'
 		},
+		emptyName: {
+			message: "Name is empty.",
+			code: "EMPTY_NAME",
+			id: "e787f7ba-a46c-46ef-a6dc-44b98e499e62",
+		},
 	},
 } as const;
 
@@ -59,6 +64,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.name.trim().length === 0) throw new ApiError(meta.errors.emptyName);
+
 			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
