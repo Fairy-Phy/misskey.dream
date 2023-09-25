@@ -141,6 +141,8 @@ let swPrivateKey: any = $ref(null);
 let deeplAuthKey: string = $ref('');
 let deeplIsPro: boolean = $ref(false);
 
+let prevDate = "";
+
 async function init(): Promise<void> {
 	const meta = await os.api('admin/meta');
 	name = meta.name;
