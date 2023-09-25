@@ -145,11 +145,11 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		this.localEmojisCache.refresh();
 
-		const updated = await this.emojiEntityService.packDetailed(emoji.id);
+		const packed = await this.emojiEntityService.packDetailed(emoji.id);
 
 		if (emoji.name === data.name) {
 			this.globalEventService.publishBroadcastStream('emojiUpdated', {
-				emojis: [updated],
+				emojis: [packed],
 			});
 		} else {
 			this.globalEventService.publishBroadcastStream('emojiDeleted', {
@@ -157,11 +157,12 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			});
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
-				emoji: updated,
+				emoji: packed,
 			});
 		}
 
 		if (moderator) {
+			const updated = await this.emojisRepository.findOneByOrFail({ id: id });
 			this.moderationLogService.log(moderator, 'updateCustomEmoji', {
 				emojiId: emoji.id,
 				before: emoji,
