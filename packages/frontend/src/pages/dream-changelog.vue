@@ -11,6 +11,14 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.7.1 】]\n\
+\n\
+・ Fix: 配送されない問題\n\
+\n\
+・ Fix: 管理ページがエラーになる問題\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.7.0 】]\n\
 \n\
 ・ Update: misskeyバージョン2023.9.1へ更新\n\
