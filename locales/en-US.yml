@@ -2134,9 +2134,9 @@ confirmAddEmoji: "Is there a chance that the emoji you are about to add will be 
 community: "Community"
 manageRole: "Manage roles"
 _moderationLogTypes:
+  updateRole: "Role updated"
   assignRole: "Assigned to role"
   unassignRole: "Removed from role"
-  updateRole: "Role updated"
   suspend: "Suspended"
   unsuspend: "Unsuspended"
   addCustomEmoji: "Custom emoji added"

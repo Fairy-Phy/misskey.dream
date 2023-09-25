@@ -1142,6 +1142,7 @@ notifyNotes: "投稿を通知"
 unnotifyNotes: "投稿の通知を解除"
 authentication: "認証"
 authenticationRequiredToContinue: "続けるには認証を行ってください"
+dateAndTime: "日時"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2195,9 +2196,11 @@ confirmAddEmoji: "今追加しようとしている絵文字はあなた以外�
 community: "コミュニティー"
 manageRole: "ロールの管理"
 _moderationLogTypes:
+  createRole: "ロールを作成"
+  deleteRole: "ロールを削除"
+  updateRole: "ロールを更新"
   assignRole: "ロールへアサイン"
   unassignRole: "ロールのアサイン解除"
-  updateRole: "ロール設定更新"
   suspend: "凍結"
   unsuspend: "凍結解除"
   addCustomEmoji: "カスタム絵文字追加"
@@ -2218,5 +2221,6 @@ _moderationLogTypes:
   unsuspendRemoteInstance: "リモートサーバーを再開"
   markSensitiveDriveFile: "ファイルをセンシティブ付与"
   unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
+  resolveAbuseReport: "通報を解決"
 
 driveFolderDeleteConfirm: "フォルダー「{name}」を削除しますか？このフォルダー内にあるコンテンツも同時に削除されます。"
