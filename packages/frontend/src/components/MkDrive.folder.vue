@@ -220,8 +220,16 @@ function rename() {
 	});
 }
 
-function deleteFolder() {
-	os.api('drive/folders/delete', {
+async function deleteFolder() {
+	// もし中にファイルが存在する場合再帰的に削除するため
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('driveFolderDeleteConfirm', { name: props.folder.name }),
+	});
+
+	if (canceled) return;
+
+	await os.api('drive/folders/delete', {
 		folderId: props.folder.id,
 	}).then(() => {
 		if (defaultStore.state.uploadFolder === props.folder.id) {

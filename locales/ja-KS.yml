@@ -2094,3 +2094,5 @@ manageRole: "ロールの管理"
 _moderationLogTypes:
   suspend: "凍結"
   resetPassword: "パスワードをリセット"
+
+driveFolderDeleteConfirm: "フォルダー「{name}」をほかしてええか？このフォルダーにあるのも消えてまうで。"

@@ -351,8 +351,16 @@ function renameFolder(folderToRename: Misskey.entities.DriveFolder) {
 	});
 }
 
-function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
-	os.api('drive/folders/delete', {
+async function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
+	// もし中にファイルが存在する場合再帰的に削除するため
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('driveFolderDeleteConfirm', { name: folderToDelete.name }),
+	});
+
+	if (canceled) return;
+
+	await os.api('drive/folders/delete', {
 		folderId: folderToDelete.id,
 	}).then(() => {
 		// 削除時に親フォルダに移動

@@ -2218,3 +2218,5 @@ _moderationLogTypes:
   unsuspendRemoteInstance: "リモートサーバーを再開"
   markSensitiveDriveFile: "ファイルをセンシティブ付与"
   unmarkSensitiveDriveFile: "ファイルをセンシティブ解除"
+
+driveFolderDeleteConfirm: "フォルダー「{name}」を削除しますか？このフォルダー内にあるコンテンツも同時に削除されます。"

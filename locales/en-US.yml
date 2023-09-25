@@ -2157,3 +2157,5 @@ _moderationLogTypes:
   unsuspendRemoteInstance: "Remote instance unsuspended"
   markSensitiveDriveFile: "File marked as sensitive"
   unmarkSensitiveDriveFile: "File unmarked as sensitive"
+
+driveFolderDeleteConfirm: "Do you want to remove the folder \"{name}\"? Contents in the folder will also be removed at the same time."

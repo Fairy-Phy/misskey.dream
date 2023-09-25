@@ -2306,6 +2306,7 @@ export interface Locale {
         "markSensitiveDriveFile": string;
         "unmarkSensitiveDriveFile": string;
     };
+    "driveFolderDeleteConfirm": string;
 }
 declare const locales: {
     [lang: string]: Locale;
