@@ -1585,6 +1585,7 @@ export interface Locale {
             "canSearchNotes": string;
             "canAddRoles": string;
             "driveAdditionCapacity": string;
+            "canUseTranslator": string;
         };
         "_condition": {
             "isLocal": string;
