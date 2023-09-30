@@ -11,6 +11,22 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.7.2 】]\n\
+\n\
+・ Update: misskey 2023.9.2へ更新\n\
+\n\
+・ Update: emojiKitchen定義ファイルの更新\n\
+\n\
+・ Remove: 一部サーバーステータスの削除\n\
+\n\
+・ Fix: `$[mix ]`がうまく機能しない問題\n\
+\n\
+・ Fix: 新規登録ができない問題\n\
+\n\
+・ Fix: 管理ページがエラーになる問題\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.7.1 】]\n\
 \n\
 ・ Fix: 配送されない問題\n\
