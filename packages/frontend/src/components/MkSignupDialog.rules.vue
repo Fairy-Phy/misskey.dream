@@ -34,7 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.termsOfService }}</template>
 				<template #suffix><i v-if="agreeTos" class="ti ti-check" style="color: var(--success)"></i></template>
 
-				<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a>
+				<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a><br>
+				<a href="https://secinet.jp/misskey-dream/emoji-guideline" class="_link" target="_blank">{{ i18n.ts.emojiGuideline }} <i class="ti ti-external-link"></i></a>
 
 				<MkSwitch :modelValue="agreeTos" style="margin-top: 16px;" @update:modelValue="updateAgreeTos">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
@@ -68,6 +69,11 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
+
+const availableServerRules = instance.serverRules.length > 0;
+const availableTos = instance.tosUrl != null;
+
+const agreeServerRules = ref(false);
 const agreeTos = ref(false);
 const agreeNote = ref(false);
 
