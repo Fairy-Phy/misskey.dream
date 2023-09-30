@@ -13,7 +13,7 @@ let text = '$[x2 ChangeLog]\n\n';
 
 text += "$[tada.speed=0s 【 Dream 1.7.2 】]\n\
 \n\
-・ Update: misskey 2023.9.2へ更新\n\
+・ Update: misskey 2023.9.3へ更新\n\
 \n\
 ・ Update: emojiKitchen定義ファイルの更新\n\
 \n\
