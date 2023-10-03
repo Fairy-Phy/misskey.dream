@@ -285,10 +285,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			const serverMeta = await this.metaService.fetch();
-			if (ps.visibility === 'relational' && me.createdAt > serverMeta.relationalDate) {
-				throw new ApiError(meta.errors.rtlDisabled);
-			}
+			//TODO: 何故かフロント側でリレーショナル投稿できてしまう問題を解決する
+			//const serverMeta = await this.metaService.fetch();
+			//if (ps.visibility === 'relational' && me.createdAt > serverMeta.relationalDate) {
+				//throw new ApiError(meta.errors.rtlDisabled);
+			//}
 
 			// 投稿を作成
 			const note = await this.noteCreateService.create(me, {
@@ -305,7 +306,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				cw: ps.cw,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
-				visibility: ps.visibility,
+				visibility: ps.visibility === 'relational' ? 'public' : ps.visibility,
 				visibleUsers,
 				channel,
 				apMentions: ps.noExtractMentions ? [] : undefined,
