@@ -13,12 +13,11 @@ import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
-
-	description: 'Show all notes that this user created.',
 
 	res: {
 		type: 'array',
@@ -45,6 +44,7 @@ export const paramDef = {
 		userId: { type: 'string', format: 'misskey:id' },
 		withReplies: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
+		withChannelNotes: { type: 'boolean', default: false },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
@@ -72,20 +72,50 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const [
+				userIdsWhoMeMuting,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+			]) : [new Set<string>()];
+
 			let timeline: MiNote[] = [];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			let noteIdsRes: [string, string[]][] = [];
+			let repliesNoteIdsRes: [string, string[]][] = [];
+			let channelNoteIdsRes: [string, string[]][] = [];
 
 			if (!ps.sinceId && !ps.sinceDate) {
-				noteIdsRes = await this.redisForTimelines.xrevrange(
-					ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : ps.withReplies ? `userTimelineWithReplies:${ps.userId}` : `userTimeline:${ps.userId}`,
-					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-					'-',
-					'COUNT', limit);
+				[noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
+					this.redisForTimelines.xrevrange(
+						ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
+						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+						ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+						'COUNT', limit),
+					ps.withReplies
+						? this.redisForTimelines.xrevrange(
+							`userTimelineWithReplies:${ps.userId}`,
+							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+							'COUNT', limit)
+						: Promise.resolve([]),
+					ps.withChannelNotes
+						? this.redisForTimelines.xrevrange(
+							`userTimelineWithChannel:${ps.userId}`,
+							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
+							'COUNT', limit)
+						: Promise.resolve([]),
+				]);
 			}
 
-			const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
+			let noteIds = Array.from(new Set([
+				...noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				...repliesNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+				...channelNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
+			]));
+			noteIds.sort((a, b) => a > b ? -1 : 1);
+			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length === 0) {
 				return [];
@@ -105,6 +135,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			timeline = await query.getMany();
 
 			timeline = timeline.filter(note => {
+				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
+
 				if (note.renoteId) {
 					if (note.text == null && note.fileIds.length === 0 && !note.hasPoll) {
 						if (ps.withRenotes === false) return false;

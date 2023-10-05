@@ -1152,6 +1152,7 @@ export interface Locale {
     "fileAttachedOnly": string;
     "showRepliesToOthersInTimeline": string;
     "hideRepliesToOthersInTimeline": string;
+    "externalServices": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1565,7 +1566,6 @@ export interface Locale {
             "gtlAvailable": string;
             "ltlAvailable": string;
             "canPublicNote": string;
-            "canEditNote": string;
             "canInvite": string;
             "inviteLimit": string;
             "inviteLimitCycle": string;
@@ -1833,8 +1833,6 @@ export interface Locale {
         "note": string;
         "noteMy": string;
         "notification": string;
-        "chat": string;
-        "chatBg": string;
         "antenna": string;
         "channel": string;
     };

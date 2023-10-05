@@ -109,6 +109,10 @@ export const paramDef = {
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		relationalDate: { type: 'string', /* できない format: 'date-time' */ },
 		manifestJsonOverride: { type: 'string' },
+		perLocalUserUserTimelineCacheMax: { type: 'integer' },
+		perRemoteUserUserTimelineCacheMax: { type: 'integer' },
+		perUserHomeTimelineCacheMax: { type: 'integer' },
+		perUserListTimelineCacheMax: { type: 'integer' },
 	},
 	required: [],
 } as const;
@@ -444,6 +448,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.manifestJsonOverride !== undefined) {
 				set.manifestJsonOverride = ps.manifestJsonOverride;
+			}
+
+			if (ps.perLocalUserUserTimelineCacheMax !== undefined) {
+				set.perLocalUserUserTimelineCacheMax = ps.perLocalUserUserTimelineCacheMax;
+			}
+
+			if (ps.perRemoteUserUserTimelineCacheMax !== undefined) {
+				set.perRemoteUserUserTimelineCacheMax = ps.perRemoteUserUserTimelineCacheMax;
+			}
+
+			if (ps.perUserHomeTimelineCacheMax !== undefined) {
+				set.perUserHomeTimelineCacheMax = ps.perUserHomeTimelineCacheMax;
+			}
+
+			if (ps.perUserListTimelineCacheMax !== undefined) {
+				set.perUserListTimelineCacheMax = ps.perUserListTimelineCacheMax;
 			}
 
 			const before = await this.metaService.fetch(true);

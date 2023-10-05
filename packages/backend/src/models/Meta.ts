@@ -476,4 +476,24 @@ export class MiMeta {
 		default: () => 'now()'
 	})
 	public relationalDate: Date;
+
+	@Column('integer', {
+		default: 300,
+	})
+	public perLocalUserUserTimelineCacheMax: number;
+
+	@Column('integer', {
+		default: 100,
+	})
+	public perRemoteUserUserTimelineCacheMax: number;
+
+	@Column('integer', {
+		default: 300,
+	})
+	public perUserHomeTimelineCacheMax: number;
+
+	@Column('integer', {
+		default: 300,
+	})
+	public perUserListTimelineCacheMax: number;
 }
