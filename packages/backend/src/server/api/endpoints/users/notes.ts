@@ -15,6 +15,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
+import { QueryService } from '@/core/QueryService.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
@@ -70,6 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 		private cacheService: CacheService,
 		private idService: IdService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const [
@@ -117,22 +119,44 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
 
-			if (noteIds.length === 0) {
-				return [];
+			if (noteIds.length < limit) {
+				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+					.andWhere('note.userId = :userId', { userId: ps.userId })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('note.channel', 'channel')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser');
+
+				if (ps.withFiles) {
+					query.andWhere('note.fileIds != \'{}\'');
+				}
+
+				if (!ps.withReplies) {
+					query.andWhere('note.replyId IS NULL');
+				}
+
+				if (!ps.withChannelNotes) {
+					query.andWhere('note.channelId IS NULL');
+				}
+
+				timeline = await query.getMany();
+			}
+			else {
+				const query = this.notesRepository.createQueryBuilder('note')
+					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+					.innerJoinAndSelect('note.user', 'user')
+					.leftJoinAndSelect('note.reply', 'reply')
+					.leftJoinAndSelect('note.renote', 'renote')
+					.leftJoinAndSelect('reply.user', 'replyUser')
+					.leftJoinAndSelect('renote.user', 'renoteUser')
+					.leftJoinAndSelect('note.channel', 'channel');
+
+				timeline = await query.getMany();
 			}
 
 			const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
-
-			const query = this.notesRepository.createQueryBuilder('note')
-				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('note.channel', 'channel');
-
-			timeline = await query.getMany();
 
 			timeline = timeline.filter(note => {
 				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
