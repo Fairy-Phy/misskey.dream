@@ -1585,9 +1585,9 @@ export interface Locale {
             "rateLimitFactor": string;
             "descriptionOfRateLimitFactor": string;
             "canHideAds": string;
-            "canSearchNotes": string;
             "canAddRoles": string;
             "driveAdditionCapacity": string;
+            "canSearchNotes": string;
             "canUseTranslator": string;
         };
         "_condition": {
