@@ -11,6 +11,12 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.7.4 】]\n\
+\n\
+・ Fix: ノートを遡ろうとした際にフリーズする問題\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.7.3 】]\n\
 \n\
 ・ Restore: 2023.10.0-beta1で実装された編集機能は本家では削除されましたがこちらでは残すこととなりました\n\

@@ -117,7 +117,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				...channelNoteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
 			]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
-			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length < limit) {
 				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
@@ -141,9 +140,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					query.andWhere('note.channelId IS NULL');
 				}
 
-				timeline = await query.getMany();
+				timeline = await query.limit(ps.limit).getMany();
 			}
 			else {
+				noteIds = noteIds.slice(0, ps.limit);
+
 				const query = this.notesRepository.createQueryBuilder('note')
 					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 					.innerJoinAndSelect('note.user', 'user')
