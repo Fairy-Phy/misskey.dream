@@ -68,6 +68,7 @@ import { MiFlash } from '@/models/Flash.js';
 import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import { EmojiModerationLog } from '@/models/EmojiModerationLog.js';
+import { AkaUsername } from '@/models/AkaUsername.js'
 import type { Repository } from 'typeorm';
 
 export {
@@ -136,6 +137,7 @@ export {
 	MiFlashLike,
 	MiUserMemo,
 	EmojiModerationLog,
+	AkaUsername,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport>;
@@ -203,3 +205,4 @@ export type FlashsRepository = Repository<MiFlash>;
 export type FlashLikesRepository = Repository<MiFlashLike>;
 export type UserMemoRepository = Repository<MiUserMemo>;
 export type EmojiModerationLogsRepository = Repository<EmojiModerationLog>;
+export type AkaUsernameRepository = Repository<AkaUsername>;

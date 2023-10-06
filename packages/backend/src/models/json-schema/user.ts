@@ -22,6 +22,11 @@ export const packedUserLiteSchema = {
 			nullable: false, optional: false,
 			example: 'ai',
 		},
+		akaUsername: {
+			type: 'string',
+			nullable: true, optional: true,
+			example: 'あい',
+		},
 		host: {
 			type: 'string',
 			nullable: true, optional: false,

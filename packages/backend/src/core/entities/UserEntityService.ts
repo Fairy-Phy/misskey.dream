@@ -15,7 +15,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, UserNotePiningsRepository, UserProfilesRepository, AnnouncementReadsRepository, AnnouncementsRepository, MiUserProfile, RenoteMutingsRepository, UserMemoRepository } from '@/models/_.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, UserNotePiningsRepository, UserProfilesRepository, AnnouncementReadsRepository, AnnouncementsRepository, MiUserProfile, RenoteMutingsRepository, UserMemoRepository, AkaUsernameRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -111,6 +111,9 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
+
+		@Inject(DI.akaUsernameRepository)
+		private akaUsernameRepository: AkaUsernameRepository,
 
 		//private noteEntityService: NoteEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
@@ -320,6 +323,8 @@ export class UserEntityService implements OnModuleInit {
 			.getMany() : [];
 		const profile = opts.detail ? (opts.userProfile ?? await this.userProfilesRepository.findOneByOrFail({ userId: user.id })) : null;
 
+		const akaUsername = await this.akaUsernameRepository.findOneBy({ userId: user.id });
+
 		const followingCount = profile == null ? null :
 			(profile.ffVisibility === 'public') || isMe ? user.followingCount :
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
@@ -341,6 +346,7 @@ export class UserEntityService implements OnModuleInit {
 			id: user.id,
 			name: user.name,
 			username: user.username,
+			akaUsername: akaUsername != null ? akaUsername.username : undefined,
 			host: user.host,
 			createdAt: user.createdAt.toISOString(),
 			avatarUrl: user.avatarUrl ?? this.getIdenticonUrl(user),
