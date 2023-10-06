@@ -115,6 +115,11 @@ export const meta = {
 			code: 'RESTRICTED_BY_ROLE',
 			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
 		},
+		alreadyUsedAkaUsername: {
+			message: 'This id has already been used.',
+			code: 'IDKANA_ALREADY_USED',
+			id: 'f75642ff-6a1b-4cd3-91c7-13465cdb6008',
+		},
 	},
 
 	res: {
@@ -390,8 +395,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (ps.akaUsername === null || ps.akaUsername.length === 0) {
 					await this.akaUsernameService.deleteAkaUsername(user);
 				}
-				else {
+				else if (await this.akaUsernameService.isPassUsername(ps.akaUsername)) {
 					await this.akaUsernameService.upsertUsername(user, ps.akaUsername);
+				}
+				else {
+					throw new ApiError(meta.errors.alreadyUsedAkaUsername);
 				}
 			}
 

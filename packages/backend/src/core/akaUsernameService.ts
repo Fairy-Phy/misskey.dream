@@ -2,11 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AkaUsernameRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
-import type { MiEmoji } from '@/models/Emoji.js';
-import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
-import type { LogInfoValue, LogTypeValue } from '@/models/EmojiModerationLog.js';
 import { allowAkaUsernameRegex } from '@/models/AkaUsername.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 @Injectable()
 export class AkaUsernameService {
@@ -29,7 +27,7 @@ export class AkaUsernameService {
 
 	@bindThis
 	public async upsertUsername(user: { id: MiUser['id'] }, username: string) {
-		if (!this.isPassUsername(username)) return;
+		if (!this.isPassUsername(username)) throw new IdentifiableError('f75642ff-6a1b-4cd3-91c7-13465cdb6008', 'This id has already been used.');
 
 		const userAka = await this.akaUsernameRepository.findOneBy({ userId: user.id });
 		if (userAka == null) {

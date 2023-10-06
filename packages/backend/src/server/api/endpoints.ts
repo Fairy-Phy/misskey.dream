@@ -358,6 +358,7 @@ import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
+import * as ep___username_available_aka from './endpoints/username/available-aka.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -712,6 +713,7 @@ const eps = [
 	['users/update-memo', ep___users_updateMemo],
 	['fetch-rss', ep___fetchRss],
 	['retention', ep___retention],
+	['username/available-aka', ep___username_available_aka],
 ];
 
 export interface IEndpointMeta {

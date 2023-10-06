@@ -358,6 +358,7 @@ import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
+import * as ep___username_available_aka from './endpoints/username/available-aka.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
@@ -714,6 +715,7 @@ const $users_achievements: Provider = { provide: 'ep:users/achievements', useCla
 const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
+const $username_available_aka: Provider = { provide: 'ep:username/available-aka', useClass: ep___username_available_aka.default };
 
 @Module({
 	imports: [
@@ -1074,6 +1076,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_updateMemo,
 		$fetchRss,
 		$retention,
+		$username_available_aka,
 	],
 	exports: [
 		$admin_meta,
@@ -1425,6 +1428,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_updateMemo,
 		$fetchRss,
 		$retention,
+		$username_available_aka,
 	],
 })
 export class EndpointsModule {}

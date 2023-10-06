@@ -402,7 +402,7 @@ const $userMemosRepository: Provider = {
 const $akaUsernameRepository: Provider = {
 	provide: DI.akaUsernameRepository,
 	useFactory: (db: DataSource) => db.getRepository(AkaUsername),
-	Inject: [DI.db],
+	inject: [DI.db],
 };
 
 @Module({
