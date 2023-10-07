@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id)
 			]) : [new Set<string>(), new Set<string>()];
 
-			if (me && userIdsWhoMeBlocked.has(ps.userId)) return [];
+			if (userIdsWhoMeBlocked.has(ps.userId)) return [];
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 
@@ -118,7 +118,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			noteIds = noteIds.slice(0, ps.limit);
 
 			if (noteIds.length > 0) {
-				const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
+				const isFollowing =
+					me ?
+						me.id === ps.userId ? // 自分は絶対にどのノートも参照できる
+							true
+						:
+							Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId)
+					:
+						false;
 
 				const query = this.notesRepository.createQueryBuilder('note')
 					.where('note.id IN (:...noteIds)', { noteIds: noteIds })
