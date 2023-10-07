@@ -157,7 +157,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				timeline = await query.getMany();
 			}
 
-			const isFollowing = me ? Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
+			const isFollowing =
+				me ?
+					me.id === ps.userId ? // 自分は絶対にどのノートも参照できる
+						true
+					:
+						Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId)
+				:
+					false;
 
 			timeline = timeline.filter(note => {
 				if (me && isUserRelated(note, userIdsWhoMeMuting, true)) return false;
