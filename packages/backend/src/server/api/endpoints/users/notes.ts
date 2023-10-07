@@ -76,9 +76,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const [
 				userIdsWhoMeMuting,
+				userIdsWhoMeBlocked
 			] = me ? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
-			]) : [new Set<string>()];
+				this.cacheService.userBlockedCache.fetch(me.id)
+			]) : [new Set<string>(), new Set<string>()];
+
+			if (me && userIdsWhoMeBlocked.has(ps.userId)) return [];
 
 			let timeline: MiNote[] = [];
 
