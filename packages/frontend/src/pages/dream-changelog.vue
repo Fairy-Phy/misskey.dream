@@ -13,6 +13,12 @@ let text = '$[x2 ChangeLog]\n\n';
 
 text += "$[tada.speed=0s 【 Dream 1.7.4 】]\n\
 \n\
+・ Fix: 自身のプロフィールのノートを取得する時に公開範囲がフォロワーのノートが表示されない\n";
+
+text += "\n\n";
+
+text += "$[tada.speed=0s 【 Dream 1.7.4 】]\n\
+\n\
 ・ Fix: ノートを遡ろうとした際にフリーズする問題\n";
 
 text += "\n\n";
