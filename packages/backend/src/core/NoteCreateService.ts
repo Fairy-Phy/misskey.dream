@@ -831,6 +831,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
+		// リモートから遅れて届いた(もしくは後から追加された)投稿日時が古い投稿が追加されるとページネーション時に問題を引き起こすため、3分以内に投稿されたもののみを追加する
+		// TODO: https://github.com/misskey-dev/misskey/issues/11404#issuecomment-1752480890 をやる
+		if (note.userHost != null && (Date.now() - note.createdAt.getTime()) > 1000 * 60 * 3) return;
+
 		const meta = await this.metaService.fetch();
 
 		const redisPipeline = this.redisForTimelines.pipeline();
@@ -866,28 +870,38 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		} else {
 			// TODO: キャッシュ？
-			const followings = await this.followingsRepository.find({
-				where: {
-					followeeId: user.id,
-					followerHost: IsNull(),
-					isFollowerHibernated: false,
-				},
-				select: ['followerId', 'withReplies'],
-			});
+			// eslint-disable-next-line prefer-const
+			let [followings, userListMemberships] = await Promise.all([
+				this.followingsRepository.find({
+					where: {
+						followeeId: user.id,
+						followerHost: IsNull(),
+						isFollowerHibernated: false,
+					},
+					select: ['followerId', 'withReplies'],
+				}),
+				this.userListMembershipsRepository.find({
+					where: {
+						userId: user.id,
+					},
+					select: ['userListId', 'userListUserId', 'withReplies'],
+				}),
+			]);
 
-			const userListMemberships = await this.userListMembershipsRepository.find({
-				where: {
-					userId: user.id,
-				},
-				select: ['userList', 'userListId', 'withReplies'],
-				relations: ['userList']
-			});
+			if (note.visibility === 'followers') {
+				// TODO: 重そうだから何とかしたい Set 使う？
+				userListMemberships = userListMemberships.filter(x => followings.some(f => f.followerId === x.userListUserId));
+			}
 
-			if (note.visibility === 'specified') {
+			// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
+			for (const following of followings) {
 				// 基本的にvisibleUserIdsには自身のidが含まれている前提であること
-				for (const userId of note.visibleUserIds) {
-					// 自分自身と返信元の人以外
-					if (note.replyId && note.userId !== userId && note.replyUserId !== userId) continue;
+				if (note.visibility === 'specified' && !note.visibleUserIds.some(v => v === following.followerId)) continue;
+
+				// 自分自身以外への返信
+				if (note.replyId && note.replyUserId !== note.userId) {
+					if (!following.withReplies) continue;
+				}
 
 					redisPipeline.xadd(
 						`homeTimeline:${userId}`,
@@ -928,17 +942,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			}
 
-			// TODO
-			//if (note.visibility === 'followers') {
-			//	// TODO: 重そうだから何とかしたい Set 使う？
-			//	userLists = userLists.filter(x => followings.some(f => f.followerId === x.userListUserId));
-			//}
-
 			for (const userListMembership of userListMemberships) {
 				// ダイレクトのとき、そのリストが対象外のユーザーの場合
 				if (
 					note.visibility === 'specified' &&
-					!note.visibleUserIds.some(v => v === userListMembership.userList!.userId)
+					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)
 				) continue;
 
 				// 自分自身以外への返信
