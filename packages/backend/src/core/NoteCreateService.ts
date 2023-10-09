@@ -903,42 +903,18 @@ export class NoteCreateService implements OnApplicationShutdown {
 					if (!following.withReplies) continue;
 				}
 
+				redisPipeline.xadd(
+					`homeTimeline:${following.followerId}`,
+					'MAXLEN', '~', meta.perUserHomeTimelineCacheMax.toString(),
+					'*',
+					'note', note.id);
+
+				if (note.fileIds.length > 0) {
 					redisPipeline.xadd(
-						`homeTimeline:${userId}`,
-						'MAXLEN', '~', meta.perUserHomeTimelineCacheMax.toString(),
+						`homeTimelineWithFiles:${following.followerId}`,
+						'MAXLEN', '~', (meta.perUserHomeTimelineCacheMax / 2).toString(),
 						'*',
 						'note', note.id);
-
-					if (note.fileIds.length > 0) {
-						redisPipeline.xadd(
-							`homeTimelineWithFiles:${userId}`,
-							'MAXLEN', '~', (meta.perUserHomeTimelineCacheMax / 2).toString(),
-							'*',
-							'note', note.id);
-					}
-				}
-			}
-			else {
-				// TODO: あまりにも数が多いと redisPipeline.exec に失敗する(理由は不明)ため、3万件程度を目安に分割して実行するようにする
-				for (const following of followings) {
-					// 自分自身以外への返信
-					if (note.replyId && note.replyUserId !== note.userId) {
-						if (!following.withReplies) continue;
-					}
-
-					redisPipeline.xadd(
-						`homeTimeline:${following.followerId}`,
-						'MAXLEN', '~', meta.perUserHomeTimelineCacheMax.toString(),
-						'*',
-						'note', note.id);
-
-					if (note.fileIds.length > 0) {
-						redisPipeline.xadd(
-							`homeTimelineWithFiles:${following.followerId}`,
-							'MAXLEN', '~', (meta.perUserHomeTimelineCacheMax / 2).toString(),
-							'*',
-							'note', note.id);
-					}
 				}
 			}
 
