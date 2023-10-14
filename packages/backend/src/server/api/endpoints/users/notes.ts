@@ -14,6 +14,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { QueryService } from '@/core/QueryService.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -70,11 +71,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 		private cacheService: CacheService,
 		private idService: IdService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const isRangeSpecified = (ps.sinceId != null || ps.sinceDate != null) && (ps.untilId != null || ps.untilDate != null);
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
+			const isRangeSpecified = untilId != null && sinceId != null;
+			const isSelf = me && (me.id === ps.userId);
 
-			if (isRangeSpecified || !(ps.sinceId != null || ps.sinceDate != null)) {
+			if (isRangeSpecified || sinceId == null) {
 				const [
 					userIdsWhoMeMuting,
 					userIdsWhoMeBlocked
@@ -85,31 +90,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (userIdsWhoMeBlocked.has(ps.userId)) return [];
 
-				const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-
 				const [noteIdsRes, repliesNoteIdsRes, channelNoteIdsRes] = await Promise.all([
-					this.redisForTimelines.xrevrange(
-						ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`,
-						ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-						ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-						'COUNT', limit,
-					).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId)),
-					ps.withReplies
-						? this.redisForTimelines.xrevrange(
-							`userTimelineWithReplies:${ps.userId}`,
-							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-							'COUNT', limit,
-						).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId))
-						: Promise.resolve([]),
-					ps.withChannelNotes
-						? this.redisForTimelines.xrevrange(
-							`userTimelineWithChannel:${ps.userId}`,
-							ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-							ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-							'COUNT', limit,
-						).then(res => res.map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId))
-						: Promise.resolve([]),
+					this.redisTimelineService.get(ps.withFiles ? `userTimelineWithFiles:${ps.userId}` : `userTimeline:${ps.userId}`, untilId, sinceId),
+					ps.withReplies ? this.redisTimelineService.get(`userTimelineWithReplies:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
+					ps.withChannelNotes ? this.redisTimelineService.get(`userTimelineWithChannel:${ps.userId}`, untilId, sinceId) : Promise.resolve([]),
 				]);
 
 				let noteIds = Array.from(new Set([
@@ -121,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				noteIds = noteIds.slice(0, ps.limit);
 
 				if (noteIds.length > 0) {
-					const isFollowing = me ? me.id === ps.userId || Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId) : false;
+					const isFollowing = me && Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(me.id), ps.userId);
 
 					const query = this.notesRepository.createQueryBuilder('note')
 						.where('note.id IN (:...noteIds)', { noteIds: noteIds })
@@ -143,11 +127,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							}
 						}
 
+						if (note.channel?.isSensitive && !isSelf) return false;
 						if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
-						if (note.visibility === 'followers' && !isFollowing) return false;
+						if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
 
 						return true;
 					});
+
+					// TODO: フィルタで件数が減った場合の埋め合わせ処理
 
 					timeline.sort((a, b) => a.id > b.id ? -1 : 1);
 
@@ -157,9 +144,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			// fallback to database
-
-			//#region Construct query
+			//#region fallback to database
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('note.userId = :userId', { userId: ps.userId })
 				.innerJoinAndSelect('note.user', 'user')
@@ -169,7 +154,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			if (!ps.withChannelNotes) {
+			if (ps.withChannelNotes) {
+				if (!isSelf) query.andWhere('channel.isSensitive = false');
+			} else {
 				query.andWhere('note.channelId IS NULL');
 			}
 
@@ -192,11 +179,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
 				}));
 			}
-			//#endregion
 
 			const timeline = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(timeline, me);
+			//#endregion
 		});
 	}
 }

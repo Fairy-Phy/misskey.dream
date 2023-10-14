@@ -15,6 +15,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -54,6 +55,7 @@ export const paramDef = {
 		includeLocalRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
+		withReplies: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -72,8 +74,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,
 		private cacheService: CacheService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.genId(new Date(ps.untilDate!)) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.genId(new Date(ps.sinceDate!)) : null);
+
 			const policies = await this.roleService.getUserPolicies(me.id);
 			if (!policies.ltlAvailable) {
 				throw new ApiError(meta.errors.stlDisabled);
@@ -89,29 +95,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.cacheService.userBlockedCache.fetch(me.id),
 			]);
 
-			let timeline: MiNote[] = [];
+			let noteIds: string[];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			if (ps.withFiles) {
+				const [htlNoteIds, ltlNoteIds] = await this.redisTimelineService.getMulti([
+					`homeTimelineWithFiles:${me.id}`,
+					'localTimelineWithFiles',
+				], untilId, sinceId);
+				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
+			} else if (ps.withReplies) {
+				const [htlNoteIds, ltlNoteIds, ltlReplyNoteIds] = await this.redisTimelineService.getMulti([
+					`homeTimeline:${me.id}`,
+					'localTimeline',
+					'localTimelineWithReplies',
+				], untilId, sinceId);
+				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds, ...ltlReplyNoteIds]));
+			} else {
+				const [htlNoteIds, ltlNoteIds] = await this.redisTimelineService.getMulti([
+					`homeTimeline:${me.id}`,
+					'localTimeline',
+				], untilId, sinceId);
+				noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
+			}
 
-			const redisPipeline = this.redisForTimelines.pipeline();
-			redisPipeline.xrevrange(
-				ps.withFiles ? `homeTimelineWithFiles:${me.id}` : `homeTimeline:${me.id}`,
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'COUNT', limit,
-			);
-			redisPipeline.xrevrange(
-				ps.withFiles ? 'localTimelineWithFiles' : 'localTimeline',
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'COUNT', limit,
-			);
-			const [htlNoteIds, ltlNoteIds] = await redisPipeline.exec().then(res => res ? [
-				(res[0][1] as string[][]).map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
-				(res[1][1] as string[][]).map(x => x[1][1]).filter(x => x !== ps.untilId && x !== ps.sinceId),
-			] : []);
-
-			let noteIds = Array.from(new Set([...htlNoteIds, ...ltlNoteIds]));
 			noteIds.sort((a, b) => a > b ? -1 : 1);
 			noteIds = noteIds.slice(0, ps.limit);
 
@@ -128,7 +134,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('note.channel', 'channel');
 
-			timeline = await query.getMany();
+			let timeline = await query.getMany();
 
 			timeline = timeline.filter(note => {
 				if (note.userId === me.id) {
