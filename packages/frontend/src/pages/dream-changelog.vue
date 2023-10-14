@@ -11,6 +11,30 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.7.4 】]\n\
+\n\
+・ Fix: 自身のプロフィールのノートを取得する時に公開範囲がフォロワーのノートが表示されない\n";
+
+text += "\n\n";
+
+text += "$[tada.speed=0s 【 Dream 1.7.4 】]\n\
+\n\
+・ Fix: ノートを遡ろうとした際にフリーズする問題\n";
+
+text += "\n\n";
+
+text += "$[tada.speed=0s 【 Dream 1.7.3 】]\n\
+\n\
+・ Restore: 2023.10.0-beta1で実装された編集機能は本家では削除されましたがこちらでは残すこととなりました\n\
+\n\
+・ Add: プロフィール上の過去ノートを遡れるように\n\
+\n\
+・ Fix: 実質的なリレーショナル投稿を変更することでリレーショナルとして投稿されるのを防ぐように\n\
+\n\
+・ Fix: 小さいローディング時に別のローディングを入れるように\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.7.2 】]\n\
 \n\
 ・ Update: misskey 2023.9.3へ更新\n\

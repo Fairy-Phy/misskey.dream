@@ -178,6 +178,10 @@ watch($$(showPreview), () => defaultStore.set('showPreview', showPreview));
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
 let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
+if (visibility === 'relational') {
+	visibility = 'public';
+}
+
 let visibleUsers = $ref([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(pushVisibleUser);
@@ -295,9 +299,9 @@ if (props.reply && props.reply.text != null) {
 	}
 }
 
-if (isRelationalAvailable && !defaultStore.state.changedRelationalVisible) {
-	visibility = 'relational';
-}
+//if (isRelationalAvailable && !defaultStore.state.changedRelationalVisible) {
+	//visibility = 'relational';
+//}
 
 if (props.channel) {
 	visibility = 'public';

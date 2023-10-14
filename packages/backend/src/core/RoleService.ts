@@ -20,6 +20,7 @@ import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { RedisTimelineService } from '@/core/RedisTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
@@ -108,6 +109,7 @@ export class RoleService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
+		private redisTimelineService: RedisTimelineService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -495,12 +497,7 @@ export class RoleService implements OnApplicationShutdown {
 		const redisPipeline = this.redisClient.pipeline();
 
 		for (const role of roles) {
-			redisPipeline.xadd(
-				`roleTimeline:${role.id}`,
-				'MAXLEN', '~', '1000',
-				'*',
-				'note', note.id);
-
+			this.redisTimelineService.push(`roleTimeline:${role.id}`, note.id, 1000, redisPipeline);
 			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
 		}
 

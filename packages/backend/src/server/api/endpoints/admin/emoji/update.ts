@@ -91,9 +91,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -113,26 +110,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			const oldEmoji = await this.emojisRepository.findOneBy({
-				id: ps.id,
-			});
-
-			if (oldEmoji == null) throw new ApiError(meta.errors.noSuchEmoji);
+			const oldEmoji = await this.customEmojiService.getEmojiById(ps.id);
+			if (oldEmoji != null) {
+				if (ps.name !== oldEmoji.name) {
+					const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
+					if (isDuplicate) throw new ApiError(meta.errors.sameNameEmojiExists);
+				}
+			} else {
+				throw new ApiError(meta.errors.noSuchEmoji);
+			}
 
 			const isEmojiModerator = await this.roleService.isEmojiModerator(me);
-
-			if (oldEmoji.name !== ps.name) {
-				const existEmoji = await this.emojisRepository.exist({
-					where: {
-						name: ps.name,
-						host: IsNull(),
-					},
-				});
-
-				if (existEmoji) {
-					throw new ApiError(meta.errors.sameNameEmojiExists);
-				}
-			}
 
 			if (ps.userId && oldEmoji.userId !== ps.userId) {
 				if (!isEmojiModerator)

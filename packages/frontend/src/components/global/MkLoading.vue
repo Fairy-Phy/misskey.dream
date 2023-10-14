@@ -5,7 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.inline]: inline, [$style.colored]: colored, [$style.mini]: mini, [$style.em]: em }]">
-	<div :class="$style.container">
+	<div v-if="em" :class="$style.container">
+		<svg xmlns="http://www.w3.org/2000/svg" :class="[$style.starSingle, $style.bg]" viewBox="0 0 63.29 66.05">
+			<polygon points="38.99 2.5 41.8 23.63 60.79 33.3 41.56 42.49 38.24 63.55 23.55 48.11 2.5 51.45 12.65 32.71 2.96 13.72 23.93 17.58 38.99 2.5" />
+		</svg>
+		<svg xmlns="http://www.w3.org/2000/svg" :class="[$style.starSingle, $style.fg]" viewBox="0 0 63.29 66.05">
+			<polygon points="38.99 2.5 41.8 23.63 60.79 33.3 41.56 42.49 38.24 63.55 23.55 48.11 2.5 51.45 12.65 32.71 2.96 13.72 23.93 17.58 38.99 2.5" />
+		</svg>
+	</div>
+	<div v-else :class="$style.container">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.04 203.66" :class="[$style.line, { [$style.static]: static }]">
 			<line :class="[$style.lineC]" x1="38.71" y1="54.13" x2="143.49" y2="150.61" />
 			<line :class="[$style.lineT]" x1="30.64" y1="1.5" x2="136" y2="98.52" />
@@ -136,7 +144,7 @@ const props = withDefaults(defineProps<{
 		display: inline-block;
 		vertical-align: middle;
 		padding: 0;
-		--size: 5em;
+		--size: 1em;
 	}
 }
 
@@ -224,5 +232,38 @@ const props = withDefaults(defineProps<{
 		var(--animTime) ease-in-out var(--delayTime, 0s) infinite starFading,
 		var(--animTime) linear var(--delayTime, 0s) infinite starRolling,
 		var(--animTime) ease-in-out var(--delayTime, 0s) infinite starMoving;
+}
+
+@keyframes starStroke {
+	0% {
+		stroke-dashoffset: 107;
+	}
+	100% {
+		stroke-dashoffset: -107;
+	}
+}
+
+.starSingle {
+	fill:none;
+	stroke-linecap:round;
+	position: absolute;
+	transform-origin: center center;
+	stroke-linejoin: round;
+	stroke-width: 8px;
+	stroke: currentColor;
+	width: 100%;
+	height: 100%;
+	top: -1px;
+	left: -1px;
+
+	&.bg {
+		opacity: .5;
+	}
+
+	&.fg {
+		stroke-dasharray: 107;
+		stroke-dashoffset: 0;
+		animation: 2s linear 0s infinite backwards starStroke;
+	}
 }
 </style>

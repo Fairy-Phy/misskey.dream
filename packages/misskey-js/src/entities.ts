@@ -281,6 +281,9 @@ export type Notification = {
 	user: User;
 	userId: User['id'];
 } | {
+	type: 'achievementEarned';
+	achievement: string;
+} | {
 	type: 'app';
 	header?: string | null;
 	body: string;
@@ -328,6 +331,8 @@ export type LiteInstanceMetadata = {
 	tosUrl: string | null;
 	repositoryUrl: string;
 	feedbackUrl: string;
+	impressumUrl: string | null;
+	privacyPolicyUrl: string | null;
 	disableRegistration: boolean;
 	disableLocalTimeline: boolean;
 	disableGlobalTimeline: boolean;
@@ -366,6 +371,7 @@ export type LiteInstanceMetadata = {
 		url: string;
 		imageUrl: string;
 	}[];
+	notesPerOneAd: number;
 	translatorAvailable: boolean;
 	serverRules: string[];
 };

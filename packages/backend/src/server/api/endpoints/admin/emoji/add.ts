@@ -24,15 +24,15 @@ export const meta = {
 			code: "NO_SUCH_FILE",
 			id: "fc46b5a4-6b92-4c33-ac66-b806659bb5cf",
 		},
-		sameNameEmojiExists: {
-			message: "Emoji that have same name already exists.",
-			code: "SAME_NAME_EMOJI_EXISTS",
-			id: "c85c8b53-084e-6f13-7688-c7bef8dee383",
-		},
 		requireLicense: {
 			message: 'You must enter the license into add emoji.',
 			code: 'REQUIRE_LICENSE',
 			id: 'bf030fe3-0105-41a6-931b-577dda09df34',
+		},
+		duplicateName: {
+			message: 'Duplicate name.',
+			code: 'DUPLICATE_NAME',
+			id: 'f7a3462c-4e6e-4069-8421-b9bd4f4c3975',
 		},
 	},
 } as const;
@@ -68,9 +68,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
-
 		private customEmojiService: CustomEmojiService,
 
 		private emojiEntityService: EmojiEntityService,
@@ -86,16 +83,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 
-			const existEmoji = await this.emojisRepository.exist({
-				where: {
-					name: ps.name,
-					host: IsNull(),
-				},
-			});
-
-			if (existEmoji) {
-				throw new ApiError(meta.errors.sameNameEmojiExists);
-			}
+			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
+			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
 
 			const emoji = await this.customEmojiService.add({
 				driveFile,
