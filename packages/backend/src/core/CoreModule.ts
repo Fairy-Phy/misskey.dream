@@ -131,6 +131,7 @@ import { QueueService } from './QueueService.js';
 import { LoggerService } from './LoggerService.js';
 import { EmojiModerationLogService } from './EmojiModerationLogService.js';
 import type { Provider } from '@nestjs/common';
+import { AkaUsernameService } from './akaUsernameService.js';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
 const $LoggerService: Provider = { provide: 'LoggerService', useExisting: LoggerService };
@@ -260,6 +261,7 @@ const $ApNoteService: Provider = { provide: 'ApNoteService', useExisting: ApNote
 const $ApPersonService: Provider = { provide: 'ApPersonService', useExisting: ApPersonService };
 const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting: ApQuestionService };
 const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogService', useExisting: EmojiModerationLogService };
+const $akaUsernameService: Provider = { provide: 'AkaUsernameService', useExisting: AkaUsernameService };
 //#endregion
 
 @Module({
@@ -392,6 +394,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		ApQuestionService,
 		QueueService,
 		EmojiModerationLogService,
+		AkaUsernameService,
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
@@ -518,6 +521,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		$ApPersonService,
 		$ApQuestionService,
 		$EmojiModerationLogService,
+		$akaUsernameService,
 		//#endregion
 	],
 	exports: [
@@ -646,6 +650,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		ApQuestionService,
 		QueueService,
 		EmojiModerationLogService,
+		AkaUsernameService,
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
@@ -771,6 +776,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		$ApPersonService,
 		$ApQuestionService,
 		$EmojiModerationLogService,
+		$akaUsernameService,
 		//#endregion
 	],
 })

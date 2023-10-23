@@ -14,6 +14,7 @@ import * as Acct from '@/misc/acct.js';
 import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/_.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/User.js';
+import { akaUsernameSchema } from '@/models/AkaUsername.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
 import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
@@ -34,6 +35,7 @@ import type { Config } from '@/config.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
+import { AkaUsernameService } from '@/core/akaUsernameService.js';
 
 export const meta = {
 	tags: ['account'],
@@ -113,6 +115,11 @@ export const meta = {
 			code: 'RESTRICTED_BY_ROLE',
 			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
 		},
+		alreadyUsedAkaUsername: {
+			message: 'This id has already been used.',
+			code: 'IDKANA_ALREADY_USED',
+			id: 'f75642ff-6a1b-4cd3-91c7-13465cdb6008',
+		},
 	},
 
 	res: {
@@ -126,6 +133,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { ...nameSchema, nullable: true },
+		akaUsername: { ...akaUsernameSchema, nullable: true },
 		description: { ...descriptionSchema, nullable: true },
 		location: { ...locationSchema, nullable: true },
 		birthday: { ...birthdaySchema, nullable: true },
@@ -207,6 +215,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private roleService: RoleService,
 		private cacheService: CacheService,
 		private httpRequestService: HttpRequestService,
+		private akaUsernameService: AkaUsernameService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id }) as MiLocalUser;
@@ -381,6 +390,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				...profileUpdates,
 				verifiedLinks: [],
 			});
+
+			if (ps.akaUsername !== undefined) {
+				if (ps.akaUsername === null || ps.akaUsername.length === 0) {
+					await this.akaUsernameService.deleteAkaUsername(user);
+				}
+				else if (await this.akaUsernameService.isPassUsername(ps.akaUsername)) {
+					await this.akaUsernameService.upsertUsername(user, ps.akaUsername);
+				}
+				else {
+					throw new ApiError(meta.errors.alreadyUsedAkaUsername);
+				}
+			}
 
 			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {
 				detail: true,

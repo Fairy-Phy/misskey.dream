@@ -17,6 +17,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
+	<MkInput v-model="profile.akaUsername" type="text" :spellcheck="false" @change="onChangeAkaUsername" manualSave>
+		<template #label>{{ i18n.ts._profile.akaUsername ?? '<DEV:akaUsername IDかな>' }} <div v-tooltip:dialog="i18n.ts._profile.akaUsernameInfo ?? '<DEV:akaUsernameInfo 「IDかな」とはユーザーIDは全く別に持てる変更可能なIDとなります。このサーバー上で一意のIDであり通常のID同様に使用することが可能です。使用可能な文字はひらがな(あ～ん)、カタカナ(ア～ン)、半角数字(0～9)で2文字以上30文字以内である必要があります。>'" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
+		<template #prefix>#</template>
+		<template #caption>
+			<span v-if="akaUsernameState === 'wait'" style="color:#999"><MkLoading :em="true"/> {{ i18n.ts.checking }}</span>
+			<span v-else-if="akaUsernameState === 'ok'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.available }}</span>
+			<span v-else-if="akaUsernameState === 'unavailable'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.unavailable }}</span>
+			<span v-else-if="akaUsernameState === 'error'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.error }}</span>
+			<span v-else-if="akaUsernameState === 'invalid-format'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.akaUsernameInvalidFormat ?? '<DEV:akaUsernameInvalidFormat ひらがな(あ～ん)、カタカナ(ア～ン)、半角数字(0～9)である必要があります>' }}</span>
+			<span v-else-if="akaUsernameState === 'min-range'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooShort }}</span>
+			<span v-else-if="akaUsernameState === 'max-range'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
+		</template>
+	</MkInput>
+
 	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
@@ -129,6 +143,7 @@ const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAccep
 
 const profile = reactive({
 	name: $i.name,
+	akaUsername: $i.akaUsername,
 	description: $i.description,
 	location: $i.location,
 	birthday: $i.birthday,
@@ -173,6 +188,8 @@ function save() {
 		// 空文字列をnullにしたいので??は使うな
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		name: profile.name || null,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		akaUsername: profile.akaUsername || null,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		description: profile.description || null,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -241,6 +258,45 @@ function changeBanner(ev) {
 		});
 		$i.bannerId = i.bannerId;
 		$i.bannerUrl = i.bannerUrl;
+	});
+}
+
+let akaUsernameState: null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range' = $ref(null);
+let akaUsernameAbortController: null | AbortController = $ref(null);
+function onChangeAkaUsername(e): void {
+	const username = e.target.value;
+	if (username === '') {
+		akaUsernameState = null;
+		return;
+	}
+
+	{
+		const err =
+			username.length < 2 ? 'min-range' :
+			username.length > 30 ? 'max-range' :
+			!/^[\d\p{sc=Hiragana}\p{sc=Katakana}]{2,30}$/u.test(username) ? 'invalid-format' :
+			null;
+
+		if (err) {
+			akaUsernameState = err;
+			return;
+		}
+	}
+
+	if (akaUsernameAbortController != null) {
+		akaUsernameAbortController.abort();
+	}
+	akaUsernameState = 'wait';
+	akaUsernameAbortController = new AbortController();
+
+	os.api('username/available-aka', {
+		username: username,
+	}, undefined, akaUsernameAbortController.signal).then(result => {
+		akaUsernameState = result.available ? 'ok' : 'unavailable';
+	}).catch((err) => {
+		if (err.name !== 'AbortError') {
+			akaUsernameState = 'error';
+		}
 	});
 }
 
