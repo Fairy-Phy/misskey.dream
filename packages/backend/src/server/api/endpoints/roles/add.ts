@@ -67,8 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const date = new Date();
 			const created = await this.rolesRepository.insert({
-				id: this.idService.genId(),
-				createdAt: date,
+				id: this.idService.gen(),
 				updatedAt: date,
 				lastUsedAt: date,
 				name: ps.name,
