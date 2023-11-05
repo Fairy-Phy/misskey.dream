@@ -19,11 +19,6 @@ export class MiNote {
 	public id: string;
 
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the Note.',
-	})
-	public createdAt: Date;
-
-	@Column('timestamp with time zone', {
 		default: null,
 	})
 	public updatedAt: Date | null;
@@ -174,6 +169,11 @@ export class MiNote {
 		default: '[]',
 	})
 	public mentionedRemoteUsers: string;
+
+	@Column('varchar', {
+		length: 1024, array: true, default: '{}',
+	})
+	public reactionAndUserPairCache: string[];
 
 	@Column('varchar', {
 		length: 128, array: true, default: '{}',

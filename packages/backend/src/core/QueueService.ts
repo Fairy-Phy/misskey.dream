@@ -203,10 +203,11 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportFollowingJob(user: ThinUser, fileId: MiDriveFile['id']) {
+	public createImportFollowingJob(user: ThinUser, fileId: MiDriveFile['id'], withReplies?: boolean) {
 		return this.dbQueue.add('importFollowing', {
 			user: { id: user.id },
 			fileId: fileId,
+			withReplies,
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -214,8 +215,8 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportFollowingToDbJob(user: ThinUser, targets: string[]) {
-		const jobs = targets.map(rel => this.generateToDbJobData('importFollowingToDb', { user, target: rel }));
+	public createImportFollowingToDbJob(user: ThinUser, targets: string[], withReplies?: boolean) {
+		const jobs = targets.map(rel => this.generateToDbJobData('importFollowingToDb', { user, target: rel, withReplies }));
 		return this.dbQueue.addBulk(jobs);
 	}
 
@@ -308,7 +309,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createFollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string, silent?: boolean }[]) {
+	public createFollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string, silent?: boolean, withReplies?: boolean }[]) {
 		const jobs = followings.map(rel => this.generateRelationshipJobData('follow', rel));
 		return this.relationshipQueue.addBulk(jobs);
 	}
@@ -350,6 +351,7 @@ export class QueueService {
 				to: { id: data.to.id },
 				silent: data.silent,
 				requestId: data.requestId,
+				withReplies: data.withReplies,
 			},
 			opts: {
 				removeOnComplete: true,

@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { UserIpsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -28,6 +29,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
+
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			return [];
@@ -35,7 +38,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			/*
 			const ips = await this.userIpsRepository.find({
 				where: { userId: ps.userId },
-				order: { createdAt: 'DESC' },
+				order: { id: 'DESC' },
 				take: 30,
 			});
 

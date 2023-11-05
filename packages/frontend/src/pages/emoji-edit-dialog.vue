@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ i18n.ts.selectFile }}</MkButton>
-				<MkInput v-model="name" pattern="[a-z0-9_]">
+				<MkInput v-model="name" pattern="[a-z0-9_]" autocapitalize="off">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
 				<MkInput v-model="category" :datalist="customEmojiCategories">
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</Sortable>
 					</div>
 				</MkFolder>
-				<MkInput v-model="aliasesText">
+				<MkInput v-model="aliasesText" autocapitalize="off">
 					<template #label>{{ i18n.ts.tags }}(Legacy)</template>
 					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 				</MkInput>
