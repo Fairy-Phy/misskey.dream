@@ -20,7 +20,7 @@ export class EmojiModerationLogService {
 	@bindThis
 	public async insertEmojiModerationLog(targetUser: { id: MiUser['id'] }, targetEmoji: { id: MiEmoji['id'] }, type: LogTypeValue, info?: LogInfoValue[]) {
 		await this.emojimoderationLogsRepository.insert({
-			id: this.idService.genId(),
+			id: this.idService.gen(),
 			createdAt: new Date(),
 			userId: targetUser.id,
 			emojiId: targetEmoji.id,

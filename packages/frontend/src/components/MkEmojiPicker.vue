@@ -4,19 +4,51 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div class="omfetrab" :class="['s' + size, 'w' + ((dreamEmojiPickerWidth > dreamInnerWidth) ? (Math.floor((dreamInnerWidth - 16) / dreamEmojiSize)) : width), 'h' + ((height * size + 16 > dreamInnerHeight) ? (Math.floor((dreamInnerHeight - 16) / dreamEmojiSize)) : height), { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-		<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
-		<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
-		<div ref="emojisEl" class="emojis" tabindex="-1">
-			<section class="result">
-				<div v-if="searchResultCustom.length > 0" class="body">
-					<button v-for="emoji in searchResultCustom" :key="emoji.name" class="_button item" :title="emoji.name" tabindex="0" @click="chosen(emoji, $event)">
-						<MkCustomEmoji class="emoji" :name="emoji.name" />
-					</button>
-				</div>
-				<div v-if="searchResultUnicode.length > 0" class="body">
-					<button v-for="emoji in searchResultUnicode" :key="emoji.name" class="_button item" :title="emoji.name" tabindex="0" @click="chosen(emoji, $event)">
-						<MkEmoji class="emoji" :emoji="emoji.char" />
+<div class="omfetrab" :class="['s' + size, 'w' + ((dreamEmojiPickerWidth > dreamInnerWidth) ? (Math.floor((dreamInnerWidth - 16) / dreamEmojiSize)) : width), 'h' + ((height * size + 16 > dreamInnerHeight) ? (Math.floor((dreamInnerHeight - 16) / dreamEmojiSize)) : height), { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
+	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" autocapitalize="off" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
+	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
+	<div ref="emojisEl" class="emojis" tabindex="-1">
+		<section class="result">
+			<div v-if="searchResultCustom.length > 0" class="body">
+				<button
+					v-for="emoji in searchResultCustom"
+					:key="emoji.name"
+					class="_button item"
+					:title="emoji.name"
+					tabindex="0"
+					@click="chosen(emoji, $event)"
+				>
+					<MkCustomEmoji class="emoji" :name="emoji.name"/>
+				</button>
+			</div>
+			<div v-if="searchResultUnicode.length > 0" class="body">
+				<button
+					v-for="emoji in searchResultUnicode"
+					:key="emoji.name"
+					class="_button item"
+					:title="emoji.name"
+					tabindex="0"
+					@click="chosen(emoji, $event)"
+				>
+					<MkEmoji class="emoji" :emoji="emoji.char"/>
+				</button>
+			</div>
+		</section>
+
+		<div v-if="tab === 'index'" class="group index">
+			<section v-if="showPinned">
+				<div class="body">
+					<button
+						v-for="emoji in pinned"
+						:key="emoji"
+						:data-emoji="emoji"
+						class="_button item"
+						tabindex="0"
+						@pointerenter="computeButtonTitle"
+						@click="chosen(emoji, $event)"
+					>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
 					</button>
 				</div>
 			</section>
@@ -59,6 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_button tab" :class="{ active: tab === 'tags' }" @click="tab = 'tags'"><i class="ti ti-hash ti-fw"></i></button>
 		</div>
 	</div>
+</div>
 </template>
 
 <script lang="ts" setup>

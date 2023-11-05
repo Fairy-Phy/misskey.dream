@@ -67,7 +67,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const serverMeta = await this.metaService.fetch();
-			if (me?.createdAt && me?.createdAt > serverMeta.relationalDate) {
+			const createdAt = me ? this.idService.parse(me.id) : { date: new Date() };
+			if (createdAt.date > serverMeta.relationalDate) {
 				throw new ApiError(meta.errors.rtlDisabled);
 			}
 
@@ -75,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
+				.andWhere('note.id > :minId', { minId: this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * 10)) }) // 10日前まで
 				.andWhere('(note.visibility = \'public\' OR note.visibility = \'relational\') AND (note.userHost IS NULL)')
 				.andWhere('user.createdAt < :reqDate', { reqDate: serverMeta.relationalDate.toISOString() })
 				.innerJoinAndSelect('note.user', 'user')

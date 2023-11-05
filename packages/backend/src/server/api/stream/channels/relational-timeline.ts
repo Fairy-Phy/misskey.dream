@@ -7,6 +7,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
+import { IdService } from '@/core/IdService.js';
 
 class RelationalTimelineChannel extends Channel {
 	public readonly chName = 'relationalTimeline';
@@ -18,6 +19,8 @@ class RelationalTimelineChannel extends Channel {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
+
+		private idService: IdService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -41,7 +44,8 @@ class RelationalTimelineChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		const serverMeta = await this.metaService.fetch();
 		// そもそも登録日を満たしてない人は見れないようにする
-		if (this.user?.createdAt && this.user.createdAt > serverMeta.relationalDate) return;
+		const createAt = this.user ? this.idService.parse(this.user.id) : { date: new Date() };
+		if (createAt.date > serverMeta.relationalDate) return;
 
 		if (note.user.host !== null) return;
 		if (note.visibility !== 'public' && !note.isRelational) return;
@@ -103,6 +107,7 @@ export class RelationalTimelineChannelService {
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
+		private idService: IdService,
 	) {
 	}
 
@@ -112,6 +117,7 @@ export class RelationalTimelineChannelService {
 			this.metaService,
 			this.roleService,
 			this.noteEntityService,
+			this.idService,
 			id,
 			connection,
 		);

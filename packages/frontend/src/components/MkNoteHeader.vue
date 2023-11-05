@@ -5,7 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root" :style="noteHeaderViewProp">
-	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)" :style="noteHeaderContentProp">
+	<div v-if="mock" :class="$style.name">
+		<MkUserName :user="note.user"/>
+	</div>
+	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)" :style="noteHeaderContentProp">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
@@ -17,8 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.info">
 		<span v-if="note.updatedAt" style="margin-right: 0.5em;" :title="i18n.ts.edited"><i class="ti ti-pencil"></i></span>
-		<MkA :to="notePage(note)">
-			<MkTime :time="note.createdAt"/>
+		<div v-if="mock">
+			<MkTime :time="note.createdAt" colored/>
+		</div>
+		<MkA v-else :to="notePage(note)">
+			<MkTime :time="note.createdAt" colored/>
 		</MkA>
 		<span v-if="(note.visibility !== 'public' && !note.isRelational) || (note.isRelational && isRelationalAvailable)" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
@@ -33,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -46,6 +52,8 @@ import { isRelationalAvailable } from '@/scripts/relational.js';
 defineProps<{
 	note: Misskey.entities.Note;
 }>();
+
+const mock = inject<boolean>('mock', false);
 
 const headerWrapStyles = {
 	flexWrap: 'wrap',
@@ -90,6 +98,7 @@ const noteHeaderContentProp = $computed(() => {
 	}
 	return {};
 });
+
 </script>
 
 <style lang="scss" module>
