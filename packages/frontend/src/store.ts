@@ -453,6 +453,7 @@ export type Plugin = {
 	author?: string;
 	description?: string;
 	permissions?: string[];
+	fromAccount: boolean;
 };
 
 interface Watcher {
