@@ -1184,6 +1184,15 @@ export interface Locale {
     "doReaction": string;
     "maxinumLayerError": string;
     "layer": string;
+    "pluginSyncSettings": string;
+    "pluginSyncSettingsInfo": string;
+    "duplicateSyncedPlugin": string;
+    "overrideSourceCodeOnly": string;
+    "syncSetting": string;
+    "syncing": string;
+    "movePluginToAccount": string;
+    "movePluginToAccountConfirm": string;
+    "overridePluginConfirm": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
