@@ -1,11 +1,11 @@
-name: ✨ Feature Request
-description: Suggest an idea for this project
+name: ✨ 新規機能とかこうしたいな―っていうもの
+description: なんかこうしたいな―っていうのを伝える
 labels: ["✨Feature"]
 
 body:
   - type: textarea
     attributes:
-      label: Summary
-      description: Tell us what the suggestion is
+      label: 概要
+      description: こうしたいな―っていう詳細を聞かせてね
     validations:
       required: true
