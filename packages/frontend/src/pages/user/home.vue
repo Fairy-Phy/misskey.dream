@@ -47,22 +47,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
-					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
-							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
-								<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-								{{ role.name }}
-							</MkA>
-						</span>
-					</div>
-					<div v-if="user.communityRoles.length > 0" class="roles">
-						<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
-							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
-								<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-								{{ role.name }}
-							</MkA>
-						</span>
-					</div>
+					<MkFoldableSection class="role-folder" v-if="user.roles.length > 0" :expanded="user.roles.length < 5">
+						<template #header>{{ i18n.ts.roles }}</template>
+						<div class="roles">
+							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
+									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+									{{ role.name }}
+								</MkA>
+							</span>
+						</div>
+					</MkFoldableSection>
+					<MkFoldableSection class="role-folder" v-if="user.communityRoles.length > 0" :expanded="user.communityRoles.length < 5">
+						<template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
+						<div class="roles">
+							<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
+									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+									{{ role.name }}
+								</MkA>
+							</span>
+						</div>
+					</MkFoldableSection>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
@@ -168,6 +174,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { getScrollPosition } from '@/scripts/scroll.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
@@ -466,18 +473,22 @@ onUnmounted(() => {
 					box-shadow: 1px 1px 3px rgba(#000, 0.2);
 				}
 
-				> .roles {
-					padding: 24px 24px 0 154px;
-					font-size: 0.95em;
-					display: flex;
-					flex-wrap: wrap;
-					gap: 8px;
+				> .role-folder {
+					padding: 12px 12px 0 154px;
 
-					> .role {
-						border: solid 1px var(--color, var(--divider));
-						border-radius: 999px;
-						margin-right: 4px;
-						padding: 3px 8px;
+					.roles {
+						padding: 10px 0px 0 8px;
+						font-size: 0.95em;
+						display: flex;
+						flex-wrap: wrap;
+						gap: 8px;
+
+						> .role {
+							border: solid 1px var(--color, var(--divider));
+							border-radius: 999px;
+							margin-right: 4px;
+							padding: 3px 8px;
+						}
 					}
 				}
 
@@ -648,9 +659,13 @@ onUnmounted(() => {
 					margin: auto;
 				}
 
-				> .roles {
-					padding: 16px 16px 0 16px;
-					justify-content: center;
+				> .role-folder {
+					padding: 8px 16px 0 16px;
+
+					.roles {
+						padding: 8px 8px 0 8px;
+						justify-content: center;
+					}
 				}
 
 				> .moderationNote {
