@@ -1182,6 +1182,8 @@ export interface Locale {
     "signupPendingError": string;
     "cwNotationRequired": string;
     "doReaction": string;
+    "maxinumLayerError": string;
+    "layer": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
