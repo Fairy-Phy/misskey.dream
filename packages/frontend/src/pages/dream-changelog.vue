@@ -11,6 +11,20 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.9.0 】]\n\
+\n\
+・ Add: アバターデコレーションを移動、拡大縮小、不透明度を選択できるように\n\
+\n\
+・ Undo: アバターデコレーション画像指定を以前のurl指定でもできるようにしました\n\
+\n\
+・ Fix: Safari使用時のローディングアニメーションが正常に動作していない問題\n\
+\n\
+・ Fix: MFM`$[spin.left ]`を使用しているときにsafariでおかしくなる問題\n\
+\n\
+・ Fix: アバターデコレーションが名前の上に来てしまう問題\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.8.0 】]\n\
 \n\
 ・ Add: プラグイン及びスクリプトデータをデバイス間で同期できるように\n\
