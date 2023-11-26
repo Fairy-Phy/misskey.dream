@@ -180,6 +180,7 @@ onMounted(() => {
 	padding: 8px 26px 16px 26px;
 	margin-top: 16px;
 	text-align: center;
+	text-shadow: 0 0 8px #000, 0 0 8px #000;
 }
 
 .name {

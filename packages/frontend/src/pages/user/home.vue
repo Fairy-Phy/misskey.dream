@@ -411,6 +411,7 @@ onUnmounted(() => {
 						padding: 0 0 8px 154px;
 						box-sizing: border-box;
 						color: #fff;
+						z-index: 10;
 
 						> .name {
 							display: block;
@@ -427,6 +428,7 @@ onUnmounted(() => {
 								margin-right: 16px;
 								line-height: 20px;
 								opacity: 0.8;
+								text-shadow: 0 0 6px #000, 0 0 6px #000;
 
 								&.username {
 									font-weight: bold;
@@ -648,6 +650,9 @@ onUnmounted(() => {
 
 				> .title {
 					display: block;
+					position: relative;
+					z-index: 10;
+					text-shadow: 0 0 8px #000, 0 0 8px #000;
 				}
 
 				> .avatar {

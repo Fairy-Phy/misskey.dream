@@ -24,32 +24,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<img
-		v-if="showDecoration && !decoration && user.avatarDecorations.length > 0"
-		v-for="avatarDecoration in user.avatarDecorations"
-		:key="avatarDecoration.id"
-		:class="[$style.decoration]"
-		:src="avatarDecoration.url"
-		:style="{
-			rotate: getDecorationAngle(avatarDecoration),
-			scale: getDecorationScale(avatarDecoration),
-			transform: getDecorationTransform(avatarDecoration),
-			opacity: getDecorationOpacity(avatarDecoration),
-		}"
-		alt=""
-	>
-	<img
-		v-else-if="showDecoration && decoration"
-		:class="[$style.decoration]"
-		:src="decoration?.url"
-		:style="{
-			rotate: getDecorationAngle(decoration),
-			scale: getDecorationScale(decoration),
-			transform: getDecorationTransform(decoration),
-			opacity: getDecorationOpacity(decoration),
-		}"
-		alt=""
-	>
+	<div :class="$style.decorationFrame">
+		<img
+			v-if="showDecoration && !decoration && user.avatarDecorations.length > 0"
+			v-for="avatarDecoration in user.avatarDecorations"
+			:key="avatarDecoration.id"
+			:class="[$style.decoration]"
+			:src="avatarDecoration.url"
+			:style="{
+				rotate: getDecorationAngle(avatarDecoration),
+				scale: getDecorationScale(avatarDecoration),
+				transform: getDecorationTransform(avatarDecoration),
+				opacity: getDecorationOpacity(avatarDecoration),
+			}"
+			alt=""
+		>
+		<img
+			v-else-if="showDecoration && decoration"
+			:class="[$style.decoration]"
+			:src="decoration?.url"
+			:style="{
+				rotate: getDecorationAngle(decoration),
+				scale: getDecorationScale(decoration),
+				transform: getDecorationTransform(decoration),
+				opacity: getDecorationOpacity(decoration),
+			}"
+			alt=""
+		>
+	</div>
 </component>
 </template>
 
@@ -349,12 +351,21 @@ watch(() => props.user.avatarBlurhash, () => {
 	}
 }
 
-.decoration {
+.decorationFrame {
 	position: absolute;
 	z-index: 1;
 	top: -50%;
 	left: -50%;
 	width: 200%;
+	height: 200%;
+	overflow: clip;
+}
+
+.decoration {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
 	pointer-events: none;
 }
 </style>
