@@ -161,10 +161,13 @@ export default function(props: MfmProps) {
 					}
 					case 'spin': {
 						const direction =
-							token.props.args.left ? 'reverse' :
 							token.props.args.alternate ? 'alternate' :
 							'normal';
 						const anime =
+							token.props.args.left ?
+								token.props.args.x ? 'mfm-spinX-reverse' :
+								token.props.args.y ? 'mfm-spinY-reverse' :
+								'mfm-spin-reverse' :
 							token.props.args.x ? 'mfm-spinX' :
 							token.props.args.y ? 'mfm-spinY' :
 							'mfm-spin';
