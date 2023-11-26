@@ -54,6 +54,28 @@ html {
 	border-radius: 50%;
 	border-color: var(--accent);
 	border-style: solid;
+	z-index: 1;
+}
+
+@keyframes splashSpinner {
+	0% {
+		transform: rotate3d(.9, 1.2, 1.1, 1turn);
+	}
+	50% {
+		transform: rotate3d(.45, .6, .55, 0.5turn);
+	}
+	100% {
+		transform: rotate3d(0, 0, 0, 1turn);
+	}
+}
+
+@keyframes splashFadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
 #splashSpinner > .large-circle {
@@ -77,22 +99,4 @@ html {
 	border-width: 2px;
 	filter: hue-rotate(180deg);
 	animation: splashSpinner 2s linear 0s infinite, splashFadeIn 2s 1s forwards;
-}
-
-@keyframes splashSpinner {
-	0% {
-		transform: rotate3d(.9, 1.2, 1.1, 360deg);
-	}
-	100% {
-		transform: rotate3d(360deg);
-	}
-}
-
-@keyframes splashFadeIn {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
 }

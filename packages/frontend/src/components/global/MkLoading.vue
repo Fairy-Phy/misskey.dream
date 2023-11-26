@@ -53,19 +53,19 @@ const props = withDefaults(defineProps<{
 <style lang="scss" module>
 @keyframes lineStroke {
 	0% {
-		stroke-dashoffset: 144;
+		stroke-dashoffset: 432;
 	}
 	25% {
-		stroke-dashoffset: 144;
+		stroke-dashoffset: 432;
 	}
 	50% {
-		stroke-dashoffset: 0;
+		stroke-dashoffset: 288;
 	}
 	75% {
-		stroke-dashoffset: 0;
+		stroke-dashoffset: 288;
 	}
 	100% {
-		stroke-dashoffset: -144;
+		stroke-dashoffset: 144;
 	}
 }
 
@@ -236,10 +236,10 @@ const props = withDefaults(defineProps<{
 
 @keyframes starStroke {
 	0% {
-		stroke-dashoffset: 107;
+		stroke-dashoffset: 321;
 	}
 	100% {
-		stroke-dashoffset: -107;
+		stroke-dashoffset: 107;
 	}
 }
 
