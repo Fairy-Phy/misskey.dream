@@ -1181,6 +1181,10 @@ cwNotationRequired: "If \"Hide content\" is enabled, a description must be provi
 doReaction: "Add reaction"
 maxinumLayerError: "You cannot stack more than 6 layers. Please delete other layers."
 layer: "Layer"
+Xcoordinate: "X-Coordinate"
+Ycoordinate: "Y-Coordinate"
+scale: "Scale"
+opacity: "Opacity"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."

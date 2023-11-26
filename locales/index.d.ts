@@ -1193,6 +1193,10 @@ export interface Locale {
     "movePluginToAccount": string;
     "movePluginToAccountConfirm": string;
     "overridePluginConfirm": string;
+    "Xcoordinate": string;
+    "Ycoordinate": string;
+    "scale": string;
+    "opacity": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

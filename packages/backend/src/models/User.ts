@@ -151,6 +151,10 @@ export class MiUser {
 		id: string;
 		angle: number;
 		flipH: boolean;
+		scale: number;
+		moveX: number;
+		moveY: number;
+		opacity: number;
 	}[];
 
 	@Index()
