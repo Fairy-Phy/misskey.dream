@@ -26,7 +26,6 @@ export async function getPluginList(): Promise<Record<string, Plugin>> {
 export async function install(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
 	if (plugin.src == null) return;
-	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 
 	const aiscript = new Interpreter(createPluginEnv({
 		plugin: plugin,
@@ -53,7 +52,14 @@ export async function install(plugin: Plugin): Promise<void> {
 
 	initPlugin({ plugin, aiscript });
 
-	aiscript.exec(parser.parse(plugin.src));
+	try {
+		await aiscript.exec(parser.parse(plugin.src));
+	} catch (err) {
+		console.error('Plugin install failed:', plugin.name, 'v' + plugin.version);
+		return;
+	}
+
+	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 }
 
 function createPluginEnv(opts: { plugin: Plugin; }): Record<string, values.Value> {
