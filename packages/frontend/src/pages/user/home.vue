@@ -652,7 +652,7 @@ onUnmounted(() => {
 					display: block;
 					position: relative;
 					z-index: 10;
-					text-shadow: 0 0 8px #000, 0 0 8px #000;
+					text-shadow: 0 0 4px var(--bg), 0 0 4px var(--bg);
 				}
 
 				> .avatar {
