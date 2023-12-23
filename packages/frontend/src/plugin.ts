@@ -110,7 +110,7 @@ function createPluginEnv(opts: { plugin: Plugin; }): Record<string, values.Value
 		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
 			utils.assertString(url);
-			window.open(url.value, '_blank');
+			window.open(url.value, '_blank', 'noopener');
 		}),
 		'Plugin:config': values.OBJ(config),
 	};

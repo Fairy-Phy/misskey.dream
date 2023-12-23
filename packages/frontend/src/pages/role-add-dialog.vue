@@ -7,7 +7,7 @@
 >
 	<template v-if="!props.role" #header>
 		<div :class="$style.header">
-			<span>{{ i18n.ts.roles }}</span>
+			<span>{{ i18n.ts.roles }}<DreamFeatureBadge/></span>
 			<XTabs :class="$style.tabs" :rootEl="dialog" :tab="tab" @update:tab="key => tab = key" :tabs="headerTabs"/>
 		</div>
 	</template>
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -76,23 +76,24 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import DialogRole from '@/pages/DialogRole.vue';
+import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
 
 const props = defineProps<{
 	role?: any,
 }>();
 
-let dialog = $ref(null);
-let name: string = $ref(props.role ? props.role.name : '');
-let description: string = $ref(props.role ? props.role.description : '');
-let color: string = $ref(props.role ? props.role.color : '#000000');
-let isPublic = $ref(props.role ? props.role.isPublic : false);
-let imgUrl = $ref(props.role ? props.role.iconUrl : null);
+let dialog = ref(null);
+let name: string = ref(props.role ? props.role.name : '');
+let description: string = ref(props.role ? props.role.description : '');
+let color: string = ref(props.role ? props.role.color : '#000000');
+let isPublic = ref(props.role ? props.role.isPublic : false);
+let imgUrl = ref(props.role ? props.role.iconUrl : null);
 
 let assignedList = [];
 let roleList = [];
 
-let rolesAssigned = $computed(() => assignedList);
-let roles = $computed(() => roleList);
+let rolesAssigned = computed(() => assignedList);
+let roles = computed(() => roleList);
 
 onMounted(async () => {
 	assignedList = await os.api('roles/list', {
@@ -103,8 +104,8 @@ onMounted(async () => {
 	}).then(v => v.filter(r => !assignedList.some(ra => r.id === ra.id)));
 });
 
-const tab = $ref('add');
-const headerTabs = $computed(() => [{
+const tab = ref('add');
+const headerTabs = computed(() => [{
 	key: 'add',
 	title: i18n.ts.add,
 }, {

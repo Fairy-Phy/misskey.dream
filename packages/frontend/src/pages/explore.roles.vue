@@ -27,21 +27,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
-let rolesManual = $ref();
-let rolesConditional = $ref();
-let rolesCommunity = $ref();
+const rolesManual = ref();
+const rolesConditional = ref();
+const rolesCommunity = ref();
 
 os.api('roles/list').then(res => {
 	const roles = res.sort((a, b) => b.displayOrder - a.displayOrder);
-	rolesManual = roles.filter(x => x.target === 'manual' && x.permissionGroup !== 'Community');
-	rolesConditional = roles.filter(x => x.target === 'conditional' && x.permissionGroup !== 'Community');
-	rolesCommunity = roles.filter(x => x.permissionGroup === 'Community');
+	rolesManual.value = roles.filter(x => x.target === 'manual' && x.permissionGroup !== 'Community');
+	rolesConditional.value = roles.filter(x => x.target === 'conditional' && x.permissionGroup !== 'Community');
+	rolesCommunity.value = roles.filter(x => x.permissionGroup === 'Community');
 });
 </script>
 

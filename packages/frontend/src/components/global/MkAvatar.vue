@@ -24,28 +24,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<div :class="$style.decorationFrame">
+	<div :class="$style.decorationFrame" v-if="showDecoration">
 		<img
-			v-if="showDecoration && !decoration && user.avatarDecorations.length > 0"
-			v-for="avatarDecoration in user.avatarDecorations"
-			:key="avatarDecoration.id"
+			v-for="(decoration, index) in decorations ?? user.avatarDecorations"
+			:key="decoration.id ?? index"
 			:class="[$style.decoration]"
-			:src="avatarDecoration.url"
-			:style="{
-				rotate: getDecorationAngle(avatarDecoration),
-				scale: getDecorationScale(avatarDecoration),
-				transform: getDecorationTransform(avatarDecoration),
-				opacity: getDecorationOpacity(avatarDecoration),
-			}"
-			alt=""
-		>
-		<img
-			v-else-if="showDecoration && decoration"
-			:class="[$style.decoration]"
-			:src="decoration?.url"
+			:src="decoration.url"
 			:style="{
 				rotate: getDecorationAngle(decoration),
 				scale: getDecorationScale(decoration),
+				translate: getDecorationOffset(decoration),
 				transform: getDecorationTransform(decoration),
 				opacity: getDecorationOpacity(decoration),
 			}"
@@ -56,8 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
-import { toUnicode } from 'punycode/';
+import { watch, ref, computed } from 'vue';
 import Jdenticon from './Jdenticon.vue';
 import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
@@ -68,10 +55,11 @@ import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { host as hostRaw } from '@/config.js';
 import { defaultStore } from '@/store.js';
+import { toUnicode } from 'punycode/';
 
-const animation = $ref(defaultStore.state.animation);
-const squareAvatars = $ref(defaultStore.state.squareAvatars);
-const useBlurEffect = $ref(defaultStore.state.useBlurEffect);
+const animation = ref(defaultStore.state.animation);
+const squareAvatars = ref(defaultStore.state.squareAvatars);
+const useBlurEffect = ref(defaultStore.state.useBlurEffect);
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -79,23 +67,14 @@ const props = withDefaults(defineProps<{
 	link?: boolean;
 	preview?: boolean;
 	indicator?: boolean;
-	decoration?: {
-		url: string;
-		angle?: number;
-		flipH?: boolean;
-		flipV?: boolean;
-		scale?: number;
-		moveX?: number;
-		moveY?: number;
-		opacity?: number;
-	};
+	decorations?: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>[];
 	forceShowDecoration?: boolean;
 }>(), {
 	target: null,
 	link: false,
 	preview: false,
 	indicator: false,
-	decoration: undefined,
+	decorations: undefined,
 	forceShowDecoration: false,
 });
 
@@ -105,32 +84,39 @@ const emit = defineEmits<{
 
 const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
 
-const bound = $computed(() => props.link
+const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
 	: {});
 
-const url = $computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.enableDataSaverMode)
+const url = computed(() => (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar)
 	? getStaticImageUrl(props.user.avatarUrl)
 	: props.user.avatarUrl);
 
 const host = toUnicode(hostRaw);
-const userAcct = $computed(() => `${props.user.username}@${props.user.host || host}`);
+const userAcct = computed(() => `${props.user.username}@${props.user.host || host}`);
 
 function onClick(ev: MouseEvent): void {
 	if (props.link) return;
 	emit('click', ev);
 }
 
-function getDecorationAngle(avatarDecoration) {
-	let angle = avatarDecoration.angle ?? 0;
+function getDecorationAngle(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const angle = decoration.angle ?? 0;
 	return angle === 0 ? undefined : `${angle * 360}deg`;
 }
 
-function getDecorationScale(avatarDecoration) {
-	let scaleX = avatarDecoration.flipH ? -1 : 1;
+function getDecorationScale(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const scaleX = decoration.flipH ? -1 : 1;
 	return scaleX === 1 ? undefined : `${scaleX} 1`;
 }
 
+function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const offsetX = decoration.offsetX ?? 0;
+	const offsetY = decoration.offsetY ?? 0;
+	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
+}
+
+// TODO: moveX, moveY OutDated.
 function getDecorationTransform(avatarDecoration) {
 	let scale = avatarDecoration.scale ?? 1;
 	let moveX = avatarDecoration.moveX ?? 0;
@@ -143,10 +129,10 @@ function getDecorationOpacity(avatarDecoration) {
 	return opacity === 1 ? undefined : opacity;
 }
 
-let color = $ref<string | undefined>();
+const color = ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
-	color = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
+	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,
 });

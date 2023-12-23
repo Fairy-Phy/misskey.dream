@@ -78,6 +78,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
 					<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
 				</MkRadios>
+
+				<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
+				<MkSwitch v-model="disableNoteNyaize">{{ i18n.ts.disableNoteNyaize }}<DreamFeatureBadge/></MkSwitch>
 			</div>
 		</div>
 	</FormSection>
@@ -121,7 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
+				<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -142,14 +145,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<MkSelect v-model="noteHeaderViewStyle">
-				<template #label>{{ i18n.ts.methodOfNoteHeaderView }}<span class="_beta">{{ i18n.ts.badgeNameOfDream }}</span></template>
+				<template #label>{{ i18n.ts.methodOfNoteHeaderView }}<DreamFeatureBadge/></template>
 				<option value="default">{{ i18n.ts.default }}</option>
 				<option value="oneLine">{{ i18n.ts.oneLineView }}</option>
 				<option value="wrap">{{ i18n.ts.returnMultiLineView }}</option>
 			</MkSelect>
 
 			<MkSelect v-model="noteHeaderRoleView">
-				<template #label>{{ i18n.ts.methodOfRollViewInNoteHeader }}<span class="_beta">{{ i18n.ts.badgeNameOfDream }}</span></template>
+				<template #label>{{ i18n.ts.methodOfRollViewInNoteHeader }}<DreamFeatureBadge/></template>
 				<option value="default">{{ i18n.ts.defaultRollViewInNoteHeader }}</option>
 				<option value="scrollable">{{ i18n.ts.scrollableRollInNoteHeader }}</option>
 				<option value="disable">{{ i18n.ts.hideRollInNoteHeader }}</option>
@@ -178,6 +181,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
 				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
 			</MkRange>
+
+			<MkFolder>
+				<template #label>{{ i18n.ts.dataSaver }}</template>
+
+				<div class="_gaps_m">
+					<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
+
+					<div class="_buttons">
+						<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
+						<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
+					</div>
+					<div class="_gaps_m">
+						<MkSwitch v-model="dataSaver.media">
+							{{ i18n.ts._dataSaver._media.title }}
+							<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
+						</MkSwitch>
+						<MkSwitch v-model="dataSaver.avatar">
+							{{ i18n.ts._dataSaver._avatar.title }}
+							<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
+						</MkSwitch>
+						<MkSwitch v-model="dataSaver.urlPreview">
+							{{ i18n.ts._dataSaver._urlPreview.title }}
+							<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
+						</MkSwitch>
+						<MkSwitch v-model="dataSaver.code">
+							{{ i18n.ts._dataSaver._code.title }}
+							<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
+						</MkSwitch>
+					</div>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -211,6 +245,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { langs } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
@@ -220,10 +255,12 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
+const dataSaver = ref(defaultStore.state.dataSaver);
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -240,6 +277,7 @@ const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serve
 const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
 const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
 const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
+const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthOfReaction'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
 const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
@@ -253,7 +291,6 @@ const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('dis
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
-const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
@@ -270,6 +307,8 @@ const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificati
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
+const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
+const disableNoteNyaize = computed(defaultStore.makeGetterSetter('disableNoteNyaize'));
 
 // 以下 dream
 const noteHeaderViewStyle = computed(defaultStore.makeGetterSetter('noteHeaderViewStyle'));
@@ -278,6 +317,7 @@ const noteHeaderRoleView = computed(defaultStore.makeGetterSetter('noteHeaderRol
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
+	miLocalStorage.removeItem('localeVersion');
 });
 
 watch(fontSize, () => {
@@ -310,9 +350,11 @@ watch([
 	noteHeaderRoleView,
 	mediaListWithOneImageAppearance,
 	reactionsDisplaySize,
+	limitWidthOfReaction,
 	highlightSensitiveMedia,
 	keepScreenOn,
 	disableStreamingTimeline,
+	enableSeasonalScreenEffect,
 ], async () => {
 	await reloadAsk();
 });
@@ -391,9 +433,31 @@ function testNotification(): void {
 	}, 300);
 }
 
-const headerActions = $computed(() => []);
+function enableAllDataSaver() {
+	const g = { ...defaultStore.state.dataSaver };
 
-const headerTabs = $computed(() => []);
+	Object.keys(g).forEach((key) => { g[key] = true; });
+
+	dataSaver.value = g;
+}
+
+function disableAllDataSaver() {
+	const g = { ...defaultStore.state.dataSaver };
+
+	Object.keys(g).forEach((key) => { g[key] = false; });
+
+	dataSaver.value = g;
+}
+
+watch(dataSaver, (to) => {
+	defaultStore.set('dataSaver', to);
+}, {
+	deep: true,
+});
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.general,
