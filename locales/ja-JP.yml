@@ -1220,6 +1220,8 @@ decorate: "デコる"
 outdatedOptions: "廃止予定のオプション"
 outdatedOptionsDescription: "これらのオプションは廃止される予定です。設定されている場合は設定を削除し代替を使用してください。"
 disableNoteNyaize: "nayizeを無効化する"
+noneLicense: "ライセンスが指定されていません。指定しない場合暗黙的にあなたの名前が記載されますが、これはあなたが作成した絵文字ですか？"
+noneLicenseNo: "正しいライセンスを記述してください。"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

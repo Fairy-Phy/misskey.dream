@@ -1205,6 +1205,8 @@ decorate: "デコる"
 outdatedOptions: "終わる予定のオプション"
 outdatedOptionsDescription: "これらのオプションはつかえなくなるで。設定されてたら使わずに代替を使ってな。"
 disableNoteNyaize: "nayizeしなくする"
+noneLicense: "ライセンスが書かれてへんで。書かへんならあんたの名前が載るんやけど、これはあんたが作成した絵文字か？"
+noneLicenseNo: "正しいライセンスを書いてくれや。"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "オンにしたらこのお知らせができた時点でおる人らにだけお知らせが行くで。切ったらこの知らせが行ったあとにアカウント作った人にもちゃんとお知らせが行くで。"

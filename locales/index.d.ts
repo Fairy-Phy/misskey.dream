@@ -1223,6 +1223,8 @@ export interface Locale {
     "outdatedOptions": string;
     "outdatedOptionsDescription": string;
     "disableNoteNyaize": string;
+    "noneLicense": string;
+    "noneLicenseNo": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

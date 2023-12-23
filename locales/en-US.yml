@@ -1198,6 +1198,8 @@ decorate: "Decorate"
 outdatedOptions: "Obsolete Options"
 outdatedOptionsDescription: "These options will be obsolete. If you have set them, please remove them and use the alternatives."
 disableNoteNyaize: "Disable nyaize"
+noneLicense: "License not specified. If not specified, your name is implicitly included, is this a emoji created by yourself?"
+noneLicenseNo: "Please write the correct license."
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."

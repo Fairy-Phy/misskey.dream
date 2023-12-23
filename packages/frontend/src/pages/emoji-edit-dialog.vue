@@ -163,14 +163,14 @@ const aliases = ref<{ id: string, value: string }[]>(props.emoji ? props.emoji.a
 	value: x,
 })) : []);
 const aliasesText = computed({
-	get: () => aliases.map(v => v.value).join(' '),
+	get: () => aliases.value.map(v => v.value).join(' '),
 	set: (v: string) => {
 		const vs = v.split(' ');
-		if (vs.length === aliases.length) {
+		if (vs.length === aliases.value.length) {
 			let edited = false;
 			for (let i = 0; i < vs.length; i++) {
 				const e = vs[i];
-				if (aliases[i].value !== e) {
+				if (aliases.value[i] !== e) {
 					edited = true;
 					break;
 				}
@@ -214,14 +214,14 @@ const headerTabs = computed(() => [{
 const aliaseEditMode = ref(false);
 
 function addAliase() {
-	aliases.push({
+	aliases.value.push({
 		id: Math.random().toString(),
 		value: '',
 	});
 }
 
 function deleteAliase(index: number) {
-	aliases.splice(index, 1);
+	aliases.value.splice(index, 1);
 }
 
 watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
@@ -269,11 +269,27 @@ async function done() {
 		});
 		if (canceled) return;
 	}
+	if (license.value === '') {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.noneLicense,
+			okText: i18n.ts.yes,
+			cancelText: i18n.ts.no,
+		});
+		if (canceled) {
+			await os.alert({
+				type: 'error',
+				title: i18n.ts.error,
+				text: i18n.ts.noneLicenseNo,
+			});
+			return;
+		}
+	}
 
 	const params = {
 		name: name.value,
 		category: category.value === '' ? null : category.value,
-		aliases: aliases.value.split(' ').filter(x => x !== ''),
+		aliases: aliases.value.map(v => v.value),
 		license: license.value === '' ? null : license.value,
 		isSensitive: isSensitive.value,
 		localOnly: localOnly.value,
