@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<div v-if="avatarDecoration.url !== ''" :class="$style.imgContainer">
-						<img src="https://misskey-hub.net/avatar-decoration-template.png" :class="$style.img" style="opacity: .5;"/>
+						<img src="https://misskey-hub.net/img/misc/avatar-decoration-template.png" :class="$style.img" style="opacity: .5;"/>
 						<img :src="avatarDecoration.url" :class="$style.img"/>
 					</div>
 					<div class="buttons _buttons">

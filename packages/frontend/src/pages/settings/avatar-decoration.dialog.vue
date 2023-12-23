@@ -20,6 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar style="width: 64px; height: 64px; margin-bottom: 20px;" :user="$i" :decorations="decorationsForPreview" forceShowDecoration/>
 			</div>
 			<div class="_gaps_s">
+				<MkRange v-if="maxLayer !== 0" v-model="layer" continuousUpdate :min="0" :max="maxLayer" :step="1" :textConverter="(v) => `${v + 1}`">
+					<template #label>{{ i18n.ts.layer }}</template>
+				</MkRange>
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">
 					<template #label>{{ i18n.ts.angle }}</template>
 				</MkRange>
@@ -68,6 +71,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import FormInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import MkRange from '@/components/MkRange.vue';
 import { $i } from '@/account.js';
@@ -84,6 +88,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 	(ev: 'attach', payload: {
+		layerIndex: number;
 		angle: number;
 		flipH: boolean;
 		offsetX: number;
@@ -94,6 +99,7 @@ const emit = defineEmits<{
 		opacity: number;
 	}): void;
 	(ev: 'update', payload: {
+		layerIndex: number;
 		angle: number;
 		flipH: boolean;
 		offsetX: number;
@@ -117,6 +123,9 @@ const moveX = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIn
 const moveY = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].moveY : null) ?? 0);
 const opacity = ref((props.usingIndex != null ? $i.avatarDecorations[props.usingIndex].opacity : null) ?? 1);
 
+const maxLayer = $i.avatarDecorations.length - (props.usingIndex != null ? 1 : 0);
+const layer = ref(props.usingIndex ?? maxLayer);
+
 const decorationsForPreview = computed(() => {
 	const decoration = {
 		id: props.decoration.id,
@@ -132,10 +141,9 @@ const decorationsForPreview = computed(() => {
 	};
 	const decorations = [...$i.avatarDecorations];
 	if (props.usingIndex != null) {
-		decorations[props.usingIndex] = decoration;
-	} else {
-		decorations.push(decoration);
+		decorations.splice(props.usingIndex, 1);
 	}
+	decorations.splice(layer.value, 0, decoration);
 	return decorations;
 });
 
@@ -145,6 +153,7 @@ function cancel() {
 
 async function update() {
 	emit('update', {
+		layerIndex: layer.value,
 		angle: angle.value,
 		flipH: flipH.value,
 		offsetX: offsetX.value,
@@ -159,6 +168,7 @@ async function update() {
 
 async function attach() {
 	emit('attach', {
+		layerIndex: layer.value,
 		angle: angle.value,
 		flipH: flipH.value,
 		offsetX: offsetX.value,
@@ -175,19 +185,6 @@ async function detach() {
 	emit('detach');
 	dialog.value.close();
 }
-
-// 残し
-const layerNum = (() => {
-	let result = -1;
-	$i.avatarDecorations.some((x, i) => {
-		if (x.id === props.decoration.id) {
-			result = i;
-			return true;
-		}
-		return false;
-	});
-	return result;
-})();
 </script>
 
 <style lang="scss" module>

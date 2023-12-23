@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:moveY="avatarDecoration.moveY"
 					:opacity="avatarDecoration.opacity"
 					:active="true"
+					:activeLayerIndex="i"
 					@click="openDecoration(avatarDecoration, i)"
 				/>
 			</div>
@@ -84,7 +85,7 @@ function openDecoration(avatarDecoration, index?: number) {
 				moveY: payload.moveY,
 				opacity: payload.opacity
 			};
-			const update = [...$i.avatarDecorations, decoration];
+			const update = $i.avatarDecorations.toSpliced(payload.layerIndex, 0, decoration);
 			await os.apiWithDialog('i/update', {
 				avatarDecorations: update,
 			});
@@ -102,8 +103,7 @@ function openDecoration(avatarDecoration, index?: number) {
 				moveY: payload.moveY,
 				opacity: payload.opacity
 			};
-			const update = [...$i.avatarDecorations];
-			update[index] = decoration;
+			const update = $i.avatarDecorations.toSpliced(index, 1).toSpliced(payload.layerIndex, 0, decoration);
 			await os.apiWithDialog('i/update', {
 				avatarDecorations: update,
 			});
