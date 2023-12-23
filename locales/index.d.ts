@@ -1220,6 +1220,8 @@ export interface Locale {
     "overwriteContentConfirm": string;
     "seasonalScreenEffect": string;
     "decorate": string;
+    "outdatedOptions": string;
+    "outdatedOptionsDescription": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
