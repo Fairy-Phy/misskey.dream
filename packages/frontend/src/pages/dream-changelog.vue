@@ -11,6 +11,18 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.9.1 】]\n\
+\n\
+・ Add: 独自機能項目にはできる限りバッチをつけるように\n\
+\n\
+・ Add: ライセンスが指定されていないときに著作者かどうかを確認するように\n\
+\n\
+・ Add: ノートを猫モードにしていてもnayizeさせないような設定項目\n\
+\n\
+・ Outdated: 独自機能として導入したアバターデコレーションのX座標、Y座標は本家実装に伴い削除予定になりました。\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.9.0 】]\n\
 \n\
 ・ Add: アバターデコレーションを移動、拡大縮小、不透明度を選択できるように\n\
