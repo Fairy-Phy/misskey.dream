@@ -1204,6 +1204,7 @@ seasonalScreenEffect: "季節にあった画面の動き"
 decorate: "デコる"
 outdatedOptions: "終わる予定のオプション"
 outdatedOptionsDescription: "これらのオプションはつかえなくなるで。設定されてたら使わずに代替を使ってな。"
+disableNoteNyaize: "nayizeしなくする"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "オンにしたらこのお知らせができた時点でおる人らにだけお知らせが行くで。切ったらこの知らせが行ったあとにアカウント作った人にもちゃんとお知らせが行くで。"

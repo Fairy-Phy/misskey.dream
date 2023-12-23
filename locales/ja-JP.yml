@@ -1219,6 +1219,7 @@ seasonalScreenEffect: "季節に応じた画面の演出"
 decorate: "デコる"
 outdatedOptions: "廃止予定のオプション"
 outdatedOptionsDescription: "これらのオプションは廃止される予定です。設定されている場合は設定を削除し代替を使用してください。"
+disableNoteNyaize: "nayizeを無効化する"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

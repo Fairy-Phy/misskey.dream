@@ -80,6 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkRadios>
 
 				<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
+				<MkSwitch v-model="disableNoteNyaize">{{ i18n.ts.disableNoteNyaize }}<DreamFeatureBadge/></MkSwitch>
 			</div>
 		</div>
 	</FormSection>
@@ -307,6 +308,7 @@ const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
+const disableNoteNyaize = computed(defaultStore.makeGetterSetter('disableNoteNyaize'));
 
 // 以下 dream
 const noteHeaderViewStyle = computed(defaultStore.makeGetterSetter('noteHeaderViewStyle'));

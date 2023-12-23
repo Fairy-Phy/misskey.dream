@@ -1222,6 +1222,7 @@ export interface Locale {
     "decorate": string;
     "outdatedOptions": string;
     "outdatedOptionsDescription": string;
+    "disableNoteNyaize": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

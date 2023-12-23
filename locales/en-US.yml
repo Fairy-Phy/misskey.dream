@@ -1197,6 +1197,7 @@ reloadRequiredToApplySettings: "Reloading is required to apply the settings."
 decorate: "Decorate"
 outdatedOptions: "Obsolete Options"
 outdatedOptionsDescription: "These options will be obsolete. If you have set them, please remove them and use the alternatives."
+disableNoteNyaize: "Disable nyaize"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
