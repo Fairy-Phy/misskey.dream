@@ -113,8 +113,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.relationshipQueueWorker
 			.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
-			.on('error', (err: Error) => relationshipLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => relationshipLogger.error(`error ${err.stack}`, { e: renderError(err) }))
 			.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 

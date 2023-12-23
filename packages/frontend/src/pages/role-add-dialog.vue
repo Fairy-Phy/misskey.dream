@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -91,8 +91,8 @@ let imgUrl = $ref(props.role ? props.role.iconUrl : null);
 let assignedList = [];
 let roleList = [];
 
-let rolesAssigned = $computed(() => assignedList);
-let roles = $computed(() => roleList);
+let rolesAssigned = computed(() => assignedList);
+let roles = computed(() => roleList);
 
 onMounted(async () => {
 	assignedList = await os.api('roles/list', {
@@ -104,7 +104,7 @@ onMounted(async () => {
 });
 
 const tab = $ref('add');
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'add',
 	title: i18n.ts.add,
 }, {

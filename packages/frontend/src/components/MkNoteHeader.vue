@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -72,7 +72,7 @@ const roleDisableStyles = {
 	display: 'none',
 };
 
-const noteHeaderViewProp = $computed(() => {
+const noteHeaderViewProp = computed(() => {
 	const style: string = defaultStore.state.noteHeaderViewStyle;
 	if (style === 'wrap') {
 		return headerWrapStyles;
@@ -80,7 +80,7 @@ const noteHeaderViewProp = $computed(() => {
 	return {};
 });
 
-const noteHeaderRoleProp = $computed(() => {
+const noteHeaderRoleProp = computed(() => {
 	const style: string = defaultStore.state.noteHeaderRoleView;
 	if (style === 'scrollable') {
 		return roleScrollStyles;
@@ -91,7 +91,7 @@ const noteHeaderRoleProp = $computed(() => {
 	return {};
 });
 
-const noteHeaderContentProp = $computed(() => {
+const noteHeaderContentProp = computed(() => {
 	const style: string = defaultStore.state.noteHeaderViewStyle;
 	if (style === 'oneLine') {
 		return headerContentStyles;

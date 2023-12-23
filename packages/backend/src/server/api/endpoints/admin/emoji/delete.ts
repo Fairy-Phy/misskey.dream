@@ -14,6 +14,8 @@ import { ApiError } from '@/server/api/error.js';
 export const meta = {
 	tags: ['admin'],
 
+	kind: 'write:admin',
+
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
 

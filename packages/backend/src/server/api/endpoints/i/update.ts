@@ -123,6 +123,11 @@ export const meta = {
 	},
 } as const;
 
+const muteWords = { type: 'array', items: { oneOf: [
+	{ type: 'array', items: { type: 'string' } },
+	{ type: 'string' },
+] } } as const;
+
 export const paramDef = {
 	type: 'object',
 	properties: {
@@ -132,7 +137,7 @@ export const paramDef = {
 		birthday: { ...birthdaySchema, nullable: true },
 		lang: { type: 'string', enum: [null, ...Object.keys(langmap)] as string[], nullable: true },
 		avatarId: { type: 'string', format: 'misskey:id', nullable: true },
-		avatarDecorations: { type: 'array', maxItems: 5, items: {
+		avatarDecorations: { type: 'array', maxItems: 16, items: {
 			type: 'object',
 			properties: {
 				id: { type: 'string', format: 'misskey:id' },
@@ -142,6 +147,8 @@ export const paramDef = {
 				moveX: { type: 'number', nullable: true, maximum: 25, minimum: -25 },
 				moveY: { type: 'number', nullable: true, maximum: 25, minimum: -25 },
 				opacity: { type: 'number', nullable: true, maximum: 1, minimum: 0.1 },
+				offsetX: { type: 'number', nullable: true, maximum: 0.25, minimum: -0.25 },
+				offsetY: { type: 'number', nullable: true, maximum: 0.25, minimum: -0.25 },
 			},
 			required: ['id'],
 		} },
@@ -173,9 +180,11 @@ export const paramDef = {
 		receiveAnnouncementEmail: { type: 'boolean' },
 		alwaysMarkNsfw: { type: 'boolean' },
 		autoSensitive: { type: 'boolean' },
-		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
+		followingVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
+		followersVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
 		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
-		mutedWords: { type: 'array' },
+		mutedWords: muteWords,
+		hardMutedWords: muteWords,
 		mutedInstances: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -237,17 +246,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 			if (ps.location !== undefined) profileUpdates.location = ps.location;
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
-			if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
-			if (ps.mutedWords !== undefined) {
+			if (ps.followingVisibility !== undefined) profileUpdates.followingVisibility = ps.followingVisibility;
+			if (ps.followersVisibility !== undefined) profileUpdates.followersVisibility = ps.followersVisibility;
+
+			function checkMuteWordCount(mutedWords: (string[] | string)[], limit: number) {
 				// TODO: ちゃんと数える
-				const length = JSON.stringify(ps.mutedWords).length;
-				if (length > (await this.roleService.getUserPolicies(user.id)).wordMuteLimit) {
+				const length = JSON.stringify(mutedWords).length;
+				if (length > limit) {
 					throw new ApiError(meta.errors.tooManyMutedWords);
 				}
+			}
 
-				// validate regular expression syntax
-				ps.mutedWords.filter(x => !Array.isArray(x)).forEach(x => {
-					const regexp = x.match(/^\/(.+)\/(.*)$/);
+			function validateMuteWordRegex(mutedWords: (string[] | string)[]) {
+				for (const mutedWord of mutedWords) {
+					if (typeof mutedWord !== 'string') continue;
+
+					const regexp = mutedWord.match(/^\/(.+)\/(.*)$/);
 					if (!regexp) throw new ApiError(meta.errors.invalidRegexp);
 
 					try {
@@ -255,10 +269,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					} catch (err) {
 						throw new ApiError(meta.errors.invalidRegexp);
 					}
-				});
+				}
+			}
+
+			if (ps.mutedWords !== undefined) {
+				checkMuteWordCount(ps.mutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
+				validateMuteWordRegex(ps.mutedWords);
 
 				profileUpdates.mutedWords = ps.mutedWords;
 				profileUpdates.enableWordMute = ps.mutedWords.length > 0;
+			}
+			if (ps.hardMutedWords !== undefined) {
+				checkMuteWordCount(ps.hardMutedWords, (await this.roleService.getUserPolicies(user.id)).wordMuteLimit);
+				validateMuteWordRegex(ps.hardMutedWords);
+				profileUpdates.hardMutedWords = ps.hardMutedWords;
 			}
 			if (ps.mutedInstances !== undefined) profileUpdates.mutedInstances = ps.mutedInstances;
 			if (ps.notificationRecieveConfig !== undefined) profileUpdates.notificationRecieveConfig = ps.notificationRecieveConfig;
@@ -313,11 +337,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.avatarDecorations) {
 				const decorations = await this.avatarDecorationService.getAll(true);
-				const myRoles = await this.roleService.getUserRoles(user.id);
+				const [myRoles, myPolicies] = await Promise.all([this.roleService.getUserRoles(user.id), this.roleService.getUserPolicies(user.id)]);
 				const allRoles = await this.roleService.getRoles();
 				const decorationIds = decorations
 					.filter(d => d.roleIdsThatCanBeUsedThisDecoration.filter(roleId => allRoles.some(r => r.id === roleId)).length === 0 || myRoles.some(r => d.roleIdsThatCanBeUsedThisDecoration.includes(r.id)))
 					.map(d => d.id);
+
+				if (ps.avatarDecorations.length > myPolicies.avatarDecorationLimit) throw new ApiError(meta.errors.restrictedByRole);
 
 				updates.avatarDecorations = ps.avatarDecorations.filter(d => decorationIds.includes(d.id)).map(d => ({
 					id: d.id,
@@ -327,6 +353,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					moveX: d.moveX ?? 0,
 					moveY: d.moveY ?? 0,
 					opacity: d.opacity ?? 1,
+					offsetX: d.offsetX ?? 0,
+					offsetY: d.offsetY ?? 0,
 				}));
 			}
 

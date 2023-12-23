@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, watch } from 'vue';
+import { computed, defineAsyncComponent, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -141,7 +141,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { selectFile, selectFiles } from '@/scripts/select-file.js';
+import { selectFile } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import XTabs from '@/components/global/MkPageHeader.tabs.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
@@ -154,14 +154,14 @@ const props = defineProps<{
 	emoji?: any,
 }>();
 
-let dialog = $ref(null);
-let name: string = $ref(props.emoji ? props.emoji.name : '');
-let category: string = $ref(props.emoji ? props.emoji.category : '');
-let aliases: { id: string, value: string }[] = $ref(props.emoji ? props.emoji.aliases.map(x => ({
+const dialog = ref(null);
+const name = ref<string>(props.emoji ? props.emoji.name : '');
+const category = ref<string>(props.emoji ? props.emoji.category : '');
+const aliases = ref<{ id: string, value: string }[]>(props.emoji ? props.emoji.aliases.map(x => ({
 	id: Math.random().toString(),
 	value: x,
 })) : []);
-let aliasesText = computed({
+const aliasesText = computed({
 	get: () => aliases.map(v => v.value).join(' '),
 	set: (v: string) => {
 		const vs = v.split(' ');
@@ -176,19 +176,20 @@ let aliasesText = computed({
 			}
 			if (!edited) return;
 		}
-		aliases = vs.map(x => ({
+		aliases.value = vs.map(x => ({
 			id: Math.random().toString(),
 			value: x,
 		}));
 	}
 });
-let license: string = $ref(props.emoji ? (props.emoji.license ?? '') : '');
-let isSensitive = $ref(props.emoji ? props.emoji.isSensitive : false);
-let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
-let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
-let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
-let file = $ref<Misskey.entities.DriveFile>();
-let userId: string = $ref(props.emoji && props.emoji.userId ? props.emoji.userId : '');
+const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
+const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
+const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
+const roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
+const rolesThatCanBeUsedThisEmojiAsReaction = ref([]);
+const file = ref<Misskey.entities.DriveFile>();
+
+const userId: string = ref(props.emoji && props.emoji.userId ? props.emoji.userId : '');
 
 const pagination: Paging = {
 	endpoint: 'admin/emoji/get-emoji-log' as const,
@@ -200,8 +201,8 @@ const pagination: Paging = {
 	noPaging: true,
 };
 
-const tab = $ref('overview');
-const headerTabs = $computed(() => [{
+const tab = ref('overview');
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 }, {
@@ -209,7 +210,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.logs,
 }]);
 
-const aliaseEditMode = $ref(false);
+const aliaseEditMode = ref(false);
 
 function addAliase() {
 	aliases.push({
@@ -222,11 +223,11 @@ function deleteAliase(index: number) {
 	aliases.splice(index, 1);
 }
 
-watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
-	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
+watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
+	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
+const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
@@ -234,27 +235,27 @@ const emit = defineEmits<{
 }>();
 
 async function changeImage(ev) {
-	file = await selectFile(ev.currentTarget ?? ev.target, null);
-	const candidate = file.name.replace(/\.(.+)$/, '');
+	file.value = await selectFile(ev.currentTarget ?? ev.target, null);
+	const candidate = file.value.name.replace(/\.(.+)$/, '');
 	if (candidate.match(/^[a-z0-9_]+$/)) {
-		name = candidate;
+		name.value = candidate;
 	}
 }
 
 async function addRole() {
 	const roles = await os.api('admin/roles/list');
-	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id);
+	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id);
 
 	const { canceled, result: role } = await os.select({
 		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
 	});
 	if (canceled) return;
 
-	rolesThatCanBeUsedThisEmojiAsReaction.push(role);
+	rolesThatCanBeUsedThisEmojiAsReaction.value.push(role);
 }
 
 async function removeRole(role, ev) {
-	rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
+	rolesThatCanBeUsedThisEmojiAsReaction.value = rolesThatCanBeUsedThisEmojiAsReaction.value.filter(x => x.id !== role.id);
 }
 
 async function done() {
@@ -269,18 +270,18 @@ async function done() {
 	}
 
 	const params = {
-		name,
-		category: category === '' ? null : category,
-		aliases: aliases.filter(x => x.value.trim() !== '').map(x => x.value),
-		license: license === '' ? null : license,
-		isSensitive,
-		localOnly,
-		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
-		...((props.emoji && props.emoji.userId ? props.emoji.userId : '') !== userId ? { userId } : {}),
+		name: name.value,
+		category: category.value === '' ? null : category.value,
+		aliases: aliases.value.split(' ').filter(x => x !== ''),
+		license: license.value === '' ? null : license.value,
+		isSensitive: isSensitive.value,
+		localOnly: localOnly.value,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id),
+		...((props.emoji && props.emoji.userId ? props.emoji.userId : '') !== userId.value ? { userId: userId.value } : {}),
 	};
 
-	if (file) {
-		params.fileId = file.id;
+	if (file.value) {
+		params.fileId = file.value.id;
 	}
 
 	if (props.emoji) {
@@ -296,7 +297,7 @@ async function done() {
 			},
 		});
 
-		dialog.close();
+		dialog.value.close();
 	} else {
 		const created = await os.apiWithDialog('admin/emoji/add', params);
 
@@ -304,14 +305,14 @@ async function done() {
 			created: created,
 		});
 
-		dialog.close();
+		dialog.value.close();
 	}
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: name }),
+		text: i18n.t('removeAreYouSure', { x: name.value }),
 	});
 	if (canceled) return;
 
@@ -321,7 +322,7 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.close();
+		dialog.value.close();
 	});
 }
 </script>

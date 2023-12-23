@@ -67,7 +67,11 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-let type = ref('all');
+
+const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+
+const type = ref('all');
+const sort = ref('+createdAt');
 
 const pagination: Paging = {
 	endpoint: 'admin/invite/list' as const,
@@ -105,8 +109,8 @@ function deleted(id: string) {
 	}
 }
 
-const headerActions = $computed(() => []);
-const headerTabs = $computed(() => []);
+const headerActions = computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.invite,
