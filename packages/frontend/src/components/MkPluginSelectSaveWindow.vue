@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="$emit('closed')"
 	@ok="ok()"
 >
-	<template #header>{{ 'プラグインの共有設定' }}</template>
+	<template #header>{{ 'プラグインの共有設定' }}<DreamFeatureBadge/></template>
 
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m">
@@ -39,13 +39,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkSwitch from './MkSwitch.vue';
 import MkSelect from './MkSelect.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from './MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
 
 const props = defineProps<{
 	isExistsFromAccount: boolean;
@@ -56,14 +57,14 @@ const emit = defineEmits<{
 	(ev: 'done', result: { name: string | null, permissions: string[] }): void;
 }>();
 
-const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
-let localOrAccount = $ref(props.isExistsFromAccount ? 'account' : 'local');
-let pluginOnlyOverride = $ref(false);
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const localOrAccount = ref(props.isExistsFromAccount ? 'account' : 'local');
+const pluginOnlyOverride = ref(false);
 
 function ok(): void {
 	emit('done', {
-		isLocal: localOrAccount === 'local',
-		pluginOnlyOverride,
+		isLocal: localOrAccount.value === 'local',
+		pluginOnlyOverride: pluginOnlyOverride.value,
 	});
 	dialog.close();
 }

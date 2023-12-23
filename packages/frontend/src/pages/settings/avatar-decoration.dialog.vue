@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="_gaps_s">
 				<MkRange v-if="maxLayer !== 0" v-model="layer" continuousUpdate :min="0" :max="maxLayer" :step="1" :textConverter="(v) => `${v + 1}`">
-					<template #label>{{ i18n.ts.layer }}</template>
+					<template #label>{{ i18n.ts.layer }}<DreamFeatureBadge/></template>
 				</MkRange>
 				<MkRange v-model="angle" continuousUpdate :min="-0.5" :max="0.5" :step="0.025" :textConverter="(v) => `${Math.floor(v * 360)}°`">
 					<template #label>{{ i18n.ts.angle }}</template>
@@ -36,20 +36,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.flip }}</template>
 				</MkSwitch>
 				<MkRange v-model="scale" continuousUpdate :min="0.5" :max="1.5" :step="0.05" :textConverter="(v) => `${v.toFixed(2)}x`">
-					<template #label>{{ i18n.ts.scale }}</template>
+					<template #label>{{ i18n.ts.scale }}<DreamFeatureBadge/></template>
 				</MkRange>
 				<MkRange v-model="opacity" continuousUpdate :min="0.1" :max="1" :step="0.05" :textConverter="(v) => `${(v * 100).toFixed(2)}%`">
-					<template #label>{{ i18n.ts.opacity }}</template>
+					<template #label>{{ i18n.ts.opacity }}<DreamFeatureBadge/></template>
 				</MkRange>
 				<MkFolder>
 					<template #label>{{ i18n.ts.outdatedOptions }}</template>
 					<div class="_gaps_m">
 						<FormInfo warn>{{ i18n.ts.outdatedOptionsDescription }}</FormInfo>
 						<MkRange v-model="moveX" continuousUpdate :min="-25" :max="25" :step="1">
-							<template #label>{{ i18n.ts.Xcoordinate }}</template>
+							<template #label>{{ i18n.ts.Xcoordinate }}<DreamFeatureBadge/></template>
 						</MkRange>
 						<MkRange v-model="moveY" continuousUpdate :min="-25" :max="25" :step="1">
-							<template #label>{{ i18n.ts.Ycoordinate }}</template>
+							<template #label>{{ i18n.ts.Ycoordinate }}<DreamFeatureBadge/></template>
 						</MkRange>
 					</div>
 				</MkFolder>
@@ -75,6 +75,7 @@ import FormInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import MkRange from '@/components/MkRange.vue';
 import { $i } from '@/account.js';
+import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
 
 const props = defineProps<{
 	usingIndex: number | null;

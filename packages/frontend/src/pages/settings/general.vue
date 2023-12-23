@@ -144,14 +144,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<MkSelect v-model="noteHeaderViewStyle">
-				<template #label>{{ i18n.ts.methodOfNoteHeaderView }}<span class="_beta">{{ i18n.ts.badgeNameOfDream }}</span></template>
+				<template #label>{{ i18n.ts.methodOfNoteHeaderView }}<DreamFeatureBadge/></template>
 				<option value="default">{{ i18n.ts.default }}</option>
 				<option value="oneLine">{{ i18n.ts.oneLineView }}</option>
 				<option value="wrap">{{ i18n.ts.returnMultiLineView }}</option>
 			</MkSelect>
 
 			<MkSelect v-model="noteHeaderRoleView">
-				<template #label>{{ i18n.ts.methodOfRollViewInNoteHeader }}<span class="_beta">{{ i18n.ts.badgeNameOfDream }}</span></template>
+				<template #label>{{ i18n.ts.methodOfRollViewInNoteHeader }}<DreamFeatureBadge/></template>
 				<option value="default">{{ i18n.ts.defaultRollViewInNoteHeader }}</option>
 				<option value="scrollable">{{ i18n.ts.scrollableRollInNoteHeader }}</option>
 				<option value="disable">{{ i18n.ts.hideRollInNoteHeader }}</option>
@@ -254,6 +254,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));

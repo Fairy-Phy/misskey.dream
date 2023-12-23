@@ -129,11 +129,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 
 			<MkSwitch v-model="emojiPickerDisplaySensitiveEmoji">
-				{{ i18n.ts.displaySensitiveEmoji }}
+				{{ i18n.ts.displaySensitiveEmoji }}<DreamFeatureBadge/>
 			</MkSwitch>
 
 			<MkRange v-model="emojiPickerSearchLimit" :min="15" :max="501" :step="1" :textConverter="(v) => v === 501 ? '∞' : `${v}`">
-				<template #label>{{ i18n.ts.emojiSearchLimit }}</template>
+				<template #label>{{ i18n.ts.emojiSearchLimit }}<DreamFeatureBadge/></template>
 			</MkRange>
 		</div>
 	</FormSection>
@@ -157,6 +157,8 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkRange from '@/components/MkRange.vue';
+import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
 
 const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));

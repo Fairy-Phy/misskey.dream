@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 				<MkFolder>
 					<template #icon><i class="ti ti-list"></i></template>
-					<template #label>{{ i18n.ts.tags }}</template>
+					<template #label>{{ i18n.ts.tags }}<DreamFeatureBadge/></template>
 
 					<div :class="$style.metadataRoot">
 						<div :class="$style.metadataMargin">
@@ -147,6 +147,7 @@ import XTabs from '@/components/global/MkPageHeader.tabs.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkEmojiLog from '@/components/MkEmojiLog.vue';
 import { $i } from '@/account';
+import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
