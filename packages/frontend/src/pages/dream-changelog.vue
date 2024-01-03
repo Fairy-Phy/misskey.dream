@@ -11,6 +11,19 @@
 <script lang="ts" setup>
 let text = '$[x2 ChangeLog]\n\n';
 
+text += "$[tada.speed=0s 【 Dream 1.10.0 】]\n\
+\n\
+・ Add: Playでカスタム実績を発行できるようになりました\n\
+　・これに伴い、新たな関数`Mk:claimAchieve(achieveId)`が追加されました\n\
+\n\
+・ Fix: アバターデコレーションの1番レイヤーのみ数字表記がない問題\n\
+\n\
+・ Fix: 絵文字追加ダイアログのタグ指定をする際にフォーカスが切れる問題\n\
+\n\
+・ Fix: 絵文字ピッカーが重複して表示されてしまっている問題\n";
+
+text += "\n\n";
+
 text += "$[tada.speed=0s 【 Dream 1.9.1 】]\n\
 \n\
 ・ Add: 独自機能項目にはできる限りバッチをつけるように\n\
