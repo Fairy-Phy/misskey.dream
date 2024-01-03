@@ -53,7 +53,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</section>
 
-			<div v-if="tab === 'index'" class="group index">
+			<section>
+				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
+				<div class="body">
+					<button v-for="emoji in recentlyUsedEmojis" :key="emoji" class="_button item" :data-emoji="emoji" @pointerenter="computeButtonTitle" @click="chosen(emoji, $event)">
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true" />
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true" />
+					</button>
+				</div>
+			</section>
+			<!--<div v-if="tab === 'index'" class="group index">
 				<section v-if="showPinned">
 					<div class="body">
 						<button v-for="emoji in pinned" :key="emoji" :data-emoji="emoji" class="_button item" tabindex="0" @pointerenter="computeButtonTitle" @click="chosen(emoji, $event)">
@@ -82,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-once class="group">
 				<header class="_acrylic">{{ i18n.ts.emoji }}</header>
 				<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" @chosen="chosen">{{ category }}</XSection>
-			</div>
+			</div>-->
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
@@ -90,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value).filter(filterAvailable).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(e => child.value === '' ? (e.category === 'null' || !e.category) : e.category === child.value).filter(v => defaultStore.state.displaySensitiveEmoji ? true : !v.isSensitive).filter(filterAvailable).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -229,9 +238,10 @@ watch(q, () => {
 
 	const newQ = q.value.replace(/:/g, '').toLowerCase();
 
+	// maxは501の時無限に検索する、そこらへんはsettings/reactionの兼ね合いで調整
 	const max = defaultStore.state.emojiSearchLimit === 501 ? Number.MAX_SAFE_INTEGER : defaultStore.state.emojiSearchLimit;
 	const searchCustom = () => {
-		// maxは501の時無限に検索する、そこらへんはsettings/reactionの兼ね合いで調整
+		// 絵文字は検索上限があるため先にsensitiveフィルターをしておかないと検索数に影響がでる
 		const emojis = defaultStore.state.displaySensitiveEmoji ? customEmojis.value : customEmojis.value.filter(v => !v.isSensitive);
 		const matches = new Set<Misskey.entities.EmojiSimple>();
 

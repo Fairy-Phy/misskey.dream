@@ -130,6 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkSwitch v-model="emojiPickerDisplaySensitiveEmoji">
 				{{ i18n.ts.displaySensitiveEmoji }}<DreamFeatureBadge/>
+				<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 			</MkSwitch>
 
 			<MkRange v-model="emojiPickerSearchLimit" :min="15" :max="501" :step="1" :textConverter="(v) => v === 501 ? '∞' : `${v}`">
