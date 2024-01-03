@@ -11,6 +11,7 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	requireCredential: true,
 	prohibitMoved: true,
+	kind: 'write:account',
 
 	errors: {
 		noSuchAchieve: {

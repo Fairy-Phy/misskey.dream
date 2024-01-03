@@ -10,7 +10,7 @@ import { DI } from '@/di-symbols.js';
 import { AchievementService } from '@/core/AchievementService.js';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: false,
 
 	res: {
 		type: 'array',
@@ -32,7 +32,7 @@ export const meta = {
 				flavor: { optional: true, type: 'string' },
 			},
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {
