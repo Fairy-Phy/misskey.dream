@@ -14,6 +14,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkTextarea v-model="summary">
 				<template #label>{{ i18n.ts._play.summary }}</template>
 			</MkTextarea>
+			<MkFolder>
+				<template #label>{{ i18n.ts.achievements }}</template>
+
+				<div class="_gaps_m">
+					<div class="buttons _buttons">
+						<MkButton class="button" inline @click="addAchieve"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+					</div>
+					<MkFolder v-for="achievement, i in achievements" :key="achievement._id">
+						<template #label>{{ achievement.achieveId }}</template>
+						<div class="_gaps_m">
+							<MkInput v-model="achievement.achieveId" pattern="[a-zA-Z0-9_]" autocapitalize="off">
+								<template #label>{{ i18n.ts.achieveId }}</template>
+							</MkInput>
+							<MkInput v-model="achievement.title">
+								<template #label>{{ i18n.ts.title }}</template>
+							</MkInput>
+							<MkInput v-model="achievement.description">
+								<template #label>{{ i18n.ts.description }}</template>
+							</MkInput>
+							<MkInput v-model="achievement.flavor">
+								<template #label>{{ i18n.ts.annotation }}</template>
+							</MkInput>
+							<MkInput v-model="achievement.img">
+								<template #label>{{ i18n.ts.imageUrl }}</template>
+							</MkInput>
+							<MkInput v-model="achievement.bg">
+								<template #label>{{ i18n.ts.backgroundColor }}</template>
+							</MkInput>
+							<MkSelect v-model="achievement.frame">
+								<template #label>{{ i18n.ts.reality }}</template>
+								<option :key="'bronze'" :value="'bronze'">bronze</option>
+								<option :key="'silver'" :value="'silver'">silver</option>
+								<option :key="'gold'" :value="'gold'">gold</option>
+								<option :key="'platinum'" :value="'platinum'">platinum</option>
+							</MkSelect>
+							<div class="buttons _buttons">
+								<MkButton class="button" inline danger @click="deleteAchieve(i)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+							</div>
+						</div>
+					</MkFolder>
+				</div>
+			</MkFolder>
 			<MkButton primary @click="selectPreset">{{ i18n.ts.selectFromPresets }}<i class="ti ti-chevron-down"></i></MkButton>
 			<MkCodeEditor v-model="script" lang="is">
 				<template #label>{{ i18n.ts._play.script }}</template>
@@ -43,6 +85,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import { useRouter } from '@/router.js';
 
 const PRESET_DEFAULT = `/// @ 0.16.0
@@ -376,7 +419,25 @@ if (props.id) {
 const title = ref(flash.value?.title ?? 'New Play');
 const summary = ref(flash.value?.summary ?? '');
 const permissions = ref(flash.value?.permissions ?? []);
+const achievements = ref(flash.value?.achievements.map(v => ({ ...v, _id: Math.random().toString() })) ?? []);
 const script = ref(flash.value?.script ?? PRESET_DEFAULT);
+
+function addAchieve() {
+	achievements.value.unshift({
+		_id: Math.random().toString(),
+		achieveId: '',
+		img: '',
+		bg: '',
+		frame: '',
+		title: '',
+		description: '',
+		flavor: '',
+	});
+}
+
+function deleteAchieve(i: number) {
+	achievements.value.splice(i, 1);
+}
 
 function selectPreset(ev: MouseEvent) {
 	os.popupMenu([{
@@ -411,6 +472,10 @@ async function save() {
 			permissions: permissions.value,
 			script: script.value,
 			visibility: visibility.value,
+			achievements: achievements.value.map(v => {
+				const { _id: undefined, ...r } = v;
+				return r;
+			}),
 		});
 	} else {
 		const created = await os.apiWithDialog('flash/create', {
@@ -418,6 +483,11 @@ async function save() {
 			summary: summary.value,
 			permissions: permissions.value,
 			script: script.value,
+			visibility: visibility.value,
+			achievements: achievements.value.map(v => {
+				const { _id: undefined, ...r } = v;
+				return r;
+			}),
 		});
 		router.push('/play/' + created.id + '/edit');
 	}

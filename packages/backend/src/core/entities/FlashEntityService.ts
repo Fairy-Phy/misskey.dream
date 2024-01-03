@@ -35,7 +35,7 @@ export class FlashEntityService {
 		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Flash'>> {
 		const meId = me ? me.id : null;
-		const flash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });
+		const flash: MiFlash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
 			id: flash.id,
@@ -48,6 +48,7 @@ export class FlashEntityService {
 			script: flash.script,
 			likedCount: flash.likedCount,
 			isLiked: meId ? await this.flashLikesRepository.exist({ where: { flashId: flash.id, userId: meId } }) : undefined,
+			...(meId === flash.userId ? { achievements: flash.achievements, } : {}),
 		});
 	}
 

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<div v-if="achievements" :class="$style.root">
+	<div v-if="achievements && flashAchievements" :class="$style.root">
 		<div v-for="achievement in achievements" :key="achievement" :class="$style.achievement" class="_panel">
 			<div :class="$style.icon">
 				<div
@@ -30,6 +30,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.description">{{ withDescription ? i18n.ts._achievements._types['_' + achievement.name].description : '???' }}</div>
 				<div v-if="i18n.ts._achievements._types['_' + achievement.name].flavor && withDescription" :class="$style.flavor">{{ i18n.ts._achievements._types['_' + achievement.name].flavor }}</div>
+			</div>
+		</div>
+		<div v-for="achievement in flashAchievements" :key="achievement" :class="$style.achievement" class="_panel">
+			<div :class="$style.icon">
+				<div
+					:class="[$style.iconFrame, {
+						[$style.iconFrame_bronze]: achievement.frame === 'bronze',
+						[$style.iconFrame_silver]: achievement.frame === 'silver',
+						[$style.iconFrame_gold]: achievement.frame === 'gold',
+						[$style.iconFrame_platinum]: achievement.frame === 'platinum',
+					}]"
+				>
+					<div :class="[$style.iconInner]" :style="{ background: achievement.bg }">
+						<img :class="$style.iconImg" :src="achievement.img">
+					</div>
+				</div>
+			</div>
+			<div :class="$style.body">
+				<div :class="$style.header">
+					<span :class="$style.title">{{ achievement.title }}</span>
+					<span :class="$style.time">
+						<time v-tooltip="new Date(achievement.unlockedAt).toLocaleString()">{{ new Date(achievement.unlockedAt).getFullYear() }}/{{ new Date(achievement.unlockedAt).getMonth() + 1 }}/{{ new Date(achievement.unlockedAt).getDate() }}</time>
+					</span>
+				</div>
+				<div :class="$style.description">{{ achievement.description }}</div>
+				<div v-if="achievement.flavor?.trim().length !== 0" :class="$style.flavor">{{ achievement.flavor }}</div>
 			</div>
 		</div>
 		<template v-if="withLocked">
@@ -68,6 +94,7 @@ const props = withDefaults(defineProps<{
 });
 
 const achievements = ref();
+const flashAchievements = ref();
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
 function fetch() {
@@ -77,6 +104,10 @@ function fetch() {
 			const a = res.find(x => x.name === t);
 			if (a) achievements.value.push(a);
 		}
+		//achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
+	});
+	os.api('users/achievements', { userId: props.user.id, isFlash: true }).then(res => {
+		flashAchievements.value = res;
 		//achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
 	});
 }

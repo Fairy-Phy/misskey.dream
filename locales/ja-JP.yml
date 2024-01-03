@@ -1222,6 +1222,8 @@ outdatedOptionsDescription: "これらのオプションは廃止される予定
 disableNoteNyaize: "nayizeを無効化する"
 noneLicense: "ライセンスが指定されていません。指定しない場合暗黙的にあなたの名前が記載されますが、これはあなたが作成した絵文字ですか？"
 noneLicenseNo: "正しいライセンスを記述してください。"
+achieveId: "アチーブID"
+reality: "レアリティ"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

@@ -1225,6 +1225,8 @@ export interface Locale {
     "disableNoteNyaize": string;
     "noneLicense": string;
     "noneLicenseNo": string;
+    "achieveId": string;
+    "reality": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

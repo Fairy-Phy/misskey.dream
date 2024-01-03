@@ -93,7 +93,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ notification.role.name }}
 			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
-				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
+				{{ i18n.ts._achievements._types['_' + notification.achievement]?.title ?? notification.achievement }}
 			</MkA>
 			<template v-else-if="notification.type === 'follow'">
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}</span>

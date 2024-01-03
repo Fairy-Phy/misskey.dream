@@ -99,5 +99,15 @@ export function createAiScriptEnv(opts: { token: string; storageMetadata: Storag
 			utils.assertString(text);
 			return values.STR(nyaize(text.value));
 		}),
+		...(opts.storageMetadata.type === 'flash' ? {
+			'Mk:claimAchieve': values.FN_NATIVE(([achieveId]) => {
+				utils.assertString(achieveId);
+				return os.api('i/claim-achievement', { name: achieveId.value, flashId: opts.storageMetadata.id }).then(_ => {
+					return values.NULL;
+				}, err => {
+					return values.ERROR('request_failed', utils.jsToVal(err));
+				});
+			}),
+		} : {}),
 	};
 }

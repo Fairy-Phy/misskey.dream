@@ -51,6 +51,19 @@ export class MiFlash {
 	})
 	public permissions: string[];
 
+	@Column('jsonb', {
+		default: [],
+	})
+	public achievements: {
+		achieveId: string;
+		img: string;
+		bg: string;
+		frame: string;
+		title: string;
+		description: string;
+		flavor: string;
+	}[];
+
 	@Column('integer', {
 		default: 0,
 	})

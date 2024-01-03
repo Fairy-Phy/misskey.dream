@@ -268,6 +268,15 @@ export class MiUserProfile {
 		unlockedAt: number;
 	}[];
 
+	@Column('jsonb', {
+		default: [],
+	})
+	public flashAchievements: {
+		flashId: string;
+		achieveId: string;
+		unlockedAt: number;
+	}[];
+
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {

@@ -9,6 +9,7 @@ import type { FlashsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import { ACHIEVEMENT_FRAMES } from '@/core/AchievementService.js';
 
 export const meta = {
 	tags: ['flash'],
@@ -49,6 +50,19 @@ export const paramDef = {
 		permissions: { type: 'array', items: {
 			type: 'string',
 		} },
+		achievements: { type: 'array', items: {
+			type: 'object',
+			properties: {
+				achieveId: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
+				img: { type: 'string' },
+				bg: { type: 'string' },
+				frame: { type: 'string', enum: ACHIEVEMENT_FRAMES },
+				title: { type: 'string' },
+				description: { type: 'string' },
+				flavor: { type: 'string' },
+			},
+			required: ['achieveId', 'img', 'bg', 'frame', 'title', 'description', 'flavor'],
+		} },
 		visibility: { type: 'string', enum: ['public', 'private'] },
 	},
 	required: ['flashId', 'title', 'summary', 'script', 'permissions'],
@@ -75,6 +89,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				summary: ps.summary,
 				script: ps.script,
 				permissions: ps.permissions,
+				achievements: ps.achievements,
 				visibility: ps.visibility,
 			});
 		});
