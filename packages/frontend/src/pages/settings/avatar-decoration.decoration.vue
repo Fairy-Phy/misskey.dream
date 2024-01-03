@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.name"><MkCondensedLine :minScale="0.5">{{ decoration.name }}</MkCondensedLine></div>
 	<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: decoration.url, angle, flipH, offsetX, offsetY, scale, moveX, moveY, opacity }]" forceShowDecoration/>
 	<i v-if="decoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => decoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.lock" class="ti ti-lock"></i>
-	<span v-if="active && activeLayerIndex" :class="$style.layerNum">{{ activeLayerIndex + 1 }}</span>
+	<span v-if="active && activeLayerIndex !== undefined" :class="$style.layerNum">{{ activeLayerIndex + 1 }}</span>
 </div>
 </template>
 
