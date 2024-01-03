@@ -170,7 +170,7 @@ const aliasesText = computed({
 			let edited = false;
 			for (let i = 0; i < vs.length; i++) {
 				const e = vs[i];
-				if (aliases.value[i] !== e) {
+				if (aliases.value[i].value !== e) {
 					edited = true;
 					break;
 				}
