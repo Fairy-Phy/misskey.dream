@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -34,6 +34,10 @@ try {
 	});
 }
 export const dateTimeFormat = _dateTimeFormat;
+
+export const timeZone = dateTimeFormat.resolvedOptions().timeZone;
+
+export const hemisphere = /^(australia|pacific|antarctica|indian)\//i.test(timeZone) ? 'S' : 'N';
 
 let _numberFormat: Intl.NumberFormat;
 try {

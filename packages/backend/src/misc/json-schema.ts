@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -25,7 +25,7 @@ import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
 import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
 import { packedInviteCodeSchema } from '@/models/json-schema/invite-code.js';
-import { packedPageSchema } from '@/models/json-schema/page.js';
+import { packedPageSchema, packedPageBlockSchema } from '@/models/json-schema/page.js';
 import { packedNoteFavoriteSchema } from '@/models/json-schema/note-favorite.js';
 import { packedChannelSchema } from '@/models/json-schema/channel.js';
 import { packedAntennaSchema } from '@/models/json-schema/antenna.js';
@@ -46,8 +46,19 @@ import {
 } from '@/models/json-schema/emoji-log.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
-import { packedRoleLiteSchema, packedRoleSchema } from '@/models/json-schema/role.js';
+import {
+	packedRoleLiteSchema,
+	packedRoleSchema,
+	packedRolePoliciesSchema,
+	packedRoleCondFormulaLogicsSchema,
+	packedRoleCondFormulaValueNot,
+	packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	packedRoleCondFormulaValueCreatedSchema,
+	packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
+	packedRoleCondFormulaValueSchema,
+} from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
+import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -75,6 +86,7 @@ export const refs = {
 	Hashtag: packedHashtagSchema,
 	InviteCode: packedInviteCodeSchema,
 	Page: packedPageSchema,
+	PageBlock: packedPageBlockSchema,
 	Channel: packedChannelSchema,
 	QueueCount: packedQueueCountSchema,
 	Antenna: packedAntennaSchema,
@@ -90,36 +102,34 @@ export const refs = {
 	EmojiChangeLog: packedEmojiChangeLogSchema,
 	EmojiChangeLogs: packedEmojiChangeLogsSchema,
 	Signin: packedSigninSchema,
+	RoleCondFormulaLogics: packedRoleCondFormulaLogicsSchema,
+	RoleCondFormulaValueNot: packedRoleCondFormulaValueNot,
+	RoleCondFormulaValueIsLocalOrRemote: packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	RoleCondFormulaValueCreated: packedRoleCondFormulaValueCreatedSchema,
+	RoleCondFormulaFollowersOrFollowingOrNotes: packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
+	RoleCondFormulaValue: packedRoleCondFormulaValueSchema,
 	RoleLite: packedRoleLiteSchema,
 	Role: packedRoleSchema,
+	RolePolicies: packedRolePoliciesSchema,
+	ReversiGameLite: packedReversiGameLiteSchema,
+	ReversiGameDetailed: packedReversiGameDetailedSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<(typeof refs)[x]>;
 
-type TypeStringef =
-	| 'null'
-	| 'boolean'
-	| 'integer'
-	| 'number'
-	| 'string'
-	| 'array'
-	| 'object'
-	| 'any';
-type StringDefToType<T extends TypeStringef> = T extends 'null'
-	? null
-	: T extends 'boolean'
-	? boolean
-	: T extends 'integer'
-	? number
-	: T extends 'number'
-	? number
-	: T extends 'string'
-	? string | Date
-	: T extends 'array'
-	? ReadonlyArray<any>
-	: T extends 'object'
-	? Record<string, any>
-	: any;
+export type KeyOf<x extends keyof typeof refs> = PropertiesToUnion<typeof refs[x]>;
+type PropertiesToUnion<p extends Schema> = p['properties'] extends NonNullable<Obj> ? keyof p['properties'] : never;
+
+type TypeStringef = 'null' | 'boolean' | 'integer' | 'number' | 'string' | 'array' | 'object' | 'any';
+type StringDefToType<T extends TypeStringef> =
+	T extends 'null' ? null :
+	T extends 'boolean' ? boolean :
+	T extends 'integer' ? number :
+	T extends 'number' ? number :
+	T extends 'string' ? string | Date :
+	T extends 'array' ? ReadonlyArray<any> :
+	T extends 'object' ? Record<string, any> :
+	any;
 
 // https://swagger.io/specification/?sbsearch=optional#schema-object
 type OfSchema = {
@@ -141,6 +151,7 @@ export interface Schema extends OfSchema {
 	readonly example?: any;
 	readonly format?: string;
 	readonly ref?: keyof typeof refs;
+	readonly selfRef?: boolean;
 	readonly enum?: ReadonlyArray<string | null>;
 	readonly default?:
 		| (this['type'] extends TypeStringef ? StringDefToType<this['type']> : any)

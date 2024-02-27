@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,6 +33,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts.maintainerEmail }}</template>
 						</MkInput>
 					</FormSplit>
+
+					<MkInput v-model="repositoryUrl" type="url">
+						<template #label>{{ i18n.ts.repositoryUrl }}</template>
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
+					</MkInput>
+
+					<MkInfo v-if="!instance.providesTarball && !repositoryUrl" warn>
+						{{ i18n.ts.repositoryUrlOrTarballRequired }}
+					</MkInfo>
 
 					<MkInput v-model="impressumUrl" type="url">
 						<template #label>{{ i18n.ts.impressumUrl }}</template>
@@ -162,7 +172,8 @@ import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
-import { fetchInstance } from '@/instance.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
@@ -173,6 +184,7 @@ const description = ref<string | null>(null);
 const maintainerName = ref<string | null>(null);
 const maintainerEmail = ref<string | null>(null);
 const relationalDate = ref<string | null>(null);
+const repositoryUrl = ref<string | null>(null);
 const impressumUrl = ref<string | null>(null);
 const pinnedUsers = ref<string>('');
 const cacheRemoteFiles = ref<boolean>(false);
@@ -191,13 +203,14 @@ const notesPerOneAd = ref<number>(0);
 let prevDate = "";
 
 async function init(): Promise<void> {
-	const meta = await os.api('admin/meta');
+	const meta = await misskeyApi('admin/meta');
 	name.value = meta.name;
 	shortName.value = meta.shortName;
 	description.value = meta.description;
 	maintainerName.value = meta.maintainerName;
 	maintainerEmail.value = meta.maintainerEmail;
 	relationalDate.value = meta.relationalDate;
+	repositoryUrl.value = meta.repositoryUrl;
 	impressumUrl.value = meta.impressumUrl;
 	pinnedUsers.value = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles.value = meta.cacheRemoteFiles;
@@ -221,6 +234,7 @@ async function save(): void {
 		description: description.value,
 		maintainerName: maintainerName.value,
 		maintainerEmail: maintainerEmail.value,
+		repositoryUrl: repositoryUrl.value,
 		impressumUrl: impressumUrl.value,
 		pinnedUsers: pinnedUsers.value.split('\n'),
 		cacheRemoteFiles: cacheRemoteFiles.value,
@@ -243,10 +257,10 @@ async function save(): void {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.general,
 	icon: 'ti ti-settings',
-});
+}));
 </script>
 
 <style lang="scss" module>

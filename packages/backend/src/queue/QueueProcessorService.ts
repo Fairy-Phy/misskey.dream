@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,6 +17,7 @@ import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
 import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
 import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
+import { ExportClipsProcessorService } from './processors/ExportClipsProcessorService.js';
 import { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
 import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
 import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
@@ -58,6 +59,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private deleteDriveFilesProcessorService: DeleteDriveFilesProcessorService,
 		private exportCustomEmojisProcessorService: ExportCustomEmojisProcessorService,
 		private exportNotesProcessorService: ExportNotesProcessorService,
+		private exportClipsProcessorService: ExportClipsProcessorService,
 		private exportFavoritesProcessorService: ExportFavoritesProcessorService,
 		private exportFollowingProcessorService: ExportFollowingProcessorService,
 		private exportMutingProcessorService: ExportMutingProcessorService,
@@ -103,10 +105,100 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		}
 
 		const systemLogger = this.logger.createSubLogger('system');
+
+		/*this.systemQueueWorker
+			.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
+			.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
+			.on('failed', (job, err) => systemLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => systemLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
+		//#endregion
+
+		//#region db
+		this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
+			switch (job.name) {
+				case 'deleteDriveFiles': return this.deleteDriveFilesProcessorService.process(job);
+				case 'exportCustomEmojis': return this.exportCustomEmojisProcessorService.process(job);
+				case 'exportNotes': return this.exportNotesProcessorService.process(job);
+				case 'exportClips': return this.exportClipsProcessorService.process(job);
+				case 'exportFavorites': return this.exportFavoritesProcessorService.process(job);
+				case 'exportFollowing': return this.exportFollowingProcessorService.process(job);
+				case 'exportMuting': return this.exportMutingProcessorService.process(job);
+				case 'exportBlocking': return this.exportBlockingProcessorService.process(job);
+				case 'exportUserLists': return this.exportUserListsProcessorService.process(job);
+				case 'exportAntennas': return this.exportAntennasProcessorService.process(job);
+				case 'importFollowing': return this.importFollowingProcessorService.process(job);
+				case 'importFollowingToDb': return this.importFollowingProcessorService.processDb(job);
+				case 'importMuting': return this.importMutingProcessorService.process(job);
+				case 'importBlocking': return this.importBlockingProcessorService.process(job);
+				case 'importBlockingToDb': return this.importBlockingProcessorService.processDb(job);
+				case 'importUserLists': return this.importUserListsProcessorService.process(job);
+				case 'importCustomEmojis': return this.importCustomEmojisProcessorService.process(job);
+				case 'importAntennas': return this.importAntennasProcessorService.process(job);
+				case 'deleteAccount': return this.deleteAccountProcessorService.process(job);
+				default: throw new Error(`unrecognized job type ${job.name} for db`);
+			}
+		}, {
+			...baseQueueOptions(this.config, QUEUE.DB),
+			autorun: false,
+		});
+
+		const dbLogger = this.logger.createSubLogger('db');
+
+		this.dbQueueWorker
+			.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
+			.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
+			.on('failed', (job, err) => dbLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => dbLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => dbLogger.warn(`stalled id=${jobId}`));
+		//#endregion
+
+		//#region deliver
+		this.deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => this.deliverProcessorService.process(job), {
+			...baseQueueOptions(this.config, QUEUE.DELIVER),
+			autorun: false,
+			concurrency: this.config.deliverJobConcurrency ?? 128,
+			limiter: {
+				max: this.config.deliverJobPerSec ?? 128,
+				duration: 1000,
+			},
+			settings: {
+				backoffStrategy: httpRelatedBackoff,
+			},
+		});*/
+
 		const deliverLogger = this.logger.createSubLogger('deliver');
 		const webhookLogger = this.logger.createSubLogger('webhook');
 		const inboxLogger = this.logger.createSubLogger('inbox');
 		const dbLogger = this.logger.createSubLogger('db');
+
+		/*this.webhookDeliverQueueWorker
+			.on('active', (job) => webhookLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
+			.on('completed', (job, result) => webhookLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
+			.on('failed', (job, err) => webhookLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
+			.on('error', (err: Error) => webhookLogger.error(`error ${err.stack}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => webhookLogger.warn(`stalled id=${jobId}`));
+		//#endregion
+
+		//#region relationship
+		this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
+			switch (job.name) {
+				case 'follow': return this.relationshipProcessorService.processFollow(job);
+				case 'unfollow': return this.relationshipProcessorService.processUnfollow(job);
+				case 'block': return this.relationshipProcessorService.processBlock(job);
+				case 'unblock': return this.relationshipProcessorService.processUnblock(job);
+				default: throw new Error(`unrecognized job type ${job.name} for relationship`);
+			}
+		}, {
+			...baseQueueOptions(this.config, QUEUE.RELATIONSHIP),
+			autorun: false,
+			concurrency: this.config.relationshipJobConcurrency ?? 16,
+			limiter: {
+				max: this.config.relationshipJobPerSec ?? 64,
+				duration: 1000,
+			},
+		});*/
+
 		const relationshipLogger = this.logger.createSubLogger('relationship');
 
 		/*

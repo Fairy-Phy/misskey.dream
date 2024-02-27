@@ -1,13 +1,15 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModalWindow
-	ref="dialog"
-	:width="400"
-	@close="dialog.close()"
+<MkWindow
+	ref="windowEl"
+	:initialWidth="400"
+	:initialHeight="500"
+	:canResize="false"
+	@close="windowEl.close()"
 	@closed="$emit('closed')"
 >
 	<template v-if="emoji" #header>
@@ -78,9 +80,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 				<MkInput v-model="aliasesText" autocapitalize="off">
 					<template #label>{{ i18n.ts.tags }}(Legacy)</template>
-					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
+					<template #caption>
+						{{ i18n.ts.theKeywordWhenSearchingForCustomEmoji }}<br/>
+						{{ i18n.ts.setMultipleBySeparatingWithSpace }}
+					</template>
 				</MkInput>
-				<MkInput v-model="license">
+				<MkInput v-model="license" :mfmAutocomplete="true">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
 				<MkFolder>
@@ -126,18 +131,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkSpacer>
 	</div>
-</MkModalWindow>
+</MkWindow>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkWindow from '@/components/MkWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -155,7 +161,7 @@ const props = defineProps<{
 	emoji?: any,
 }>();
 
-const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
+const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
 const name = ref<string>(props.emoji ? props.emoji.name : '');
 const category = ref<string>(props.emoji ? props.emoji.category : '');
 const aliases = ref<{ id: string, value: string }[]>(props.emoji ? props.emoji.aliases.map(x => ({
@@ -225,7 +231,7 @@ function deleteAliase(index: number) {
 }
 
 watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
-	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
+	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
 const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
@@ -244,7 +250,7 @@ async function changeImage(ev) {
 }
 
 async function addRole() {
-	const roles = await os.api('admin/roles/list');
+	const roles = await misskeyApi('admin/roles/list');
 	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.value.map(x => x.id);
 
 	const { canceled, result: role } = await os.select({
@@ -314,7 +320,7 @@ async function done() {
 			},
 		});
 
-		dialog.value.close();
+		windowEl.value.close();
 	} else {
 		const created = await os.apiWithDialog('admin/emoji/add', params);
 
@@ -322,24 +328,24 @@ async function done() {
 			created: created,
 		});
 
-		dialog.value.close();
+		windowEl.value.close();
 	}
 }
 
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: name.value }),
+		text: i18n.tsx.removeAreYouSure({ x: name.value }),
 	});
 	if (canceled) return;
 
-	os.apiWithDialog('admin/emoji/delete', {
+	misskeyApi('admin/emoji/delete', {
 		id: props.emoji.id,
 	}).then(() => {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.value.close();
+		windowEl.value.close();
 	});
 }
 </script>

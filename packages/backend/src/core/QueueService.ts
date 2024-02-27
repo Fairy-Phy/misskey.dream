@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, DeliverJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
+import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 
 @Injectable()
 export class QueueService {
@@ -38,11 +39,15 @@ export class QueueService {
 		if (content == null) return null;
 		if (to == null) return null;
 
+		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
+
 		const data: DeliverJobData = {
 			user: {
 				id: user.id,
 			},
-			content,
+			content: contentBody,
+			digest,
 			to,
 			isSharedInbox,
 		};
@@ -68,6 +73,8 @@ export class QueueService {
 	@bindThis
 	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
 		if (content == null) return null;
+		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
@@ -82,7 +89,8 @@ export class QueueService {
 		await this.deliverQueue.addBulk(Array.from(inboxes.entries(), d => ({
 			data: {
 				user,
-				content,
+				content: contentBody,
+				digest,
 				to: d[0],
 				isSharedInbox: d[1],
 			} as DeliverJobData,
@@ -133,6 +141,16 @@ export class QueueService {
 	@bindThis
 	public createExportNotesJob(user: ThinUser) {
 		return this.dbQueue.add('exportNotes', {
+			user: { id: user.id },
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
+	public createExportClipsJob(user: ThinUser) {
+		return this.dbQueue.add('exportClips', {
 			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
