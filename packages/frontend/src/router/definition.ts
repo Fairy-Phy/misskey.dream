@@ -198,6 +198,9 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/about.vue')),
 	hash: 'initialTab',
 }, {
+	path: '/dream-changelog',
+	component: page(() => import('@/pages/dream-changelog.vue')),
+}, {
 	path: '/about-misskey',
 	component: page(() => import('@/pages/about-misskey.vue')),
 }, {

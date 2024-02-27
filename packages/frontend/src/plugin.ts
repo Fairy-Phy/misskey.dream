@@ -5,7 +5,8 @@
 
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { inputText, api } from '@/os.js';
+import { inputText } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
 import { $i } from './account.js';
 
@@ -16,7 +17,7 @@ export async function getPluginList(): Promise<Record<string, Plugin>> {
 	if ($i == null) return {};
 
 	try {
-		return await api('i/registry/get', { scope: ['client'], key: 'plugins' });
+		return await misskeyApi('i/registry/get', { scope: ['client'], key: 'plugins' });
 	} catch (err) {
 		if (err.code === 'NO_SUCH_KEY') return {};
 		throw err;

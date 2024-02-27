@@ -77,6 +77,7 @@ import MkColorInput from '@/components/MkColorInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import DialogRole from '@/pages/DialogRole.vue';
 import DreamFeatureBadge from '@/components/DreamFeatureBadge.vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const props = defineProps<{
 	role?: any,
@@ -96,10 +97,10 @@ let rolesAssigned = computed(() => assignedList);
 let roles = computed(() => roleList);
 
 onMounted(async () => {
-	assignedList = await os.api('roles/list', {
+	assignedList = await misskeyApi('roles/list', {
 		assignedOnly: true,
 	});
-	roleList = await os.api('roles/list', {
+	roleList = await misskeyApi('roles/list', {
 		communityPublicOnly: true,
 	}).then(v => v.filter(r => !assignedList.some(ra => r.id === ra.id)));
 });
@@ -121,17 +122,17 @@ const emit = defineEmits<{
 async function changeImage(ev) {
 	const file = await selectFile(ev.currentTarget ?? ev.target, null);
 	if (file != null) {
-		imgUrl = file.url;
+		imgUrl.value = file.url;
 	}
 }
 
 async function done() {
 	const params = {
-		name,
-		description,
-		iconUrl: imgUrl,
-		color,
-		isPublic
+		name: name.value,
+		description: description.value,
+		iconUrl: imgUrl.value,
+		color: color.value,
+		isPublic: isPublic.value
 	};
 
 	if (props.role) {
@@ -153,7 +154,7 @@ async function done() {
 			created: created,
 		});
 	}
-	dialog.close();
+	dialog.value.close();
 }
 </script>
 

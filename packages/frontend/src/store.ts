@@ -449,6 +449,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	disableNoteNyaize: {
 		where: 'device',
 		default: false,
+	},
 	dropAndFusion: {
 		where: 'device',
 		default: {

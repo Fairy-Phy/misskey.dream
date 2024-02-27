@@ -1,4 +1,4 @@
-import { api } from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { $i } from '@/account.js';
 
@@ -9,9 +9,9 @@ export async function loadScriptStorage(toAccount: boolean, storageMetadata: Sto
 	let value: string | null;
 	if ($i && toAccount && (storageMetadata.type !== 'plugins' || (storageMetadata.type === 'plugins' && storageMetadata.fromAccount))) {
 		if (storageMetadata.type === 'widget') {
-			value = await api('i/registry/get', { scope: ['client', 'aiscript', storageMetadata.type], key: key });
+			value = await misskeyApi('i/registry/get', { scope: ['client', 'aiscript', storageMetadata.type], key: key });
 		} else {
-			value = await api('i/registry/get', { scope: ['client', 'aiscript', storageMetadata.type, storageMetadata.id!], key: key });
+			value = await misskeyApi('i/registry/get', { scope: ['client', 'aiscript', storageMetadata.type, storageMetadata.id!], key: key });
 		}
 	} else {
 		if (storageMetadata.type === 'widget') {
@@ -29,9 +29,9 @@ export async function saveScriptStorage(toAccount: boolean, storageMetadata: Sto
 	const jsonValue = JSON.stringify(value);
 	if ($i && toAccount && (storageMetadata.type !== 'plugins' || (storageMetadata.type === 'plugins' && storageMetadata.fromAccount))) {
 		if (storageMetadata.type === 'widget') {
-			await api('i/registry/set', { scope: ['client', 'aiscript', storageMetadata.type], key: key, value: jsonValue });
+			await misskeyApi('i/registry/set', { scope: ['client', 'aiscript', storageMetadata.type], key: key, value: jsonValue });
 		} else {
-			await api('i/registry/set', { scope: ['client', 'aiscript', storageMetadata.type, storageMetadata.id!], key: key, value: jsonValue });
+			await misskeyApi('i/registry/set', { scope: ['client', 'aiscript', storageMetadata.type, storageMetadata.id!], key: key, value: jsonValue });
 		}
 	} else {
 		if (storageMetadata.type === 'widget') {

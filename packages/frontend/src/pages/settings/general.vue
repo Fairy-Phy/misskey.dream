@@ -64,6 +64,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option value="medium">{{ i18n.ts.medium }}</option>
 					<option value="large">{{ i18n.ts.large }}</option>
 				</MkRadios>
+				<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
+				<MkSwitch v-model="disableNoteNyaize">{{ i18n.ts.disableNoteNyaize }}<DreamFeatureBadge/></MkSwitch>
+			</div>
 
 			<MkSelect v-model="instanceTicker">
 				<template #label>{{ i18n.ts.instanceTicker }}</template>
@@ -86,9 +89,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
 				<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 			</MkRadios>
-
-			<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
-				<MkSwitch v-model="disableNoteNyaize">{{ i18n.ts.disableNoteNyaize }}<DreamFeatureBadge/></MkSwitch>
 		</div>
 	</FormSection>
 

@@ -77,7 +77,8 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { getPluginList } from '@/plugin.js';
 import { toHash } from '@/scripts/xxhash.js';
-import { savePluginToAccount } from '@/scripts/install-plugin.js';
+//import { savePluginToAccount } from '@/scripts/install-plugin.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 let plugins = Object.values(await getPluginList());
 plugins.push(...ColdDeviceStorage.get('plugins'));
@@ -87,8 +88,8 @@ async function uninstall(plugin) {
 	if (plugin.fromAccount) {
 		let plugins = await getPluginList();
 		delete plugins[plugin.id];
-		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', plugin.id] });
-		await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+		await misskeyApi('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', plugin.id] });
+		await misskeyApi('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 	} else {
 		const coldPlugins = ColdDeviceStorage.get('plugins');
 		ColdDeviceStorage.set('plugins', coldPlugins.filter(x => x.id !== plugin.id));
@@ -119,7 +120,7 @@ async function moveToAccount(plugin) {
 
 		if (canceled) return;
 
-		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', hash] });
+		await misskeyApi('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', hash] });
 	}
 
 	const coldPlugins = ColdDeviceStorage.get('plugins');
@@ -129,7 +130,7 @@ async function moveToAccount(plugin) {
 	plugin.fromAccount = true;
 	plugins[hash] = plugin;
 
-	await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+	await misskeyApi('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 }
 
 function copy(plugin) {
@@ -150,7 +151,7 @@ async function config(plugin) {
 	if (plugin.fromAccount) {
 		let plugins = await getPluginList();
 		plugins[plugin.id].configData = result;
-		await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+		await misskeyApi('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 	} else {
 		const coldPlugins = ColdDeviceStorage.get('plugins');
 		coldPlugins.find(p => p.id === plugin.id)!.configData = result;

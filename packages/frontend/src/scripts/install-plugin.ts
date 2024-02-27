@@ -65,10 +65,10 @@ async function savePluginToAccount(pluginOnlyOverride: boolean, { id, meta, src,
 	} as Plugin;
 
 	if (!pluginOnlyOverride) {
-		await os.api('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', id] });
+		await misskeyApi('i/registry/remove-all-keys-in-scope', { scope: ['client', 'aiscript', 'plugins', id] });
 	}
 
-	await os.api('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
+	await misskeyApi('i/registry/set', { scope: ['client'], key: 'plugins', value: plugins });
 }
 
 export function isSupportedAiScriptVersion(version: string): boolean {

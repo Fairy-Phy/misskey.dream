@@ -20,7 +20,6 @@ import { isPureRenote } from '@/misc/is-pure-renote.js';
 import { MetaService } from '@/core/MetaService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { ApiError } from '../../error.js';
-import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['notes'],

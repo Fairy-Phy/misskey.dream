@@ -23,7 +23,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { version } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { confetti } from '@/scripts/confetti.js';
-import { useRouter } from '@/router.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 const modal = shallowRef<InstanceType<typeof MkModal>>();

@@ -656,11 +656,29 @@ export interface Locale extends ILocale {
      * 絵文字を追加
      */
     "addEmoji": string;
+    /**
+     * 絵文字個数
+     */
     "emojiCounts": string;
+    /**
+     * 絵文字の検索上限数
+     */
     "emojiSearchLimit": string;
+    /**
+     * 絵文字ガイドライン
+     */
     "emojiGuideline": string;
+    /**
+     * サーバーステータス
+     */
     "serverStatus": string;
+    /**
+     * 削除されたタグ
+     */
     "removedAliases": string;
+    /**
+     * 追加されたタグ
+     */
     "addedAliases": string;
     /**
      * おすすめ設定
@@ -1746,6 +1764,9 @@ export interface Locale extends ILocale {
      * モデレーター
      */
     "moderator": string;
+    /**
+     * 絵文字モデレーター
+     */
     "emojiModerator": string;
     /**
      * モデレーション
@@ -2087,7 +2108,13 @@ export interface Locale extends ILocale {
      * 前日比
      */
     "dayOverDayChanges": string;
+    /**
+     * 変更
+     */
     "changes": string;
+    /**
+     * から
+     */
     "changeTo": string;
     /**
      * アピアランス
@@ -2533,6 +2560,9 @@ export interface Locale extends ILocale {
      * 高さ
      */
     "height": string;
+    /**
+     * 最大の高さ
+     */
     "maximumHeight": string;
     /**
      * 大
@@ -3134,6 +3164,9 @@ export interface Locale extends ILocale {
      * 更新日時
      */
     "updatedAt": string;
+    /**
+     * 記録日時
+     */
     "loggingDate": string;
     /**
      * 保存しますか？
@@ -3615,6 +3648,9 @@ export interface Locale extends ILocale {
      * モバイルデバイスのときドロワーで表示
      */
     "useDrawerReactionPickerForMobile": string;
+    /**
+     * センシティブ絵文字をピッカーに表示する
+     */
     "displaySensitiveEmoji": string;
     /**
      * おかえりなさい、{name}さん
@@ -3652,6 +3688,9 @@ export interface Locale extends ILocale {
      * 列の数
      */
     "numberOfColumn": string;
+    /**
+     * 最大の列の数
+     */
     "maximumNumberOfColumn": string;
     /**
      * 検索
@@ -4086,14 +4125,13 @@ export interface Locale extends ILocale {
      */
     "gotInvalidResponseErrorDescription": string;
     /**
-     * この投稿は迷惑になる可能性があります。
+     * この投稿は連合先に迷惑になる可能性があります。
      */
     "thisPostMayBeAnnoying": string;
-    "thisPostMayBeAnnoyingLocal": string;
     /**
-     * ホームに投稿
+     * 連合なしで投稿
      */
-    "thisPostMayBeAnnoyingHome": string;
+    "thisPostMayBeAnnoyingLocal": string;
     /**
      * やめる
      */
@@ -4574,18 +4612,42 @@ export interface Locale extends ILocale {
      * 重要ですので必ずお読みください。
      */
     "beSureToReadThisAsItIsImportant": string;
-    "badgeNameOfDream": string;
-    "methodOfNoteHeaderView": string;
-    "oneLineView": string;
-    "returnMultiLineView": string;
-    "methodOfRollViewInNoteHeader": string;
-    "defaultRollViewInNoteHeader": string;
-    "scrollableRollInNoteHeader": string;
-    "hideRollInNoteHeader": string;
     /**
      * 「{x}」の内容をよく読み、同意します。
      */
     "iHaveReadXCarefullyAndAgree": ParameterizedString<"x">;
+    /**
+     * ねむすぎ
+     */
+    "badgeNameOfDream": string;
+    /**
+     * ノートのヘッダーの表示のしかた
+     */
+    "methodOfNoteHeaderView": string;
+    /**
+     * 一行で表示
+     */
+    "oneLineView": string;
+    /**
+     * 複数行に折り返して表示
+     */
+    "returnMultiLineView": string;
+    /**
+     * ノートのロールの表示のしかた
+     */
+    "methodOfRollViewInNoteHeader": string;
+    /**
+     * デフォルト表示
+     */
+    "defaultRollViewInNoteHeader": string;
+    /**
+     * スクロールして表示
+     */
+    "scrollableRollInNoteHeader": string;
+    /**
+     * 表示しない
+     */
+    "hideRollInNoteHeader": string;
     /**
      * ダイアログ
      */
@@ -4822,20 +4884,65 @@ export interface Locale extends ILocale {
      * リアクションする
      */
     "doReaction": string;
+    /**
+     * 6枚以上重ねることはできません。他のレイヤーを削除してください。
+     */
     "maxinumLayerError": string;
+    /**
+     * レイヤー
+     */
     "layer": string;
+    /**
+     * プラグインの同期設定
+     */
     "pluginSyncSettings": string;
+    /**
+     * このプラグインをローカルのみにインストールするか他端末と同期するかを選択できます。
+     */
     "pluginSyncSettingsInfo": string;
+    /**
+     * このプラグインは同期されているプラグインと重複しています。
+     */
     "duplicateSyncedPlugin": string;
+    /**
+     * コードのみを上書きする
+     */
     "overrideSourceCodeOnly": string;
+    /**
+     * 同期設定
+     */
     "syncSetting": string;
+    /**
+     * 他端末と同期
+     */
     "syncing": string;
+    /**
+     * アカウントに移行
+     */
     "movePluginToAccount": string;
+    /**
+     * プラグインをアカウントに移行して他端末と同期しますか？プラグインとプラグイン設定以外は引き継がれません。
+     */
     "movePluginToAccountConfirm": string;
+    /**
+     * すでにプラグインがアカウントに存在します。上書きしますか？アカウントにあるプラグインデータは削除されます。
+     */
     "overridePluginConfirm": string;
+    /**
+     * X座標
+     */
     "Xcoordinate": string;
+    /**
+     * Y座標
+     */
     "Ycoordinate": string;
+    /**
+     * 大きさ
+     */
     "scale": string;
+    /**
+     * 不透明度
+     */
     "opacity": string;
     /**
      * コード
@@ -4861,12 +4968,33 @@ export interface Locale extends ILocale {
      * デコる
      */
     "decorate": string;
+    /**
+     * 廃止予定のオプション
+     */
     "outdatedOptions": string;
+    /**
+     * これらのオプションは廃止される予定です。設定されている場合は設定を削除し代替を使用してください。
+     */
     "outdatedOptionsDescription": string;
+    /**
+     * nayizeを無効化する
+     */
     "disableNoteNyaize": string;
+    /**
+     * ライセンスが指定されていません。指定しない場合暗黙的にあなたの名前が記載されますが、これはあなたが作成した絵文字ですか？
+     */
     "noneLicense": string;
+    /**
+     * 正しいライセンスを記述してください。
+     */
     "noneLicenseNo": string;
+    /**
+     * アチーブID
+     */
     "achieveId": string;
+    /**
+     * レアリティ
+     */
     "reality": string;
     /**
      * 装飾を追加
@@ -6428,6 +6556,9 @@ export interface Locale extends ILocale {
              * パブリック投稿の許可
              */
             "canPublicNote": string;
+            /**
+             * ノートの編集
+             */
             "canEditNote": string;
             /**
              * サーバー招待コードの発行
@@ -6505,7 +6636,13 @@ export interface Locale extends ILocale {
              * 広告の非表示
              */
             "canHideAds": string;
+            /**
+             * コミュニティーロールの追加
+             */
             "canAddRoles": string;
+            /**
+             * 増量させるドライブ容量
+             */
             "driveAdditionCapacity": string;
             /**
              * ノート検索の利用
@@ -6537,7 +6674,13 @@ export interface Locale extends ILocale {
              * アカウント作成から～経過
              */
             "createdMoreThan": string;
+            /**
+             * 絵文字登録数が～以下
+             */
             "emojiCountLessThanOrEq": string;
+            /**
+             * 絵文字登録数が～以上
+             */
             "emojiCountMoreThanOrEq": string;
             /**
              * フォロワー数が～以下
@@ -8266,7 +8409,13 @@ export interface Locale extends ILocale {
          * 全てのユーザーに公開
          */
         "publicDescription": string;
+        /**
+         * リレーショナル
+         */
         "relational": string;
+        /**
+         * 身内のタイムラインに公開
+         */
         "relationalDescription": string;
         /**
          * ホーム
@@ -8542,6 +8691,9 @@ export interface Locale extends ILocale {
          * ホーム
          */
         "home": string;
+        /**
+         * リレーショナル
+         */
         "relational": string;
         /**
          * ローカル
@@ -9178,10 +9330,25 @@ export interface Locale extends ILocale {
             "mention": string;
         };
     };
+    /**
+     * RTLを許可する登録日時
+     */
     "relationalDate": string;
+    /**
+     * 更新履歴
+     */
     "changeLog": string;
+    /**
+     * 今追加しようとしている絵文字はあなた以外の人が2回以上使用される可能性がありますか？
+     */
     "confirmAddEmoji": string;
+    /**
+     * コミュニティー
+     */
     "community": string;
+    /**
+     * ロールの管理
+     */
     "manageRole": string;
     "_moderationLogTypes": {
         /**
@@ -9355,7 +9522,10 @@ export interface Locale extends ILocale {
          */
         "thisPageCanBeSeenFromTheAuthor": string;
     };
-    "driveFolderDeleteConfirm": string;
+    /**
+     * フォルダー「{name}」を削除しますか？このフォルダー内にあるコンテンツも同時に削除されます。
+     */
+    "driveFolderDeleteConfirm": ParameterizedString<"name">;
     "_externalResourceInstaller": {
         /**
          * 外部サイトからインストール
