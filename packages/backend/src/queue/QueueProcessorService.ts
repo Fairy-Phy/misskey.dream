@@ -84,10 +84,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private cleanProcessorService: CleanProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
-	}
 
-	@bindThis
-	public start(): void {
 		function renderError(e: Error): any {
 			if (e) { // 何故かeがundefinedで来ることがある
 				return {

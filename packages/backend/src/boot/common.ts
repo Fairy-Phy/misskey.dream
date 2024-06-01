@@ -35,7 +35,6 @@ export async function jobQueue() {
 		logger: new NestLogger(),
 	});
 
-	jobQueue.get(QueueProcessorService).start();
 	jobQueue.get(ChartManagementService).start();
 
 	return jobQueue;
