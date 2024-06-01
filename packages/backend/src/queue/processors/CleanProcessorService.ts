@@ -13,7 +13,7 @@ import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
 import { ReversiService } from '@/core/ReversiService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 
 @Injectable()
 export class CleanProcessorService {
@@ -40,7 +40,7 @@ export class CleanProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
+	public async process(): Promise<void> {
 		this.logger.info('Cleaning...');
 
 		this.userIpsRepository.delete({
@@ -70,6 +70,5 @@ export class CleanProcessorService {
 		this.reversiService.cleanOutdatedGames();
 
 		this.logger.succ('Cleaned.');
-		done();
 	}
 }

@@ -13,7 +13,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import { DBAntennaImportJobData } from '../types.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 
 const Ajv = _Ajv.default;
 
@@ -67,7 +67,7 @@ export class ImportAntennasProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DBAntennaImportJobData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DBAntennaImportJobData>): Promise<void> {
 		const now = new Date();
 		try {
 			for (const antenna of job.data.antenna) {
@@ -97,8 +97,6 @@ export class ImportAntennasProcessorService {
 			}
 		} catch (err: any) {
 			this.logger.error(err);
-		} finally {
-			done();
 		}
 	}
 }

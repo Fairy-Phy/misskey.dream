@@ -12,11 +12,11 @@ import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
-import type { DbUserImportJobData, DbUserImportToDbJobData } from '../types.js';
 import { bindThis } from '@/decorators.js';
 import { QueueService } from '@/core/QueueService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
+import type { DbUserImportJobData, DbUserImportToDbJobData } from '../types.js';
 
 @Injectable()
 export class ImportBlockingProcessorService {
@@ -39,12 +39,11 @@ export class ImportBlockingProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbUserImportJobData>): Promise<void> {
 		this.logger.info(`Importing blocking of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 
@@ -52,7 +51,6 @@ export class ImportBlockingProcessorService {
 			id: job.data.fileId,
 		});
 		if (file == null) {
-			done();
 			return;
 		}
 
@@ -61,7 +59,6 @@ export class ImportBlockingProcessorService {
 		this.queueService.createImportBlockingToDbJob({ id: user.id }, targets);
 
 		this.logger.succ('Import jobs created');
-		done();
 	}
 
 	@bindThis

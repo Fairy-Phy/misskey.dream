@@ -14,10 +14,10 @@ import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { MiFollowing } from '@/models/Following.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
-import type { DbExportFollowingData } from '../types.js';
 import { bindThis } from '@/decorators.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
+import type { DbExportFollowingData } from '../types.js';
 
 @Injectable()
 export class ExportFollowingProcessorService {
@@ -41,12 +41,11 @@ export class ExportFollowingProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbExportFollowingData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbExportFollowingData>): Promise<void> {
 		this.logger.info(`Exporting following of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 
@@ -117,7 +116,5 @@ export class ExportFollowingProcessorService {
 		} finally {
 			cleanup();
 		}
-
-		done();
 	}
 }

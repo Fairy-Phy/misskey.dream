@@ -10,7 +10,7 @@ import UsersChart from '@/core/chart/charts/users.js';
 import DriveChart from '@/core/chart/charts/drive.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 
 @Injectable()
 export class ResyncChartsProcessorService {
@@ -26,7 +26,7 @@ export class ResyncChartsProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
+	public async process(): Promise<void> {
 		this.logger.info('Resync charts...');
 
 		// TODO: ユーザーごとのチャートも更新する
@@ -38,6 +38,5 @@ export class ResyncChartsProcessorService {
 		]);
 
 		this.logger.succ('All charts successfully resynced.');
-		done();
 	}
 }

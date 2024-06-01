@@ -15,7 +15,7 @@ import { EmailService } from '@/core/EmailService.js';
 import { bindThis } from '@/decorators.js';
 import { SearchService } from '@/core/SearchService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 import type { DbUserDeleteJobData } from '../types.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 

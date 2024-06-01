@@ -15,7 +15,7 @@ import { DI } from '@/di-symbols.js';
 import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { RelationshipJobData } from '../types.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 
 @Injectable()
 export class RelationshipProcessorService {
