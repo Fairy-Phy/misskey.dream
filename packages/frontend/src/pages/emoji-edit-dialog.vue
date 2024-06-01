@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="emoji" #header>
 		<div :class="$style.header">
 			<span>:{{ emoji.name.length > 30 ? emoji.name.slice(0, 27) + "..." : emoji.name }}:</span>
-			<XTabs :class="$style.tabs" :rootEl="dialog" :tab="tab" @update:tab="key => tab = key" :tabs="headerTabs"/>
+			<XTabs data-window-header-clickable :class="$style.tabs" :rootEl="dialog" :tab="tab" @update:tab="key => tab = key" :tabs="headerTabs"/>
 		</div>
 	</template>
 	<template v-else #header>New emoji</template>

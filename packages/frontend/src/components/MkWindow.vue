@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<button v-for="button in buttonsLeft" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
 					</template>
 				</span>
-				<span :class="$style.headerTitle" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
+				<span ref="headerEl" :class="$style.headerTitle" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
 				<span :class="$style.headerRight">
@@ -108,6 +108,7 @@ const emit = defineEmits<{
 provide('inWindow', true);
 
 const rootEl = shallowRef<HTMLElement | null>();
+const headerEl = shallowRef<HTMLElement | null>();
 const showing = ref(true);
 let beforeClickedAt = 0;
 const maximized = ref(false);
@@ -210,7 +211,35 @@ function getPositionY(event: MouseEvent | TouchEvent) {
 	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientY : 'clientY' in event ? event.clientY : 0;
 }
 
+/**
+ * ヘッダーにクリック要素がある場合、
+ * タッチパネルだと反応しないのでtouchstartから判定して、
+ * 擬似的にclickを再現する
+ * @param evt 
+ */
+function checkClickable(evt: MouseEvent | TouchEvent) {
+	if (evt.type !== 'touchstart') {
+		return false;
+	}
+	const target = evt.target as HTMLElement;
+	let currentTarget: HTMLElement | null = target;
+	while (currentTarget !== null && currentTarget !== headerEl.value) {
+		// ヘッダーにクリック要素があるときは
+		// この属性をヘッダー要素より深いターゲット要素に
+		// この属性をいれる。
+		if (currentTarget.hasAttribute('data-window-header-clickable')) {
+			target.click();
+			return true;
+		}
+		currentTarget = currentTarget.parentElement;
+	}
+
+	return false;
+}
+
 function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
+	if (checkClickable(evt)) return;
+
 	// 右クリックはコンテキストメニューを開こうとした可能性が高いため無視
 	if ('button' in evt && evt.button === 2) return;
 
