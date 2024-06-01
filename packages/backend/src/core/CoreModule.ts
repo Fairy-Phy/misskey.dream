@@ -84,6 +84,7 @@ import ApRequestChart from './chart/charts/ap-request.js';
 import { ChartManagementService } from './chart/ChartManagementService.js';
 
 import { AbuseUserReportEntityService } from './entities/AbuseUserReportEntityService.js';
+import { AnnouncementEntityService } from './entities/AnnouncementEntityService.js';
 import { AntennaEntityService } from './entities/AntennaEntityService.js';
 import { AppEntityService } from './entities/AppEntityService.js';
 import { AuthSessionEntityService } from './entities/AuthSessionEntityService.js';
@@ -127,7 +128,7 @@ import { ApMfmService } from './activitypub/ApMfmService.js';
 import { ApRendererService } from './activitypub/ApRendererService.js';
 import { ApRequestService } from './activitypub/ApRequestService.js';
 import { ApResolverService } from './activitypub/ApResolverService.js';
-import { LdSignatureService } from './activitypub/LdSignatureService.js';
+import { JsonLdService } from './activitypub/JsonLdService.js';
 import { RemoteLoggerService } from './RemoteLoggerService.js';
 import { RemoteUserResolveService } from './RemoteUserResolveService.js';
 import { WebfingerService } from './WebfingerService.js';
@@ -224,6 +225,7 @@ const $ApRequestChart: Provider = { provide: 'ApRequestChart', useExisting: ApRe
 const $ChartManagementService: Provider = { provide: 'ChartManagementService', useExisting: ChartManagementService };
 
 const $AbuseUserReportEntityService: Provider = { provide: 'AbuseUserReportEntityService', useExisting: AbuseUserReportEntityService };
+const $AnnouncementEntityService: Provider = { provide: 'AnnouncementEntityService', useExisting: AnnouncementEntityService };
 const $AntennaEntityService: Provider = { provide: 'AntennaEntityService', useExisting: AntennaEntityService };
 const $AppEntityService: Provider = { provide: 'AppEntityService', useExisting: AppEntityService };
 const $AuthSessionEntityService: Provider = { provide: 'AuthSessionEntityService', useExisting: AuthSessionEntityService };
@@ -267,7 +269,7 @@ const $ApMfmService: Provider = { provide: 'ApMfmService', useExisting: ApMfmSer
 const $ApRendererService: Provider = { provide: 'ApRendererService', useExisting: ApRendererService };
 const $ApRequestService: Provider = { provide: 'ApRequestService', useExisting: ApRequestService };
 const $ApResolverService: Provider = { provide: 'ApResolverService', useExisting: ApResolverService };
-const $LdSignatureService: Provider = { provide: 'LdSignatureService', useExisting: LdSignatureService };
+const $JsonLdService: Provider = { provide: 'JsonLdService', useExisting: JsonLdService };
 const $RemoteLoggerService: Provider = { provide: 'RemoteLoggerService', useExisting: RemoteLoggerService };
 const $RemoteUserResolveService: Provider = { provide: 'RemoteUserResolveService', useExisting: RemoteUserResolveService };
 const $WebfingerService: Provider = { provide: 'WebfingerService', useExisting: WebfingerService };
@@ -365,6 +367,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		ChartManagementService,
 
 		AbuseUserReportEntityService,
+		AnnouncementEntityService,
 		AntennaEntityService,
 		AppEntityService,
 		AuthSessionEntityService,
@@ -408,7 +411,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		ApRendererService,
 		ApRequestService,
 		ApResolverService,
-		LdSignatureService,
+		JsonLdService,
 		RemoteLoggerService,
 		RemoteUserResolveService,
 		WebfingerService,
@@ -502,6 +505,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		$ChartManagementService,
 
 		$AbuseUserReportEntityService,
+		$AnnouncementEntityService,
 		$AntennaEntityService,
 		$AppEntityService,
 		$AuthSessionEntityService,
@@ -545,7 +549,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		$ApRendererService,
 		$ApRequestService,
 		$ApResolverService,
-		$LdSignatureService,
+		$JsonLdService,
 		$RemoteLoggerService,
 		$RemoteUserResolveService,
 		$WebfingerService,
@@ -639,6 +643,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		ChartManagementService,
 
 		AbuseUserReportEntityService,
+		AnnouncementEntityService,
 		AntennaEntityService,
 		AppEntityService,
 		AuthSessionEntityService,
@@ -682,7 +687,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		ApRendererService,
 		ApRequestService,
 		ApResolverService,
-		LdSignatureService,
+		JsonLdService,
 		RemoteLoggerService,
 		RemoteUserResolveService,
 		WebfingerService,
@@ -775,6 +780,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		$ChartManagementService,
 
 		$AbuseUserReportEntityService,
+		$AnnouncementEntityService,
 		$AntennaEntityService,
 		$AppEntityService,
 		$AuthSessionEntityService,
@@ -818,7 +824,7 @@ const $EmojiModerationLogService: Provider = { provide: 'EmojiModerationLogServi
 		$ApRendererService,
 		$ApRequestService,
 		$ApResolverService,
-		$LdSignatureService,
+		$JsonLdService,
 		$RemoteLoggerService,
 		$RemoteUserResolveService,
 		$WebfingerService,

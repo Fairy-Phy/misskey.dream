@@ -57,6 +57,7 @@ import {
 	packedRoleCondFormulaValueCreatedSchema,
 	packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
 	packedRoleCondFormulaValueSchema,
+	packedRoleCondFormulaValueUserSettingBooleanSchema,
 } from '@/models/json-schema/role.js';
 import { packedAdSchema } from '@/models/json-schema/ad.js';
 import { packedReversiGameLiteSchema, packedReversiGameDetailedSchema } from '@/models/json-schema/reversi-game.js';
@@ -111,6 +112,7 @@ export const refs = {
 	RoleCondFormulaLogics: packedRoleCondFormulaLogicsSchema,
 	RoleCondFormulaValueNot: packedRoleCondFormulaValueNot,
 	RoleCondFormulaValueIsLocalOrRemote: packedRoleCondFormulaValueIsLocalOrRemoteSchema,
+	RoleCondFormulaValueUserSettingBooleanSchema: packedRoleCondFormulaValueUserSettingBooleanSchema,
 	RoleCondFormulaValueAssignedRole: packedRoleCondFormulaValueAssignedRoleSchema,
 	RoleCondFormulaValueCreated: packedRoleCondFormulaValueCreatedSchema,
 	RoleCondFormulaFollowersOrFollowingOrNotes: packedRoleCondFormulaFollowersOrFollowingOrNotesSchema,
@@ -250,39 +252,30 @@ type ObjectSchemaType<p extends Schema> = NullOrUndefined<
 	ObjectSchemaTypeDef<p>
 >;
 
-export type SchemaTypeDef<p extends Schema> = p['type'] extends 'null'
-	? null
-	: p['type'] extends 'integer'
-	? number
-	: p['type'] extends 'number'
-	? number
-	: p['type'] extends 'string'
-	? p['enum'] extends readonly (string | null)[]
-		? p['enum'][number]
-		: p['format'] extends 'date-time'
-		? string // Dateにする？？
-		: string
-	: p['type'] extends 'boolean'
-	? boolean
-	: p['type'] extends 'object'
-	? ObjectSchemaTypeDef<p>
-	: p['type'] extends 'array'
-	? p['items'] extends OfSchema
-		? p['items']['anyOf'] extends ReadonlyArray<Schema>
-			? UnionSchemaType<NonNullable<p['items']['anyOf']>>[]
-			: p['items']['oneOf'] extends ReadonlyArray<Schema>
-			? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>>
-			: p['items']['allOf'] extends ReadonlyArray<Schema>
-			? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[]
-			: never
-		: p['items'] extends NonNullable<Schema>
-		? SchemaTypeDef<p['items']>[]
-		: any[]
-	: p['anyOf'] extends ReadonlyArray<Schema>
-	? UnionSchemaType<p['anyOf']> &
-			PartialIntersection<UnionSchemaType<p['anyOf']>>
-	: p['oneOf'] extends ReadonlyArray<Schema>
-	? UnionSchemaType<p['oneOf']>
-	: any;
+export type SchemaTypeDef<p extends Schema> =
+	p['type'] extends 'null' ? null :
+	p['type'] extends 'integer' ? number :
+	p['type'] extends 'number' ? number :
+	p['type'] extends 'string' ? (
+		p['enum'] extends readonly (string | null)[] ?
+		p['enum'][number] :
+		p['format'] extends 'date-time' ? string : // Dateにする？？
+		string
+	) :
+	p['type'] extends 'boolean' ? boolean :
+	p['type'] extends 'object' ? ObjectSchemaTypeDef<p> :
+	p['type'] extends 'array' ? (
+		p['items'] extends OfSchema ? (
+			p['items']['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
+			p['items']['oneOf'] extends ReadonlyArray<Schema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>> :
+			p['items']['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
+			never
+		) :
+		p['items'] extends NonNullable<Schema> ? SchemaType<p['items']>[] :
+		any[]
+	) :
+	p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
+	p['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['oneOf']> :
+	any;
 
 export type SchemaType<p extends Schema> = NullOrUndefined<p, SchemaTypeDef<p>>;

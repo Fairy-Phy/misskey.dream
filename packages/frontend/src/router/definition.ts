@@ -35,7 +35,7 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/user/index.vue')),
 }, {
 	name: 'note',
-	path: '/notes/:noteId',
+	path: '/notes/:noteId/:initialTab?',
 	component: page(() => import('@/pages/note.vue')),
 }, {
 	name: 'list',
@@ -194,12 +194,18 @@ const routes: RouteDef[] = [{
 	path: '/announcements',
 	component: page(() => import('@/pages/announcements.vue')),
 }, {
+	path: '/announcements/:announcementId',
+	component: page(() => import('@/pages/announcement.vue')),
+}, {
 	path: '/about',
 	component: page(() => import('@/pages/about.vue')),
 	hash: 'initialTab',
 }, {
 	path: '/dream-changelog',
 	component: page(() => import('@/pages/dream-changelog.vue')),
+}, {
+	path: '/contact',
+	component: page(() => import('@/pages/contact.vue')),
 }, {
 	path: '/about-misskey',
 	component: page(() => import('@/pages/about-misskey.vue')),

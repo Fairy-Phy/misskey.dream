@@ -58,7 +58,7 @@ export const paramDef = {
 			},
 			required: ['achieveId', 'img', 'bg', 'frame', 'title', 'description', 'flavor'],
 		} },
-		visibility: { type: 'string', enum: ['public', 'private'] },
+		visibility: { type: 'string', enum: ['public', 'private'], default: 'public' },
 	},
 	required: ['title', 'summary', 'script', 'permissions', 'achievements'],
 } as const;
