@@ -39,7 +39,6 @@ import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
-import { checkHttps } from '@/misc/check-https.js';
 
 @Injectable()
 export class ApNoteService {
