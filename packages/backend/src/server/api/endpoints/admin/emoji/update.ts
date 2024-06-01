@@ -4,10 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository, EmojisRepository, UsersRepository } from '@/models/_.js';
+import type { DriveFilesRepository, EmojisRepository, MiEmoji, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -83,7 +82,10 @@ export const paramDef = {
 		},
 		userId: { type: 'string' },
 	},
-	required: ['id', 'name', 'aliases'],
+	anyOf: [
+		{ required: ['id'] },
+		{ required: ['name'] },
+	],
 } as const;
 
 @Injectable()
@@ -103,7 +105,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let driveFile;
-
 			if (ps.fileId) {
 				driveFile = await this.driveFilesRepository.findOneBy({
 					id: ps.fileId,
@@ -111,14 +112,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			const oldEmoji = await this.customEmojiService.getEmojiById(ps.id);
-			if (oldEmoji != null) {
-				if (ps.name !== oldEmoji.name) {
+			let oldEmoji: MiEmoji;
+			if (ps.id) {
+				const emoji = await this.customEmojiService.getEmojiById(ps.id);
+				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
+				oldEmoji = emoji;
+				if (ps.name && (ps.name !== emoji.name)) {
 					const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
 					if (isDuplicate) throw new ApiError(meta.errors.sameNameEmojiExists);
 				}
 			} else {
-				throw new ApiError(meta.errors.noSuchEmoji);
+				if (!ps.name) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
+				const emoji = await this.customEmojiService.getEmojiByName(ps.name);
+				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
+				oldEmoji = emoji;
 			}
 
 			const isEmojiModerator = await this.roleService.isEmojiModerator(me);
@@ -148,12 +155,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
 			}
 
-			await this.customEmojiService.update(ps.id, {
+			await this.customEmojiService.update(oldEmoji.id, {
 				driveFile,
 				name: ps.name,
-				category: ps.category ?? null,
+				category: ps.category,
 				aliases: ps.aliases,
-				license: ps.license ?? null,
+				license: ps.license,
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
@@ -231,17 +238,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			//エイリアスはbeforeに削除されたもの、afterに追加されたものを書く
-			if (oldEmoji.aliases.length !== ps.aliases.length || !oldEmoji.aliases.every(v => ps.aliases.includes(v))) {
+			if (
+				ps.aliases &&
+				(
+					oldEmoji.aliases.length !== ps.aliases.length ||
+					!oldEmoji.aliases.every(v => ps.aliases && ps.aliases.includes(v))
+				)
+			) {
 				changes.push({
 					type: 'aliases',
 					changeInfo: {
-						before: oldEmoji.aliases.filter(v => !ps.aliases.includes(v)),
+						before: oldEmoji.aliases.filter(v => ps.aliases && !ps.aliases.includes(v)),
 						after: ps.aliases.filter(v => !oldEmoji.aliases.includes(v)),
 					},
 				});
 			}
 
-			await this.emojiModerationLogService.insertEmojiModerationLog(me, { id: ps.id }, 'Update', changes);
+			await this.emojiModerationLogService.insertEmojiModerationLog(me, { id: oldEmoji.id }, 'Update', changes);
 		});
 	}
 }

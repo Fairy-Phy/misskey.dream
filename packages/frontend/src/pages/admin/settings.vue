@@ -252,7 +252,7 @@ async function save(): void {
 		...(relationalDate.value != null && relationalDate.value.trim().length !== 0 && prevDate !== relationalDate.value ? { relationalDate: relationalDate.value.trim() } : {}),
 	});
 
-	fetchInstance();
+	fetchInstance(true);
 }
 
 const headerTabs = computed(() => []);
