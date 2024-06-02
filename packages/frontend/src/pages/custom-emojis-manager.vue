@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
-					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
+					<MkPagination ref="emojisPaginationComponent" :pagination="pagination" :displayLimit="100">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
