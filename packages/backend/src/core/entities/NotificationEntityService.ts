@@ -141,7 +141,7 @@ export class NotificationEntityService implements OnModuleInit {
 		// #endregion
 
 		const needsRole = notification.type === 'roleAssigned';
-		const role = needsRole ? await this.roleEntityService.pack(notification.roleId) : undefined;
+		const role = needsRole ? await this.roleEntityService.pack(notification.roleId).catch(() => undefined) : undefined;
 		// if the role has been deleted, don't show this notification
 		if (needsRole && !role) {
 			return null;
