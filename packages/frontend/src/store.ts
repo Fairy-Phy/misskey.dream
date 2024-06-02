@@ -150,6 +150,20 @@ export const defaultStore = markRaw(new Storage('base', {
 			'roleManager',
 		],
 	},
+
+	timeline: {
+		where: 'deviceAccount',
+		default: [
+			'pinned',
+			'home',
+			'local',
+			'social',
+			'global',
+			'list',
+			'antenna',
+			'channel',
+		],
+	},
 	visibility: {
 		where: 'deviceAccount',
 		default: 'public' as (typeof Misskey.noteVisibilities)[number],

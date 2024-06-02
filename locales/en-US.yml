@@ -1273,6 +1273,7 @@ keepOriginalFilenameDescription: "If you turn off this setting, files names will
 noDescription: "There is not the explanation"
 alwaysConfirmFollow: "Always confirm when following"
 inquiry: "Contact"
+timelineBar: "Timeline Bar"
 _delivery:
   status: "Delivery status"
   stop: "Suspended"

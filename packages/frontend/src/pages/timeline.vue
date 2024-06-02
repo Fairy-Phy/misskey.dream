@@ -54,6 +54,7 @@ import { isRelationalAvailable } from '@/scripts/relational.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { timelineBarItemDef } from '@/timeline-bar.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -279,52 +280,50 @@ const headerActions = computed(() => {
 	return tmp;
 });
 
-const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
-	key: 'list:' + l.id,
-	title: l.name,
-	icon: 'ti ti-star',
-	iconOnly: true,
-}))), {
-	key: 'home',
-	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home',
-	iconOnly: true,
-}, ...(isRelationalAvailable ? [{
-	key: 'relational',
-	title: i18n.ts._timelines.relational,
-	icon: 'ti ti-circles-relation',
-	iconOnly: true,
-}] : []),...(isLocalTimelineAvailable ? [{
-	key: 'local',
-	title: i18n.ts._timelines.local,
-	icon: 'ti ti-planet',
-	iconOnly: true,
-}, {
-	key: 'social',
-	title: i18n.ts._timelines.social,
-	icon: 'ti ti-universe',
-	iconOnly: true,
-}] : []), ...(isGlobalTimelineAvailable ? [{
-	key: 'global',
-	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
-	iconOnly: true,
-}] : []), {
-	icon: 'ti ti-list',
-	title: i18n.ts.lists,
-	iconOnly: true,
-	onClick: chooseList,
-}, {
-	icon: 'ti ti-antenna',
-	title: i18n.ts.antennas,
-	iconOnly: true,
-	onClick: chooseAntenna,
-}, {
-	icon: 'ti ti-device-tv',
-	title: i18n.ts.channel,
-	iconOnly: true,
-	onClick: chooseChannel,
-}] as Tab[]);
+const headerTabs = computed(() => defaultStore.reactiveState.timeline.value.map((v) => ({ type: v, value: timelineBarItemDef[v] })).map((v) => {
+	if (v.type === 'pinned') {
+		const pinned = {
+			key: `${v.value.key}:`,
+			title: '',
+			icon: v.value.icon,
+			iconOnly: v.value.iconOnly,
+		};
+		return defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
+			key: pinned.key + l.id,
+			title: l.name,
+			icon: pinned.key,
+			iconOnly: pinned.iconOnly,
+		}));
+	}
+	const value = {
+		title: v.value.title,
+		icon: v.value.icon,
+		iconOnly: v.value.iconOnly,
+	};
+	if (v.type === 'list') {
+		return {
+			...value,
+			onClick: chooseList,
+		};
+	}
+	if (v.type === 'antenna') {
+		return {
+			...value,
+			onClick: chooseAntenna,
+		};
+	}
+	if (v.type === 'channel') {
+		return {
+			...value,
+			onClick: chooseChannel,
+		};
+	}
+
+	return {
+		...value,
+		key: v.value.key,
+	};
+}).flat(Infinity) as Tab[]);
 
 const headerTabsWhenNotLogin = computed(() => [
 	...(isLocalTimelineAvailable ? [{

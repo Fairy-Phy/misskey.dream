@@ -113,6 +113,10 @@ const routes: RouteDef[] = [{
 		name: 'navbar',
 		component: page(() => import('@/pages/settings/navbar.vue')),
 	}, {
+		path: '/timelinebar',
+		name: 'timelinebar',
+		component: page(() => import('@/pages/settings/timelinebar.vue')),
+	}, {
 		path: '/statusbar',
 		name: 'statusbar',
 		component: page(() => import('@/pages/settings/statusbar.vue')),
