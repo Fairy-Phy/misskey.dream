@@ -47,7 +47,7 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 
 		const suspendedInstancesQuery = this.instancesRepository.createQueryBuilder('instance')
 			.select('instance.host')
-			.where('instance.isSuspended = true');
+			.where('instance.suspensionState != \'none\'');
 
 		const pubsubSubQuery = this.followingsRepository.createQueryBuilder('f')
 			.select('f.followerHost')
