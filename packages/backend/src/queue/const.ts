@@ -21,6 +21,6 @@ export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof t
 			password: config.redisForJobQueue.pass,
 			db: config.redisForJobQueue.db ?? 0,
 		},
-		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`,
+		prefix: '{' + (config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`) + '}',
 	};
 }

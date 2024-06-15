@@ -25,7 +25,10 @@ services:
 
   redis:
     restart: always
-    image: redis:7-alpine
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    ulimits:
+      memlock: -1
+    command: ["--cluster_mode=emulated", "--lock_on_hashtags"]
     networks:
       - internal_network
     volumes:
