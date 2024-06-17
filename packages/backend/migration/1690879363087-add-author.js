@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export class Fix1690417561187 {
-    name = 'Fix1690417561187'
+export class AddAuthor1690879363087 {
+    name = 'AddAuthor1690879363087'
 
     async up(queryRunner) {
         await queryRunner.query(`ALTER TABLE "drive_file" DROP CONSTRAINT "FK_860fa6f6c7df5bb887249fba22e"`);
