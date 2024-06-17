@@ -16,6 +16,11 @@ export const meta = {
 	requireRolePolicy: 'canManageAvatarDecorations',
 	kind: 'write:admin:avatar-decorations',
 	errors: {
+		notOwnerOrpermissionDenied: {
+			message: 'You are not this emoji owner or not assigned to a required role.',
+			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
+			id: '73952b00-d3e3-4038-b2c6-f4b4532e3906'
+		},
 	},
 } as const;
 
@@ -33,6 +38,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private avatarDecorationService: AvatarDecorationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (!(await this.avatarDecorationService.checkOwnerOrModerator(ps.id, me))) {
+				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
+			}
+
 			await this.avatarDecorationService.delete(ps.id, me);
 		});
 	}

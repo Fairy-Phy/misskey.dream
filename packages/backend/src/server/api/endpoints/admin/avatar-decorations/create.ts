@@ -24,6 +24,7 @@ export const paramDef = {
 		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
 			type: 'string',
 		} },
+		license: { type: 'string', nullable: true },
 	},
 	required: ['name', 'description', 'url'],
 } as const;
@@ -34,11 +35,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private avatarDecorationService: AvatarDecorationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			let license = `@${me.username}`;
+			if (ps.license != null && ps.license.trim().length !== 0) {
+				license = ps.license.trim();
+			}
+
 			await this.avatarDecorationService.create({
 				name: ps.name,
 				description: ps.description,
 				url: ps.url,
 				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
+				userId: me.id,
+				license,
 			}, me);
 		});
 	}

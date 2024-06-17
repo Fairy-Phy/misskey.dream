@@ -17,6 +17,16 @@ export const meta = {
 	kind: 'write:admin:avatar-decorations',
 
 	errors: {
+		notOwnerOrpermissionDenied: {
+			message: 'You are not this emoji owner or not assigned to a required role.',
+			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
+			id: '73952b00-d3e3-4038-b2c6-f4b4532e3906'
+		},
+		requireLicense: {
+			message: 'You must enter the license into add emoji.',
+			code: 'REQUIRE_LICENSE',
+			id: 'bf030fe3-0105-41a6-931b-577dda09df34',
+		},
 	},
 } as const;
 
@@ -30,8 +40,10 @@ export const paramDef = {
 		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
 			type: 'string',
 		} },
+		userId: { type: 'string', format: 'misskey:id' },
+		license: { type: 'string', nullable: true },
 	},
-	required: ['id'],
+	required: ['id', 'userId'],
 } as const;
 
 @Injectable()
@@ -40,11 +52,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private avatarDecorationService: AvatarDecorationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (!(await this.avatarDecorationService.checkOwnerOrModerator(ps.id, me))) {
+				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
+			}
+
+			if (!(await this.avatarDecorationService.checkAllowLicense(ps.id, ps.license))) {
+				throw new ApiError(meta.errors.requireLicense);
+			}
+
 			await this.avatarDecorationService.update(ps.id, {
 				name: ps.name,
 				description: ps.description,
 				url: ps.url,
 				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
+				userId: ps.userId,
+				license: ps.license ? ps.license : null,
 			}, me);
 		});
 	}

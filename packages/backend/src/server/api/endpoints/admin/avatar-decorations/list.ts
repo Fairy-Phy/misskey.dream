@@ -11,6 +11,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -63,6 +64,21 @@ export const meta = {
 						format: 'id',
 					},
 				},
+				userId: {
+					type: 'string',
+					optional: false, nullable: true,
+					format: 'id',
+					example: 'xxxxxxxxxx',
+				},
+				user: {
+					type: 'object',
+					optional: true, nullable: true,
+					ref: 'UserLite',
+				},
+				license: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
 			},
 		},
 	},
@@ -84,11 +100,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private avatarDecorationService: AvatarDecorationService,
 		private idService: IdService,
+
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const avatarDecorations = await this.avatarDecorationService.getAll(true);
 
-			return avatarDecorations.map(avatarDecoration => ({
+			return await Promise.all(avatarDecorations.map(async avatarDecoration => ({
 				id: avatarDecoration.id,
 				createdAt: this.idService.parse(avatarDecoration.id).date.toISOString(),
 				updatedAt: avatarDecoration.updatedAt?.toISOString() ?? null,
@@ -96,7 +114,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				description: avatarDecoration.description,
 				url: avatarDecoration.url,
 				roleIdsThatCanBeUsedThisDecoration: avatarDecoration.roleIdsThatCanBeUsedThisDecoration,
-			}));
+				userId: avatarDecoration.userId,
+				// emoji.userId ? await this.userEntityService.pack(emoji.userId) : null
+				user: avatarDecoration.userId ? await this.userEntityService.pack(avatarDecoration.userId) : null,
+				license: avatarDecoration.license,
+			})));
 		});
 	}
 }

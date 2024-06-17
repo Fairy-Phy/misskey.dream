@@ -26,6 +26,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="avatarDecoration.url">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
+					<MkInput v-if="avatarDecoration.id != null" v-model="avatarDecoration.userId">
+						<template #label>userID</template>
+					</MkInput>
+					<MkInput v-model="avatarDecoration.license">
+						<template #label>{{ i18n.ts.license }}</template>
+					</MkInput>
 					<div v-if="avatarDecoration.url !== ''" :class="$style.imgContainer">
 						<img src="https://misskey-hub.net/img/misc/avatar-decoration-template.png" :class="$style.img" style="opacity: .5;"/>
 						<img :src="avatarDecoration.url" :class="$style.img"/>
@@ -70,6 +76,8 @@ function add() {
 		name: '',
 		description: '',
 		url: '',
+		userId: '',
+		license: '',
 	});
 }
 

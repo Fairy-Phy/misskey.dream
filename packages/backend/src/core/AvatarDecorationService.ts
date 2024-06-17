@@ -13,6 +13,7 @@ import { bindThis } from '@/decorators.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { RoleService } from './RoleService.js';
 
 @Injectable()
 export class AvatarDecorationService implements OnApplicationShutdown {
@@ -28,6 +29,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		private idService: IdService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
+		private roleService: RoleService,
 	) {
 		this.cache = new MemorySingleCache<MiAvatarDecoration[]>(1000 * 60 * 30);
 
@@ -70,6 +72,37 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		}
 
 		return created;
+	}
+
+	@bindThis
+	public async checkOwnerOrModerator(id: MiAvatarDecoration['id'], user: MiUser): Promise<boolean> {
+		const avaterDeco = await this.avatarDecorationsRepository.findOneByOrFail({
+			id,
+		});
+		if (avaterDeco.userId === user.id) {
+			return true;
+		}
+
+		const isEmojiModerator = await this.roleService.isEmojiModerator(user);
+		if (isEmojiModerator) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@bindThis
+	public async checkAllowLicense(id: MiAvatarDecoration['id'], license: string | null | undefined): Promise<boolean> {
+		if (license && license.trim().length !== 0) {
+			return true;
+		}
+
+		const avaterDeco = await this.avatarDecorationsRepository.findOneByOrFail({
+			id,
+		});
+
+		// なにも変更されていなければtrueを返す
+		return avaterDeco.license === license;
 	}
 
 	@bindThis

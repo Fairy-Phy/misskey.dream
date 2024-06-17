@@ -5,6 +5,7 @@
 
 import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from './util/id.js';
+import { MiUser } from './User.js';
 
 @Entity('avatar_decoration')
 export class MiAvatarDecoration {
@@ -36,4 +37,23 @@ export class MiAvatarDecoration {
 		array: true, length: 128, default: '{}',
 	})
 	public roleIdsThatCanBeUsedThisDecoration: string[];
+
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+		comment: 'The owner ID.',
+	})
+	public userId: MiUser['id'] | null; // nullはリモートからや後方互換性のため(連合対応したときに死ぬかもしれない)
+
+	@ManyToOne(type => MiUser, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn()
+	public user: MiUser | null;
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public license: string | null;
 }
