@@ -13,6 +13,7 @@ import { DriveService } from '@/core/DriveService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ["admin"],
@@ -31,6 +32,11 @@ export const meta = {
 			message: 'Duplicate name.',
 			code: 'DUPLICATE_NAME',
 			id: 'f7a3462c-4e6e-4069-8421-b9bd4f4c3975',
+		},
+		unavailable: {
+			message: 'emoji import unavailable.',
+			code: 'UNAVAILABLE',
+			id: '01897589-3bb2-4a6c-81dd-9d0ebac13ca9',
 		},
 	},
 
@@ -67,8 +73,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private emojiEntityService: EmojiEntityService,
 		private customEmojiService: CustomEmojiService,
 		private driveService: DriveService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
+			if (!policies.canImportEmojis) {
+				throw new ApiError(meta.errors.unavailable);
+			}
+
 			const emoji = await this.emojisRepository.findOneBy({ id: ps.emojiId });
 			if (emoji == null) {
 				throw new ApiError(meta.errors.noSuchEmoji);

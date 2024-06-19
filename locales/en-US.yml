@@ -1740,6 +1740,7 @@ _role:
     driveAdditionCapacity: "Increased drive capacity"
     canUseTranslator: "Translator usage"
     avatarDecorationLimit: "Maximum number of avatar decorations that can be applied"
+    canImportEmojis: "Allow import emojis"
   _condition:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"

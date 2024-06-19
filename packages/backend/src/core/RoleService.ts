@@ -60,6 +60,7 @@ export type RolePolicies = {
 	canAddRoles: boolean;
 	driveAdditionCapacityMb: number;
 	avatarDecorationLimit: number;
+	canImportEmojis: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -91,6 +92,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canAddRoles: true,
 	driveAdditionCapacityMb: 0,
 	avatarDecorationLimit: 1,
+	canImportEmojis: false,
 };
 
 @Injectable()
@@ -403,6 +405,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canAddRoles: calc('canAddRoles', vs => vs.some(v => v === true)),
 			driveAdditionCapacityMb: calc('driveAdditionCapacityMb', vs => vs.reduce((a, c) => a + c, 0)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
+			canImportEmojis: calc('canImportEmojis', vs => vs.some(v => v === true)),
 		};
 	}
 

@@ -1727,6 +1727,7 @@ _role:
     avatarDecorationLimit: "アイコンデコのいっちばんつけれる数"
     canAddRoles: "コミュニティーロールの追加"
     driveAdditionCapacity: "増量させるドライブ容量"
+    canImportEmojis: "絵文字を外から入れられるようにするか"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"

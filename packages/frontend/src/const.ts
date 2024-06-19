@@ -100,6 +100,7 @@ export const ROLE_POLICIES = [
 	'canAddRoles',
 	'driveAdditionCapacityMb',
 	'avatarDecorationLimit',
+	'canImportEmojis',
 ] as const;
 
 // なんか動かない
