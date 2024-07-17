@@ -12,6 +12,7 @@ export const meta = {
 	tags: ["role"],
 
 	requireCredential: true,
+	kind: 'write:community-role',
 
 	errors: {
 		notAllowed: {
