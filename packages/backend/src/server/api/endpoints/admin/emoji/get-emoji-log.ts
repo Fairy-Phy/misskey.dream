@@ -9,6 +9,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'read:admin:emoji-log',
 
 	cacheSec: 3600,
 

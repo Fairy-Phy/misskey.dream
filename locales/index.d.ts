@@ -8104,6 +8104,10 @@ export interface Locale extends ILocale {
          */
         "write:flash-likes": string;
         /**
+         * コミュニティーロールを操作する
+         */
+        "write:community-role": string;
+        /**
          * ユーザーからの通報を見る
          */
         "read:admin:abuse-user-reports": string;
@@ -8239,6 +8243,10 @@ export interface Locale extends ILocale {
          * 絵文字を見る
          */
         "read:admin:emoji": string;
+        /**
+         * 絵文字のログを見る
+         */
+        "read:admin:emoji-log": string;
         /**
          * ジョブキューを操作する
          */
