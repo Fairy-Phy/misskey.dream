@@ -298,7 +298,7 @@ watch([props.user], () => {
 
 onMounted(() => {
 	window.requestAnimationFrame(parallaxLoop);
-	narrow.value = rootEl.value!.clientWidth < 1000;
+	narrow.value = (rootEl.value?.clientWidth ?? 0) < 1000;
 
 	if (props.user.birthday) {
 		const m = new Date().getMonth() + 1;
