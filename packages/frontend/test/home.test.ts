@@ -32,6 +32,7 @@ describe('XHome', () => {
 			uri: 'https://example.com/@user',
 			url: 'https://example.com/@user/profile',
 			roles: [],
+			communityRoles: [],
 			createdAt: '1970-01-01T00:00:00.000Z',
 			fields: [],
 			pinnedNotes: [],
@@ -48,16 +49,17 @@ describe('XHome', () => {
 
 	test('The remote caution should fall back to uri if url is null', async () => {
 		const home = renderHome({
-			id: 'blobcat',
-			name: 'blobcat',
-			host: 'example.com',
-			uri: 'https://example.com/@user',
+			id: "blobcat",
+			name: "blobcat",
+			host: "example.com",
+			uri: "https://example.com/@user",
 			url: null,
 			roles: [],
-			createdAt: '1970-01-01T00:00:00.000Z',
+			communityRoles: [],
+			createdAt: "1970-01-01T00:00:00.000Z",
 			fields: [],
 			pinnedNotes: [],
-			avatarUrl: 'https://example.com',
+			avatarUrl: "https://example.com",
 			avatarDecorations: [],
 		});
 
