@@ -61,10 +61,10 @@ export function getApId(value: string | IObject): string {
 /**
  * Get ActivityStreams Object type
  */
-export function getApType(value: IObject): string {
+export function getApType(value: IObject): string | null {
 	if (typeof value.type === 'string') return value.type;
 	if (Array.isArray(value.type) && typeof value.type[0] === 'string') return value.type[0];
-	throw new Error('cannot detect type');
+	return null;
 }
 
 export function getOneApHrefNullable(value: ApObject | undefined): string | undefined {
@@ -106,13 +106,17 @@ export interface IOrderedCollection extends IObject {
 	orderedItems: ApObject;
 }
 
-export const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video', 'Event'];
+// つまるところこれをしないとnull許容でincludesできないので必須
+type ValidArrayIncludesNullable = readonly (string | null)[];
+const validPost = ['Note', 'Question', 'Article', 'Audio', 'Document', 'Image', 'Page', 'Video', 'Event'] as const;
+export const isValidPost = (type: string | null): boolean =>
+	(validPost as ValidArrayIncludesNullable).includes(type);
 
 export const isPost = (object: IObject): object is IPost =>
-	validPost.includes(getApType(object));
+	isValidPost(getApType(object));
 
 export interface IPost extends IObject {
-	type: 'Note' | 'Question' | 'Article' | 'Audio' | 'Document' | 'Image' | 'Page' | 'Video' | 'Event';
+	type: (typeof validPost)[number];
 	source?: {
 		content: string;
 		mediaType: string;
@@ -154,13 +158,15 @@ export interface ITombstone extends IObject {
 export const isTombstone = (object: IObject): object is ITombstone =>
 	getApType(object) === 'Tombstone';
 
-export const validActor = ['Person', 'Service', 'Group', 'Organization', 'Application'];
+const validActor = ['Person', 'Service', 'Group', 'Organization', 'Application'] as const;
+export const isValidActor = (type: string | null): boolean =>
+	(validActor as ValidArrayIncludesNullable).includes(type);
 
 export const isActor = (object: IObject): object is IActor =>
-	validActor.includes(getApType(object));
+	isValidActor(getApType(object));
 
 export interface IActor extends IObject {
-	type: 'Person' | 'Service' | 'Organization' | 'Group' | 'Application';
+	type: (typeof validActor)[number];
 	name?: string;
 	preferredUsername?: string;
 	manuallyApprovesFollowers?: boolean;
@@ -240,12 +246,16 @@ export interface IKey extends IObject {
 	publicKeyPem: string | Buffer;
 }
 
-export interface IApDocument extends IObject {
-	type: 'Audio' | 'Document' | 'Image' | 'Page' | 'Video';
-}
+const validDocument = ['Audio', 'Document', 'Image', 'Page', 'Video'] as const;
+export const isValidDocument = (type: string | null): boolean =>
+	(validDocument as ValidArrayIncludesNullable).includes(type);
 
 export const isDocument = (object: IObject): object is IApDocument =>
-	['Audio', 'Document', 'Image', 'Page', 'Video'].includes(getApType(object));
+	isValidDocument(getApType(object));
+
+export interface IApDocument extends IObject {
+	type: (typeof validDocument)[number];
+}
 
 export interface IApImage extends IApDocument {
 	type: 'Image';
