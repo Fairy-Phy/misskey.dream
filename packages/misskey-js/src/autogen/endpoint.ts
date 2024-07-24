@@ -50,6 +50,8 @@ import type {
 	AdminEmojiSetCategoryBulkRequest,
 	AdminEmojiSetLicenseBulkRequest,
 	AdminEmojiUpdateRequest,
+	AdminEmojiGetEmojiLogRequest,
+	AdminEmojiGetEmojiLogResponse,
 	AdminFederationDeleteAllFilesRequest,
 	AdminFederationRefreshRemoteInstanceMetadataRequest,
 	AdminFederationRemoveAllFollowingRequest,
@@ -338,6 +340,7 @@ import type {
 	IRegistryKeysRequest,
 	IRegistryKeysResponse,
 	IRegistryRemoveRequest,
+	IRegistryRemoveAllKeysInScopeRequest,
 	IRegistryScopesWithDomainResponse,
 	IRegistrySetRequest,
 	IRevokeTokenRequest,
@@ -391,6 +394,7 @@ import type {
 	NotesCreateRequest,
 	NotesCreateResponse,
 	NotesDeleteRequest,
+	NotesUpdateRequest,
 	NotesFavoritesCreateRequest,
 	NotesFavoritesDeleteRequest,
 	NotesFeaturedRequest,
@@ -401,6 +405,8 @@ import type {
 	NotesHybridTimelineResponse,
 	NotesLocalTimelineRequest,
 	NotesLocalTimelineResponse,
+	NotesRelationalTimelineRequest,
+	NotesRelationalTimelineResponse,
 	NotesMentionsRequest,
 	NotesMentionsResponse,
 	NotesPollsRecommendationRequest,
@@ -458,6 +464,7 @@ import type {
 	PingResponse,
 	PinnedUsersResponse,
 	PromoReadRequest,
+	RolesListRequest,
 	RolesListResponse,
 	RolesShowRequest,
 	RolesShowResponse,
@@ -465,6 +472,10 @@ import type {
 	RolesUsersResponse,
 	RolesNotesRequest,
 	RolesNotesResponse,
+	RolesAddRequest,
+	RolesAssignRequest,
+	RolesUnassignRequest,
+	RolesUpdateRequest,
 	RequestResetPasswordRequest,
 	ResetPasswordRequest,
 	ServerInfoResponse,
@@ -593,6 +604,7 @@ export type Endpoints = {
 	'admin/emoji/set-category-bulk': { req: AdminEmojiSetCategoryBulkRequest; res: EmptyResponse };
 	'admin/emoji/set-license-bulk': { req: AdminEmojiSetLicenseBulkRequest; res: EmptyResponse };
 	'admin/emoji/update': { req: AdminEmojiUpdateRequest; res: EmptyResponse };
+	'admin/emoji/get-emoji-log': { req: AdminEmojiGetEmojiLogRequest; res: AdminEmojiGetEmojiLogResponse };
 	'admin/federation/delete-all-files': { req: AdminFederationDeleteAllFilesRequest; res: EmptyResponse };
 	'admin/federation/refresh-remote-instance-metadata': { req: AdminFederationRefreshRemoteInstanceMetadataRequest; res: EmptyResponse };
 	'admin/federation/remove-all-following': { req: AdminFederationRemoveAllFollowingRequest; res: EmptyResponse };
@@ -785,6 +797,7 @@ export type Endpoints = {
 	'i/registry/keys-with-type': { req: IRegistryKeysWithTypeRequest; res: IRegistryKeysWithTypeResponse };
 	'i/registry/keys': { req: IRegistryKeysRequest; res: IRegistryKeysResponse };
 	'i/registry/remove': { req: IRegistryRemoveRequest; res: EmptyResponse };
+	'i/registry/remove-all-keys-in-scope': { req: IRegistryRemoveAllKeysInScopeRequest; res: EmptyResponse };
 	'i/registry/scopes-with-domain': { req: EmptyRequest; res: IRegistryScopesWithDomainResponse };
 	'i/registry/set': { req: IRegistrySetRequest; res: EmptyResponse };
 	'i/revoke-token': { req: IRevokeTokenRequest; res: EmptyResponse };
@@ -819,12 +832,14 @@ export type Endpoints = {
 	'notes/conversation': { req: NotesConversationRequest; res: NotesConversationResponse };
 	'notes/create': { req: NotesCreateRequest; res: NotesCreateResponse };
 	'notes/delete': { req: NotesDeleteRequest; res: EmptyResponse };
+	'notes/update': { req: NotesUpdateRequest; res: EmptyResponse };
 	'notes/favorites/create': { req: NotesFavoritesCreateRequest; res: EmptyResponse };
 	'notes/favorites/delete': { req: NotesFavoritesDeleteRequest; res: EmptyResponse };
 	'notes/featured': { req: NotesFeaturedRequest; res: NotesFeaturedResponse };
 	'notes/global-timeline': { req: NotesGlobalTimelineRequest; res: NotesGlobalTimelineResponse };
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
+	'notes/relational-timeline': { req: NotesRelationalTimelineRequest; res: NotesRelationalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };
 	'notes/polls/vote': { req: NotesPollsVoteRequest; res: EmptyResponse };
@@ -867,10 +882,14 @@ export type Endpoints = {
 	'ping': { req: EmptyRequest; res: PingResponse };
 	'pinned-users': { req: EmptyRequest; res: PinnedUsersResponse };
 	'promo/read': { req: PromoReadRequest; res: EmptyResponse };
-	'roles/list': { req: EmptyRequest; res: RolesListResponse };
+	'roles/list': { req: RolesListRequest; res: RolesListResponse };
 	'roles/show': { req: RolesShowRequest; res: RolesShowResponse };
 	'roles/users': { req: RolesUsersRequest; res: RolesUsersResponse };
 	'roles/notes': { req: RolesNotesRequest; res: RolesNotesResponse };
+	'roles/add': { req: RolesAddRequest; res: EmptyResponse };
+	'roles/assign': { req: RolesAssignRequest; res: EmptyResponse };
+	'roles/unassign': { req: RolesUnassignRequest; res: EmptyResponse };
+	'roles/update': { req: RolesUpdateRequest; res: EmptyResponse };
 	'request-reset-password': { req: RequestResetPasswordRequest; res: EmptyResponse };
 	'reset-db': { req: EmptyRequest; res: EmptyResponse };
 	'reset-password': { req: ResetPasswordRequest; res: EmptyResponse };
