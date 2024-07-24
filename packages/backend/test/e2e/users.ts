@@ -610,10 +610,8 @@ describe('ユーザー', () => {
 	});
 	test.each([
 		{ label: 'Administratorになっている', user: () => userAdmin, me: () => userAdmin, selector: (user: misskey.entities.MeDetailed) => user.isAdmin },
-		// @ts-expect-error UserDetailedNotMe doesn't include isAdmin
 		{ label: '自分以外から見たときはAdministratorか判定できない', user: () => userAdmin, selector: (user: misskey.entities.UserDetailedNotMe) => user.isAdmin, expected: () => undefined },
 		{ label: 'Moderatorになっている', user: () => userModerator, me: () => userModerator, selector: (user: misskey.entities.MeDetailed) => user.isModerator },
-		// @ts-expect-error UserDetailedNotMe doesn't include isModerator
 		{ label: '自分以外から見たときはModeratorか判定できない', user: () => userModerator, selector: (user: misskey.entities.UserDetailedNotMe) => user.isModerator, expected: () => undefined },
 		{ label: 'サイレンスになっている', user: () => userSilenced, selector: (user: misskey.entities.UserDetailed) => user.isSilenced },
 		// FIXME: 落ちる
@@ -645,7 +643,8 @@ describe('ユーザー', () => {
 			color: rolePublic.color,
 			iconUrl: rolePublic.iconUrl,
 			description: rolePublic.description,
-			permissionGroup: rolePublic.permissionGroup,
+			isModerator: rolePublic.isModerator,
+			isAdministrator: rolePublic.isAdministrator,
 			displayOrder: rolePublic.displayOrder,
 		}]);
 	});

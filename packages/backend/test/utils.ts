@@ -212,6 +212,7 @@ export const play = async (user: UserToken, play: Partial<misskey.entities.Flash
 		summary: '',
 		title: 'test',
 		...play,
+		achievements: []
 	}, user);
 	return res.body;
 };
@@ -247,7 +248,7 @@ export const channel = async (user: UserToken, channel: Partial<misskey.entities
 	return res.body;
 };
 
-export const role = async (user: UserToken, role: Partial<misskey.entities.Role> = {}, policies: any = {}): Promise<misskey.entities.Role> => {
+export const role = async (user: UserToken, role: Partial<misskey.entities.AdminRolesCreateRequest> = {}, policies: any = {}): Promise<misskey.entities.Role> => {
 	const res = await api('admin/roles/create', {
 		asBadge: false,
 		canEditMembersByModerator: false,
@@ -259,8 +260,6 @@ export const role = async (user: UserToken, role: Partial<misskey.entities.Role>
 		description: '',
 		displayOrder: 0,
 		iconUrl: null,
-		isAdministrator: false,
-		isModerator: false,
 		permissionGroup: 'Normal',
 		isPublic: false,
 		name: 'New Role',

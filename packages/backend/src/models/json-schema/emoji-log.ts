@@ -1,12 +1,31 @@
+const emojiChangeInfoData = [
+	{
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+	},
+	{
+		type: 'string',
+		optional: false, nullable: false,
+	},
+	{
+		type: 'boolean',
+		optional: false, nullable: false,
+	},
+] as const;
+
 export const packedEmojiChangeInfoSchema = {
 	type: 'object',
 	properties: {
 		before: {
-			type: 'any',
+			oneOf: emojiChangeInfoData,
 			optional: false, nullable: false,
 		},
 		after: {
-			type: 'any',
+			oneOf: emojiChangeInfoData,
 			optional: false, nullable: false,
 		},
 	},

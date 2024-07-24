@@ -4662,8 +4662,8 @@ export type components = {
       isLiked?: boolean;
     };
     EmojiChangeInfo: {
-      before: Record<string, never>;
-      after: Record<string, never>;
+      before: string[] | string | boolean;
+      after: string[] | string | boolean;
     };
     EmojiChangesProperty: {
       type: string;
