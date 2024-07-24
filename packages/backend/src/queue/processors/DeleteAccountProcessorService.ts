@@ -98,8 +98,9 @@ export class DeleteAccountProcessorService {
 				},
 			});
 
-			if (emojis.length !== 0)
+			if (emojis.length !== 0) {
 				await this.customEmojiService.deleteBulk(emojis.map(v => v.id));
+			}
 		}
 
 		{ // Delete files

@@ -103,8 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let emojiLicense = '';
 			if (emoji.license != null && emoji.license.trim().length !== 0) {
 				emojiLicense = emoji.license;
-			}
-			else {
+			} else {
 				emojiLicense = `Import by ${emoji.host}`;
 			}
 

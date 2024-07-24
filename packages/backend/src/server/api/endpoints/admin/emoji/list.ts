@@ -99,15 +99,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					emojis = emojis.filter(emoji =>
 						queryarry.includes(`:${emoji.name}:`),
 					);
-				}
-				else if (queryuser) {
+				} else if (queryuser) {
 					emojis = await q.innerJoinAndSelect('emoji.user', 'user').getMany();
 					const users = queryuser.map(v => v.replace('@', '').toLowerCase());
 					emojis = emojis.filter((emoji) =>
 						users.includes(emoji.user?.username.toLowerCase() ?? '')
 					);
-				}
-				else {
+				} else {
 					emojis = await q.getMany();
 					emojis = emojis.filter(emoji =>
 						emoji.name.includes(ps.query!) ||

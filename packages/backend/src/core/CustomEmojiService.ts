@@ -280,8 +280,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		await this.emojisRepository.delete(emoji.id);
 
-		if (userId)
+		if (userId) {
 			await this.usersRepository.decrement({ id: userId }, 'emojiCount', 1);
+		}
 
 		this.localEmojisCache.refresh();
 
@@ -306,8 +307,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		for (const emoji of emojis) {
 			await this.emojisRepository.delete(emoji.id);
 
-			if (emoji.userId)
+			if (emoji.userId) {
 				await this.usersRepository.decrement({ id: emoji.userId }, 'emojiCount', 1);
+			}
 			if (moderator) {
 				this.moderationLogService.log(moderator, 'deleteCustomEmoji', {
 					emojiId: emoji.id,

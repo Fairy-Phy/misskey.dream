@@ -61,12 +61,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const assignedCount = await this.roleAssignmentsRepository.createQueryBuilder('assign')
-			.where('assign.roleId = :roleId', { roleId: role.id })
-			.andWhere(new Brackets(qb => { qb
-				.where('assign.expiresAt IS NULL')
-				.orWhere('assign.expiresAt > :now', { now: new Date() });
-			}))
-			.getCount();
+				.where('assign.roleId = :roleId', { roleId: role.id })
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('assign.expiresAt IS NULL')
+						.orWhere('assign.expiresAt > :now', { now: new Date() });
+				}))
+				.getCount();
 
 			if (assignedCount === 1) {
 				// 自動削除
@@ -74,8 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					id: ps.roleId,
 				});
 				this.globalEventService.publishInternalEvent('roleDeleted', role);
-			}
-			else {
+			} else {
 				await this.roleService.unassign(me.id, role.id);
 			}
 		});
