@@ -34,6 +34,7 @@ opacity: 0.7;
 `.split('\n').join(' ');
 
 const colorRegexp = /^([0-9a-f]{3,4}?|[0-9a-f]{6}?|[0-9a-f]{8}?)$/i;
+
 function checkColorHex(text: string) {
 	return colorRegexp.test(text);
 }
@@ -53,13 +54,13 @@ function toGradientText(args: Record<string, string>) {
 		}
 		colors[i][matches[1]] = args[k];
 	}
-	let deg = parseFloat(args.deg || '90');
+	const deg = parseFloat(args.deg || '90');
 	let res = `linear-gradient(${deg}deg`;
 	for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
 		let color = colorProp.color;
 		if (!color || !checkColorHex(color)) color = 'f00';
-		let step = parseFloat(colorProp.step ?? '');
-		let stepText = isNaN(step) ? '' : ` ${step}%`;
+		const step = parseFloat(colorProp.step ?? '');
+		const stepText = isNaN(step) ? '' : ` ${step}%`;
 		res += `, #${color}${stepText}`;
 	}
 	return res + ')';
@@ -317,7 +318,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					}
 					case 'fgg': {
 						if (!defaultStore.state.advancedMfm) break;
-						style = `-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: ${toGradientText(token.props.args)};`
+						style = `-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: ${toGradientText(token.props.args)};`;
 						break;
 					}
 					case 'fg': {
@@ -328,7 +329,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					}
 					case 'bgg': {
 						if (!defaultStore.state.advancedMfm) break;
-						style = `background-image: ${toGradientText(token.props.args)};`
+						style = `background-image: ${toGradientText(token.props.args)};`;
 						break;
 					}
 					case 'bg': {
@@ -345,8 +346,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							const percent = parseFloat(token.props.args.circle ?? '');
 							const percentText = isNaN(percent) ? '' : `${percent}%`;
 							path = `circle(${percentText})`;
-						}
-						else {
+						} else {
 							const top = parseFloat(token.props.args.t ?? '0');
 							const bottom = parseFloat(token.props.args.b ?? '0');
 							const left = parseFloat(token.props.args.l ?? '0');
@@ -379,7 +379,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					}
 					case 'mix': {
 						const ch = token.children;
-						if (ch.length != 2 || ch.some(c => c.type !== 'unicodeEmoji')) {
+						if (ch.length !== 2 || ch.some(c => c.type !== 'unicodeEmoji')) {
 							style = null;
 							break;
 						}

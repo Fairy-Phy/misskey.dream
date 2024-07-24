@@ -209,8 +209,7 @@ function dreamCalcSizeParameters() {
 	dreamEmojiSize.value = 40;
 	if (size.value === 2) {
 		dreamEmojiSize.value = 45;
-	}
-	else if (size.value === 3) {
+	} else if (size.value === 3) {
 		dreamEmojiSize.value = 50;
 	}
 	dreamEmojiPickerWidth.value = dreamEmojiSize.value * (width.value + 4) + 16;

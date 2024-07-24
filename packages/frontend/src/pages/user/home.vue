@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
-					<MkFoldableSection class="role-folder" v-if="user.roles.length > 0" :expanded="user.roles.length < 5">
+					<MkFoldableSection v-if="user.roles.length > 0" class="role-folder" :expanded="user.roles.length < 5">
 						<template #header>{{ i18n.ts.roles }}</template>
 						<div class="roles">
 							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</span>
 						</div>
 					</MkFoldableSection>
-					<MkFoldableSection class="role-folder" v-if="user.communityRoles.length > 0" :expanded="user.communityRoles.length < 5">
+					<MkFoldableSection v-if="user.communityRoles.length > 0" class="role-folder" :expanded="user.communityRoles.length < 5">
 						<template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
 						<div class="roles">
 							<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">

@@ -191,7 +191,7 @@ watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', sh
 const cw = ref<string | null>(props.initialCw ?? null);
 const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly));
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
-if (visibility === 'relational') {
+if (visibility.value === 'relational') {
 	visibility.value = 'public';
 }
 
@@ -756,7 +756,7 @@ async function post(ev?: MouseEvent) {
 		text.value.includes('$[scale') ||
 		text.value.includes('$[position');
 
-	if (annoying && !localOnly && visibility.value === 'public') {
+	if (annoying && !localOnly.value && visibility.value === 'public') {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
 			text: i18n.ts.thisPostMayBeAnnoying,

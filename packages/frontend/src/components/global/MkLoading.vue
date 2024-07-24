@@ -109,7 +109,6 @@ const props = withDefaults(defineProps<{
 	}
 }
 
-
 @keyframes spinner {
 	0% {
 		transform: rotate(0deg);

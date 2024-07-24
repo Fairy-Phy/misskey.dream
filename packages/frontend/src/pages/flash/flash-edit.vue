@@ -476,7 +476,7 @@ async function save() {
 			script: script.value,
 			visibility: visibility.value,
 			achievements: achievements.value.map(v => {
-				const { _id: undefined, ...r } = v;
+				const { _id: __trimKeyNonUseVariable, ...r } = v;
 				return r;
 			}),
 		});
@@ -488,7 +488,7 @@ async function save() {
 			script: script.value,
 			visibility: visibility.value,
 			achievements: achievements.value.map(v => {
-				const { _id: undefined, ...r } = v;
+				const { _id: __trimKeyNonUseVariable, ...r } = v;
 				return r;
 			}),
 		});

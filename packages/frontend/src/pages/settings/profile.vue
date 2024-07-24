@@ -153,8 +153,8 @@ watch(() => profile, () => {
 
 function indexOfDecoration(f) {
 	let result = -1;
-	$i.avatarDecorations.some((e, i) => {
-		if (f(e)) {
+	$i.avatarDecorations.some((el, i) => {
+		if (f(el)) {
 			result = i;
 			return true;
 		}

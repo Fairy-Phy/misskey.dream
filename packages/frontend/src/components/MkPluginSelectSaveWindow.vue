@@ -66,7 +66,7 @@ function ok(): void {
 		isLocal: localOrAccount.value === 'local',
 		pluginOnlyOverride: pluginOnlyOverride.value,
 	});
-	dialog.close();
+	dialog.value?.close();
 }
 </script>
 
