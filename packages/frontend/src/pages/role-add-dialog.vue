@@ -8,7 +8,7 @@
 	<template v-if="!props.role" #header>
 		<div :class="$style.header">
 			<span>{{ i18n.ts.roles }}<DreamFeatureBadge/></span>
-			<XTabs :class="$style.tabs" :rootEl="dialog" :tab="tab" @update:tab="key => tab = key" :tabs="headerTabs"/>
+			<XTabs :class="$style.tabs" :rootEl="dialog" :tab="tab" :tabs="headerTabs" @update:tab="key => tab = key"/>
 		</div>
 	</template>
 	<template v-else #header>{{ i18n.ts.changes }}</template>

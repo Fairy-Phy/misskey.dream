@@ -15,7 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-
 <script lang="ts" setup>
 import { } from 'vue';
 import { signinRequired } from '@/account.js';
@@ -47,8 +46,8 @@ const emit = defineEmits<{
 
 function indexOfDecoration(f) {
 	let result = -1;
-	$i.avatarDecorations.some((e, i) => {
-		if (f(e)) {
+	$i.avatarDecorations.some((el, i) => {
+		if (f(el)) {
 			result = i;
 			return true;
 		}
