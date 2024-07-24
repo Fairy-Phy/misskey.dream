@@ -6,13 +6,12 @@ import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import Channel from '../channel.js';
+import Channel, { MiChannelService } from '../channel.js';
 import { IdService } from '@/core/IdService.js';
 
 class RelationalTimelineChannel extends Channel {
 	public readonly chName = 'relationalTimeline';
 	public static shouldShare = true;
-	public static requireCredential = true;
 	private withReplies: boolean;
 
 	constructor(
@@ -99,9 +98,8 @@ class RelationalTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class RelationalTimelineChannelService {
+export class RelationalTimelineChannelService implements MiChannelService<false> {
 	public readonly shouldShare = RelationalTimelineChannel.shouldShare;
-	public readonly requireCredential = RelationalTimelineChannel.requireCredential;
 
 	constructor(
 		private metaService: MetaService,
@@ -110,6 +108,9 @@ export class RelationalTimelineChannelService {
 		private idService: IdService,
 	) {
 	}
+
+	requireCredential: false;
+	kind: string | null | undefined;
 
 	@bindThis
 	public create(id: string, connection: Channel['connection']): RelationalTimelineChannel {
