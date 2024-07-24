@@ -8,6 +8,9 @@ on:
       - develop
   pull_request:
 
+env:
+  DOCKER_IMAGE_TAG: 'misskeydream-web'
+
 jobs:
   dockle:
     runs-on: ubuntu-latest
@@ -23,8 +26,8 @@ jobs:
           cp ./docker-compose_example.yml ./docker-compose.yml
       - run: |
           docker compose up -d web
-          docker tag "$(docker compose images web | awk 'OFS=":" {print $4}' | tail -n +2)" misskeydream-web:latest
-      - run: |
-          cmd="dockle --exit-code 1 misskeydream-web:latest ${image_name}"
-          echo "> ${cmd}"
-          eval "${cmd}"
+          docker tag "$(docker compose images web | awk 'OFS=":" {print $4}' | tail -n +2)" ${{ env.DOCKER_IMAGE_TAG }}:latest
+      - uses: erzz/dockle-action@v1
+        with:
+          image: ${{ env.DOCKER_IMAGE_TAG }}
+          exit-code: 1
