@@ -117,8 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				for (const folder of innerFolders) {
 					this.globalEventService.publishDriveStream(me.id, 'folderDeleted', folder.id);
 				}
-			}
-			else {
+			} else {
 				await this.driveFoldersRepository.delete(folder.id);
 
 				// Publish folderCreated event

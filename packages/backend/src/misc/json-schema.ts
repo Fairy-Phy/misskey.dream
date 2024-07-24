@@ -233,11 +233,11 @@ type ObjectSchemaTypeDef<p extends Schema> = p['ref'] extends keyof typeof refs
 	? p['anyOf'] extends ReadonlyArray<Schema>
 		? p['anyOf'][number]['required'] extends ReadonlyArray<
 				keyof p['properties']
-		  >
+		>
 			? UnionObjType<
 					p['properties'],
 					NonNullable<p['anyOf'][number]['required']>
-			  > &
+			> &
 					ObjType<p['properties'], NonNullable<p['required']>>
 			: never
 		: ObjType<p['properties'], NonNullable<p['required']>>

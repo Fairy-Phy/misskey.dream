@@ -131,11 +131,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const isEmojiModerator = await this.roleService.isEmojiModerator(me);
 
 			if (ps.userId && oldEmoji.userId !== ps.userId) {
-				if (!isEmojiModerator)
+				if (!isEmojiModerator) {
 					throw new ApiError(meta.errors.rolePermissionDenied);
+				}
 
-				if (await this.usersRepository.countBy({ id: ps.userId }) === 0)
+				if (await this.usersRepository.countBy({ id: ps.userId }) === 0) {
 					throw new ApiError(meta.errors.noSuchUser);
+				}
 			}
 
 			if (oldEmoji.license !== ps.license && (ps.license == null || ps.license.trim().length === 0)) {
