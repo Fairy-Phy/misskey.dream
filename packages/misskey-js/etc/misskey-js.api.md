@@ -140,6 +140,12 @@ type AdminEmojiDeleteBulkRequest = operations['admin___emoji___delete-bulk']['re
 type AdminEmojiDeleteRequest = operations['admin___emoji___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiGetEmojiLogRequest = operations['admin___emoji___get-emoji-log']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiGetEmojiLogResponse = operations['admin___emoji___get-emoji-log']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminEmojiImportZipRequest = operations['admin___emoji___import-zip']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1034,6 +1040,18 @@ type EmojiAdded = {
 };
 
 // @public (undocumented)
+type EmojiChangeInfo = components['schemas']['EmojiChangeInfo'];
+
+// @public (undocumented)
+type EmojiChangeLog = components['schemas']['EmojiChangeLog'];
+
+// @public (undocumented)
+type EmojiChangeLogs = components['schemas']['EmojiChangeLogs'];
+
+// @public (undocumented)
+type EmojiChangesProperty = components['schemas']['EmojiChangesProperty'];
+
+// @public (undocumented)
 type EmojiDeleted = {
     emojis: EmojiDetailed[];
 };
@@ -1199,6 +1217,8 @@ declare namespace entities {
         AdminEmojiSetCategoryBulkRequest,
         AdminEmojiSetLicenseBulkRequest,
         AdminEmojiUpdateRequest,
+        AdminEmojiGetEmojiLogRequest,
+        AdminEmojiGetEmojiLogResponse,
         AdminFederationDeleteAllFilesRequest,
         AdminFederationRefreshRemoteInstanceMetadataRequest,
         AdminFederationRemoveAllFollowingRequest,
@@ -1487,6 +1507,7 @@ declare namespace entities {
         IRegistryKeysRequest,
         IRegistryKeysResponse,
         IRegistryRemoveRequest,
+        IRegistryRemoveAllKeysInScopeRequest,
         IRegistryScopesWithDomainResponse,
         IRegistrySetRequest,
         IRevokeTokenRequest,
@@ -1540,6 +1561,7 @@ declare namespace entities {
         NotesCreateRequest,
         NotesCreateResponse,
         NotesDeleteRequest,
+        NotesUpdateRequest,
         NotesFavoritesCreateRequest,
         NotesFavoritesDeleteRequest,
         NotesFeaturedRequest,
@@ -1550,6 +1572,8 @@ declare namespace entities {
         NotesHybridTimelineResponse,
         NotesLocalTimelineRequest,
         NotesLocalTimelineResponse,
+        NotesRelationalTimelineRequest,
+        NotesRelationalTimelineResponse,
         NotesMentionsRequest,
         NotesMentionsResponse,
         NotesPollsRecommendationRequest,
@@ -1607,6 +1631,7 @@ declare namespace entities {
         PingResponse,
         PinnedUsersResponse,
         PromoReadRequest,
+        RolesListRequest,
         RolesListResponse,
         RolesShowRequest,
         RolesShowResponse,
@@ -1614,6 +1639,10 @@ declare namespace entities {
         RolesUsersResponse,
         RolesNotesRequest,
         RolesNotesResponse,
+        RolesAddRequest,
+        RolesAssignRequest,
+        RolesUnassignRequest,
+        RolesUpdateRequest,
         RequestResetPasswordRequest,
         ResetPasswordRequest,
         ServerInfoResponse,
@@ -1737,6 +1766,10 @@ declare namespace entities {
         EmojiSimple,
         EmojiDetailed,
         Flash,
+        EmojiChangeInfo,
+        EmojiChangesProperty,
+        EmojiChangeLog,
+        EmojiChangeLogs,
         Signin,
         RoleCondFormulaLogics,
         RoleCondFormulaValueNot,
@@ -2193,6 +2226,9 @@ type IRegistryKeysWithTypeRequest = operations['i___registry___keys-with-type'][
 type IRegistryKeysWithTypeResponse = operations['i___registry___keys-with-type']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IRegistryRemoveAllKeysInScopeRequest = operations['i___registry___remove-all-keys-in-scope']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type IRegistryRemoveRequest = operations['i___registry___remove']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2525,6 +2561,12 @@ type NotesReactionsRequest = operations['notes___reactions']['requestBody']['con
 type NotesReactionsResponse = operations['notes___reactions']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesRelationalTimelineRequest = operations['notes___relational-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesRelationalTimelineResponse = operations['notes___relational-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NotesRenotesRequest = operations['notes___renotes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2586,6 +2628,9 @@ type NotesTranslateResponse = operations['notes___translate']['responses']['200'
 
 // @public (undocumented)
 type NotesUnrenoteRequest = operations['notes___unrenote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesUpdateRequest = operations['notes___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['requestBody']['content']['application/json'];
@@ -2784,6 +2829,15 @@ type RoleLite = components['schemas']['RoleLite'];
 type RolePolicies = components['schemas']['RolePolicies'];
 
 // @public (undocumented)
+type RolesAddRequest = operations['roles___add']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesAssignRequest = operations['roles___assign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesListRequest = operations['roles___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type RolesListResponse = operations['roles___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -2797,6 +2851,12 @@ type RolesShowRequest = operations['roles___show']['requestBody']['content']['ap
 
 // @public (undocumented)
 type RolesShowResponse = operations['roles___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type RolesUnassignRequest = operations['roles___unassign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RolesUpdateRequest = operations['roles___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type RolesUsersRequest = operations['roles___users']['requestBody']['content']['application/json'];
