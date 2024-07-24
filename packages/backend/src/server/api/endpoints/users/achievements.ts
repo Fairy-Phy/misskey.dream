@@ -61,8 +61,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					bg: v.bg,
 					frame: v.frame,
 					title: v.title,
-					description: me.id === ps.userId ? v.description : '???',
-					flavor: me.id === ps.userId ? v.flavor : ''
+					description: me?.id === ps.userId ? v.description : '???',
+					flavor: me?.id === ps.userId ? v.flavor : '',
 				}));
 			}
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
