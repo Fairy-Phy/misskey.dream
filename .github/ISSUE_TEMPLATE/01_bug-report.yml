@@ -58,6 +58,6 @@ body:
 
   - type: checkboxes
     attributes:
-      label: Do you want to address this bug yourself?
+      label: このバグを自分自身で直してくれるかい？
       options:
-        - label: Yes, I will patch the bug myself and send a pull request
+        - label: はい！このバグは自分で直してプルリクエストを作成します！

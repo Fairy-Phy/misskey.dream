@@ -79,6 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { AISCRIPT_VERSION } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -91,7 +92,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { useRouter } from '@/router/supplier.js';
 
-const PRESET_DEFAULT = `/// @ 0.18.0
+const PRESET_DEFAULT = `/// @ ${AISCRIPT_VERSION}
 
 var name = ""
 
@@ -109,7 +110,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.18.0
+const PRESET_OMIKUJI = `/// @ ${AISCRIPT_VERSION}
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -152,7 +153,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_SHUFFLE = `/// @ 0.18.0
+const PRESET_SHUFFLE = `/// @ ${AISCRIPT_VERSION}
 // 巻き戻し可能な文字シャッフルのプリセット
 
 let string = "ペペロンチーノ"
@@ -231,7 +232,7 @@ var cursor = 0
 do()
 `;
 
-const PRESET_QUIZ = `/// @ 0.18.0
+const PRESET_QUIZ = `/// @ ${AISCRIPT_VERSION}
 let title = '地理クイズ'
 
 let qas = [{
@@ -344,7 +345,7 @@ qaEls.push(Ui:C:container({
 Ui:render(qaEls)
 `;
 
-const PRESET_TIMELINE = `/// @ 0.18.0
+const PRESET_TIMELINE = `/// @ ${AISCRIPT_VERSION}
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {

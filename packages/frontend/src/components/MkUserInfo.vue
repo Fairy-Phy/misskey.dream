@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_panel" :class="$style.root">
-	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
+	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` : ''"></div>
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.title">
 		<MkA :class="$style.name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<p :class="$style.statusItemLabel">{{ i18n.ts.emojiCounts }}</p><span :class="$style.statusItemValue">{{ number(user.emojiCount) }}</span>
 		</div>
 	</div>
-	<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
+	<MkFollowButton v-if="user.id != $i?.id" :class="$style.follow" :user="user" mini/>
 </div>
 </template>
 
@@ -44,6 +44,8 @@ import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { defaultStore } from '@/store.js';
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;
