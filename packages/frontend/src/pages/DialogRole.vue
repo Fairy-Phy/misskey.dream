@@ -39,7 +39,7 @@ function roleAction(ev) {
 		action: async () => {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.t('removeAreYouSure', { x: props.role.name }),
+				text: i18n.tsx.removeAreYouSure({ x: props.role.name }),
 			});
 			if (canceled) return;
 

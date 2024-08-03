@@ -244,7 +244,7 @@ async function deleteFolder() {
 	// もし中にファイルが存在する場合再帰的に削除するため
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('driveFolderDeleteConfirm', { name: props.folder.name }),
+		text: i18n.tsx.driveFolderDeleteConfirm({ name: props.folder.name }),
 	});
 
 	if (canceled) return;
