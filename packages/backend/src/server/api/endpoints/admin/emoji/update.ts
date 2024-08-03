@@ -72,7 +72,9 @@ export const paramDef = {
 		},
 		aliases: { type: 'array', items: {
 			type: 'string',
-		} },
+		}
+		},
+		isSelfMadeResource: { type: 'boolean' },
 		license: { type: 'string', nullable: true },
 		isSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
@@ -162,6 +164,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: ps.name,
 				category: ps.category,
 				aliases: ps.aliases,
+				isSelfMadeResource: ps.isSelfMadeResource,
 				license: ps.license,
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
@@ -195,6 +198,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					changeInfo: {
 						before: oldEmoji.category,
 						after: ps.category,
+					},
+				});
+			}
+			if (oldEmoji.isSelfMadeResource !== ps.isSelfMadeResource) {
+				changes.push({
+					type: 'isSelfMadeResource',
+					changeInfo: {
+						before: oldEmoji.isSelfMadeResource,
+						after: ps.isSelfMadeResource,
 					},
 				});
 			}

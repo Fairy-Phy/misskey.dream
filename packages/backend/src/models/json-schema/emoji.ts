@@ -81,6 +81,10 @@ export const packedEmojiDetailedSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		isSelfMadeResource: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		license: {
 			type: 'string',
 			optional: false, nullable: true,

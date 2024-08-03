@@ -116,6 +116,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSensitive: emoji.isSensitive,
 				localOnly: emoji.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+				// 絵文字インポートはほぼ確実に自作ではない
+				isSelfMadeResource: false,
 				license: emojiLicense,
 				userId: me.id,
 			}, me);

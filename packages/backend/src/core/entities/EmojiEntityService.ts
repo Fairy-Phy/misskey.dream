@@ -61,6 +61,7 @@ export class EmojiEntityService {
 			host: emoji.host,
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url: emoji.publicUrl || emoji.originalUrl,
+			isSelfMadeResource: emoji.isSelfMadeResource,
 			license: emoji.license,
 			isSensitive: emoji.isSensitive,
 			localOnly: emoji.localOnly,

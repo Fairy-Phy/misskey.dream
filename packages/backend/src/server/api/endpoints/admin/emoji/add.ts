@@ -56,6 +56,7 @@ export const paramDef = {
 		aliases: { type: 'array', items: {
 			type: 'string',
 		} },
+		isSelfMadeResource: { type: 'boolean' },
 		license: { type: 'string', nullable: true },
 		isSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
@@ -98,6 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				category: ps.category ?? null,
 				aliases: ps.aliases ?? [],
 				host: null,
+				isSelfMadeResource: ps.isSelfMadeResource ?? false,
 				license: license,
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,

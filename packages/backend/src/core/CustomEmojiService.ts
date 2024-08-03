@@ -68,6 +68,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		category: string | null;
 		aliases: string[];
 		host: string | null;
+		isSelfMadeResource: boolean;
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
@@ -84,6 +85,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			originalUrl: data.driveFile.url,
 			publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
 			type: data.driveFile.webpublicType ?? data.driveFile.type,
+			isSelfMadeResource: data.isSelfMadeResource,
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
@@ -117,6 +119,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		name?: string;
 		category?: string | null;
 		aliases?: string[];
+		isSelfMadeResource?: boolean;
 		license?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
@@ -132,6 +135,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			name: data.name,
 			category: data.category,
 			aliases: data.aliases,
+			isSelfMadeResource: data.isSelfMadeResource,
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,

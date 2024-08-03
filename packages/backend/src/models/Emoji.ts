@@ -62,6 +62,12 @@ export class MiEmoji {
 	})
 	public aliases: string[];
 
+	@Column('boolean', {
+		default: false,
+	})
+	public isSelfMadeResource: boolean;
+
+	// 使用許諾と根拠、 自作の人はライセンス(その絵文字に対し使用許諾を付与する名目)
 	@Column('varchar', {
 		length: 1024, nullable: true,
 	})

@@ -109,6 +109,8 @@ export class ImportCustomEmojisProcessorService {
 					host: null,
 					aliases: emojiInfo.aliases,
 					driveFile,
+					// インポートに関してはそれが自作かは不明であるため
+					isSelfMadeResource: false,
 					license: emojiInfo.license,
 					isSensitive: emojiInfo.isSensitive,
 					localOnly: emojiInfo.localOnly,
