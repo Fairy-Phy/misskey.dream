@@ -1275,6 +1275,11 @@ changeLog: "更新履歴"
 confirmAddEmoji: "今追加しとる絵文字はあんた以外が2回以上使用される可能性があるんか？"
 community: "コミュニティー"
 manageRole: "ロールの管理"
+selfMadeResource: "自分で画像を作成しました"
+nonSelfResourceLicense: "使用許諾と根拠"
+pleaseEnterTheLicenseNonSelf: "使用許諾を入力してください"
+checkLicenseNonSelf: "使用許諾と根拠: {license}\n あなたが追加しようとしている画像を絵文字として登録する権利を有していますか？"
+nonLicenseCannotAddNonSelf: "使用許諾と根拠のない絵文字は登録することができません。\n絵文字ガイドラインをご確認ください。"
 _delivery:
   stop: "配信せぇへん"
   _type:

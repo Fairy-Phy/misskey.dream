@@ -4733,6 +4733,7 @@ export type components = {
       /** @description The local host is represented with `null`. */
       host: string | null;
       url: string;
+      isSelfMadeResource: boolean;
       license: string | null;
       isSensitive: boolean;
       localOnly: boolean;
@@ -7076,6 +7077,7 @@ export type operations = {
           /** @description Use `null` to reset the category. */
           category?: string | null;
           aliases?: string[];
+          isSelfMadeResource?: boolean;
           license?: string | null;
           isSensitive?: boolean;
           localOnly?: boolean;
@@ -7706,6 +7708,7 @@ export type operations = {
           /** @description Use `null` to reset the category. */
           category?: string | null;
           aliases?: string[];
+          isSelfMadeResource?: boolean;
           license?: string | null;
           isSensitive?: boolean;
           localOnly?: boolean;

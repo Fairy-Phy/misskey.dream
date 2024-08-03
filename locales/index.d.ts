@@ -5244,6 +5244,28 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * 自分で画像を作成しました
+     */
+    "selfMadeResource": string;
+    /**
+     * 使用許諾と根拠
+     */
+    "nonSelfResourceLicense": string;
+    /**
+     * 使用許諾を入力してください
+     */
+    "pleaseEnterTheLicenseNonSelf": string;
+    /**
+     * 使用許諾と根拠: {license}
+     *  あなたが追加しようとしている画像を絵文字として登録する権利を有していますか？
+     */
+    "checkLicenseNonSelf": ParameterizedString<"license">;
+    /**
+     * 使用許諾と根拠のない絵文字は登録することができません。
+     * 絵文字ガイドラインをご確認ください。
+     */
+    "nonLicenseCannotAddNonSelf": string;
     "_delivery": {
         /**
          * 配信状態

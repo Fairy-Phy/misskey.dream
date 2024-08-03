@@ -1307,6 +1307,11 @@ confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示�
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
+selfMadeResource: "自分で画像を作成しました"
+nonSelfResourceLicense: "使用許諾と根拠"
+pleaseEnterTheLicenseNonSelf: "使用許諾を入力してください"
+checkLicenseNonSelf: "使用許諾と根拠: {license}\n あなたが追加しようとしている画像を絵文字として登録する権利を有していますか？"
+nonLicenseCannotAddNonSelf: "使用許諾と根拠のない絵文字は登録することができません。\n絵文字ガイドラインをご確認ください。"
 
 _delivery:
   status: "配信状態"

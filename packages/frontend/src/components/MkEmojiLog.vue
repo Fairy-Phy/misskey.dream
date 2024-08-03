@@ -61,6 +61,7 @@ const typeToi18n = {
 	category: i18n.ts.category,
 	originalUrl: i18n.ts.emojiUrl,
 	aliases: i18n.ts.tags,
+	isSelfMadeResource: i18n.ts.selfMadeResource,
 	license: i18n.ts.license,
 	localOnly: i18n.ts.localOnly,
 	isSensitive: i18n.ts.markAsSensitive,

@@ -85,8 +85,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ i18n.ts.setMultipleBySeparatingWithSpace }}
 					</template>
 				</MkInput>
-				<MkInput v-model="license" :mfmAutocomplete="true">
-					<template #label>{{ i18n.ts.license }}</template>
+				<MkSwitch v-model="isSelfMadeResource">{{ i18n.ts.selfMadeResource }}</MkSwitch>
+				<MkInput v-model.trim="license" :mfmAutocomplete="true">
+					<template v-if="isSelfMadeResource" #label>{{ i18n.ts.license }}</template>
+					<template v-else #label>{{ i18n.ts.nonSelfResourceLicense }}</template>
 				</MkInput>
 				<MkFolder>
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
@@ -188,6 +190,7 @@ const aliasesText = computed({
 		}));
 	}
 });
+const isSelfMadeResource = ref(props.emoji ? props.emoji.isSelfMadeResource : false);
 const license = ref<string>(props.emoji ? (props.emoji.license ?? '') : '');
 const isSensitive = ref(props.emoji ? props.emoji.isSensitive : false);
 const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
@@ -264,7 +267,59 @@ async function removeRole(role, ev) {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = rolesThatCanBeUsedThisEmojiAsReaction.value.filter(x => x.id !== role.id);
 }
 
+async function licenseCheckWithCanceled(): Promise<boolean> {
+	if (isSelfMadeResource.value) {
+		if (license.value === '') {
+			const { canceled } = await os.confirm({
+				type: 'warning',
+				text: i18n.ts.noneLicense,
+				okText: i18n.ts.yes,
+				cancelText: i18n.ts.no,
+			});
+			if (canceled) {
+				await os.alert({
+					type: 'error',
+					title: i18n.ts.error,
+					text: i18n.ts.noneLicenseNo,
+				});
+				return true;
+			}
+		}
+		return false;
+	}
+
+	if (license.value === '') {
+		await os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: i18n.ts.pleaseEnterTheLicenseNonSelf,
+		});
+		return true;
+	}
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.tsx.checkLicenseNonSelf({
+			license: license.value,
+		}),
+		okText: i18n.ts.yes,
+		cancelText: i18n.ts.no,
+	});
+	if (canceled) {
+		await os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: i18n.ts.nonLicenseCannotAddNonSelf,
+		});
+		return true;
+	}
+	return false;
+}
+
 async function done() {
+	if (await licenseCheckWithCanceled()) {
+		return;
+	}
+
 	if (!props.emoji && $i.emojiCount < 10) {
 		const { canceled } = await os.confirm({
 			type: 'warning',
@@ -274,27 +329,12 @@ async function done() {
 		});
 		if (canceled) return;
 	}
-	if (license.value === '') {
-		const { canceled } = await os.confirm({
-			type: 'warning',
-			text: i18n.ts.noneLicense,
-			okText: i18n.ts.yes,
-			cancelText: i18n.ts.no,
-		});
-		if (canceled) {
-			await os.alert({
-				type: 'error',
-				title: i18n.ts.error,
-				text: i18n.ts.noneLicenseNo,
-			});
-			return;
-		}
-	}
 
 	const params = {
 		name: name.value,
 		category: category.value === '' ? null : category.value,
 		aliases: aliases.value.map(v => v.value),
+		isSelfMadeResource: isSelfMadeResource.value,
 		license: license.value === '' ? null : license.value,
 		isSensitive: isSensitive.value,
 		localOnly: localOnly.value,
