@@ -60,6 +60,9 @@ export function getApId(value: string | IObject): string {
 
 /**
  * Get ActivityStreams Object type
+ *
+ * タイプ判定ができなかった場合に、あえてエラーではなくnullを返すようにしている。
+ * 詳細: https://github.com/misskey-dev/misskey/issues/14239
  */
 export function getApType(value: IObject): string | null {
 	if (typeof value.type === 'string') return value.type;
@@ -97,13 +100,15 @@ export interface IActivity extends IObject {
 export interface ICollection extends IObject {
 	type: 'Collection';
 	totalItems: number;
-	items: ApObject;
+	first?: IObject | string;
+	items?: ApObject;
 }
 
 export interface IOrderedCollection extends IObject {
 	type: 'OrderedCollection';
 	totalItems: number;
-	orderedItems: ApObject;
+	first?: IObject | string;
+	orderedItems?: ApObject;
 }
 
 // つまるところこれをしないとnull許容でincludesできないので必須
@@ -333,7 +338,10 @@ export const isAccept = (object: IObject): object is IAccept => getApType(object
 export const isReject = (object: IObject): object is IReject => getApType(object) === 'Reject';
 export const isAdd = (object: IObject): object is IAdd => getApType(object) === 'Add';
 export const isRemove = (object: IObject): object is IRemove => getApType(object) === 'Remove';
-export const isLike = (object: IObject): object is ILike => getApType(object) === 'Like' || getApType(object) === 'EmojiReaction' || getApType(object) === 'EmojiReact';
+export const isLike = (object: IObject): object is ILike => {
+	const type = getApType(object);
+	return type != null && ['Like', 'EmojiReaction', 'EmojiReact'].includes(type);
+};
 export const isAnnounce = (object: IObject): object is IAnnounce => getApType(object) === 'Announce';
 export const isBlock = (object: IObject): object is IBlock => getApType(object) === 'Block';
 export const isFlag = (object: IObject): object is IFlag => getApType(object) === 'Flag';

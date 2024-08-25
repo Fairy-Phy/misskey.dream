@@ -78,6 +78,7 @@ export class ApNoteService {
 	@bindThis
 	public validateNote(object: IObject, uri: string): Error | null {
 		const expectHost = this.utilityService.extractDbHost(uri);
+		const apType = getApType(object);
 
 		if (!isPost(object)) {
 			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: invalid object type ${getApType(object)}`);
