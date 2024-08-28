@@ -144,6 +144,10 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		longIconUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		maxNoteTextLength: {
 			type: 'number',
 			optional: false, nullable: false,

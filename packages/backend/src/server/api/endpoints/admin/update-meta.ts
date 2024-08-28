@@ -53,6 +53,7 @@ export const paramDef = {
 		infoImageUrl: { type: 'string', nullable: true },
 		notFoundImageUrl: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
+		longIconUrl: { type: 'string', nullable: true },
 		app192IconUrl: { type: 'string', nullable: true },
 		app512IconUrl: { type: 'string', nullable: true },
 		backgroundImageUrl: { type: 'string', nullable: true },
@@ -233,6 +234,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.iconUrl !== undefined) {
 				set.iconUrl = ps.iconUrl;
+			}
+
+			if (ps.longIconUrl !== undefined) {
+				set.longIconUrl = ps.longIconUrl;
 			}
 
 			if (ps.app192IconUrl !== undefined) {
