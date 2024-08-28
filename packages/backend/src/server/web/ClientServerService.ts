@@ -338,6 +338,10 @@ export class ClientServerService {
 			return reply.sendFile('/favicon.ico', staticAssets);
 		});
 
+		fastify.get('/long-logo.png', async (request, reply) => {
+			return reply.sendFile('/long-logo.png', staticAssets);
+		});
+
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
 			return reply.sendFile('/apple-touch-icon.png', staticAssets);
 		});

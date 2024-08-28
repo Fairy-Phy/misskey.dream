@@ -50,6 +50,7 @@ const devConfig: UserConfig = {
 				ws: true,
 			},
 			'/favicon.ico': httpUrl,
+			'/long-logo.png': httpUrl,
 			'/identicon': {
 				target: httpUrl,
 				rewrite(path) {
