@@ -1,6 +1,6 @@
 <div align="center">
-<a href="https://misskey-hub.net">
-	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="300"/>
+<a href="https://misskey.secinet.jp">
+	<img src="./packages/backend/assets/long-logo.png" alt="Dream logo" width="300"/>
 </a>
 
 このレポジトリはMisskeyサーバーである「[ねむすぎー](https://misskey.secinet.jp)」で使用している本家Misskeyからのフォークです。
