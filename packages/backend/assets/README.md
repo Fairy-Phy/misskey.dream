@@ -8,10 +8,11 @@ Misskey.Dreamアイコンは以下のファイルのアイコンのことを指�
 * favicon.ico
 * favicon.png
 * splash.png
+* long-logo.png
 
 これらアイコンはMisskey.Dreamによって作成されたものです。
 
-Copyright 2023 Secineralyr
+Copyright 2024 Secineralyr
 
 ## 使用上の注意
 
