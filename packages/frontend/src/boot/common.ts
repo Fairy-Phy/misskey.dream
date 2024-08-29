@@ -282,14 +282,38 @@ export async function common(createVue: () => App<Element>) {
 }
 
 function removeSplash() {
-	const splash = document.getElementById('splash');
-	if (splash) {
-		splash.style.opacity = '0';
-		splash.style.pointerEvents = 'none';
+	const removeSplashImpl = () => {
+		const splash = document.getElementById('splash');
+		if (splash) {
+			splash.style.opacity = '0';
+			splash.style.pointerEvents = 'none';
 
-		// transitionendイベントが発火しない場合があるため
-		window.setTimeout(() => {
-			splash.remove();
-		}, 1000);
-	}
+			// transitionendイベントが発火しない場合があるため
+			window.setTimeout(() => {
+				splash.remove();
+			}, 1000);
+		}
+	};
+
+	// Splash自体を消す前にlogoを消す動作を挟む
+	const removeStart = (target: HTMLElement) => {
+		const logoElement = document.getElementById('svgLogo');
+		if (logoElement === null) {
+			throw new Error('Splash RemoveError!!!: not found logo element');
+		}
+		target.style.animationPlayState = 'running';
+		logoElement.addEventListener('animationend', async () => {
+			// すぐフェードアウトしてしまうのでちょっとだけ止める
+			await new Promise((r) => setTimeout(r, 500));
+			removeSplashImpl();
+		}, { once: true });
+	};
+	const intervalId = setInterval(() => {
+		const logoAnimEl = document.querySelector('.__BOOT_LOGO_ALLOWED_END__');
+		if (logoAnimEl !== null) {
+			clearInterval(intervalId);
+			removeStart(logoAnimEl as HTMLElement);
+		}
+	}, 100);
+	// あまり短すぎるとバグるかも
 }

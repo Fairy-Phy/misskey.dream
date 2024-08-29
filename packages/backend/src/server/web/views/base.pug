@@ -84,11 +84,13 @@ html
 			br
 			| Please turn on your JavaScript
 		div#splash
+			div#splashIcon
 			div#splashSpinner
-				.large-circle.circle
-				.medium-circle.circle
-				.small-circle.circle
-				div
-					img#splashIcon(src= icon || '/static-assets/splash.png')
+				<svg xmlns="http://www.w3.org/2000/svg" class="spinner bg" viewBox="0 0 63.29 66.05">
+					<polygon points="38.99 2.5 41.8 23.63 60.79 33.3 41.56 42.49 38.24 63.55 23.55 48.11 2.5 51.45 12.65 32.71 2.96 13.72 23.93 17.58 38.99 2.5" />
+				</svg>
+				<svg xmlns="http://www.w3.org/2000/svg" class="spinner fg" viewBox="0 0 63.29 66.05">
+					<polygon points="38.99 2.5 41.8 23.63 60.79 33.3 41.56 42.49 38.24 63.55 23.55 48.11 2.5 51.45 12.65 32.71 2.96 13.72 23.93 17.58 38.99 2.5" />
+				</svg>
 
 		block content

@@ -23,80 +23,68 @@ html {
 }
 
 #splashIcon {
+	pointer-events: none;
+}
+
+#svgLogo {
 	position: absolute;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
 	margin: auto;
-	width: 64px;
-	height: 64px;
-	pointer-events: none;
+
+	height: 15vw;
+	min-height: 100px;
+	max-height: 150px;
 }
 
 #splashSpinner {
 	position: absolute;
-	display: flex;
-	margin: auto;
-	width: 180px;
-	height: 180px;
-	background-color: transparent;
-	justify-content: center;
-	align-items: center;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
-}
-#splashSpinner > .circle {
+	margin: auto;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	transform: translateY(min(max(12vw, 80px), 110px));
+	stroke: var(--accent);
+	transition: opacity 500ms;
 	opacity: 0;
-	position: absolute;
-	border-radius: 50%;
-	border-color: var(--accent);
-	border-style: solid;
-	z-index: 1;
+}
+#splashSpinner.showing {
+	opacity: 1;
 }
 
-@keyframes splashSpinner {
+#splashSpinner > .spinner {
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	width: 28px;
+	height: 28px;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-miterlimit: 1.5;
+	stroke-width: 8px;
+	transform-origin: center center;
+	fill:none;
+}
+#splashSpinner > .spinner.bg {
+	opacity: 0.275;
+}
+#splashSpinner > .spinner.fg {
+	stroke-dasharray: 107;
+	stroke-dashoffset: 0;
+	animation: 2s linear 0s infinite backwards starStroke;
+}
+
+@keyframes starStroke {
 	0% {
-		transform: rotate3d(.9, 1.2, 1.1, 1turn);
-	}
-	50% {
-		transform: rotate3d(.45, .6, .55, 0.5turn);
+		stroke-dashoffset: 321;
 	}
 	100% {
-		transform: rotate3d(0, 0, 0, 1turn);
+		stroke-dashoffset: 107;
 	}
-}
-
-@keyframes splashFadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-#splashSpinner > .large-circle {
-	width: 180px;
-	height: 180px;
-	border-width: 5px;
-	animation: splashSpinner 4s linear .4s infinite, splashFadeIn 2s 1s forwards;
-}
-
-#splashSpinner > .medium-circle {
-	width: 130px;
-	height: 130px;
-	border-width: 4px;
-	filter: hue-rotate(-90deg);
-	animation: splashSpinner 3s linear .2s infinite, splashFadeIn 2s 1s forwards;
-}
-
-#splashSpinner > .small-circle {
-	width: 90px;
-	height: 90px;
-	border-width: 2px;
-	filter: hue-rotate(180deg);
-	animation: splashSpinner 2s linear 0s infinite, splashFadeIn 2s 1s forwards;
 }
