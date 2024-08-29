@@ -9,7 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.top">
 			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
 			<button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
-				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
+				<img v-if="iconOnly" :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
+				<img v-else :src="instance.longIconUrl || '/long-logo.png'" alt="" :class="[$style.instanceIcon, $style.animLogo]"/>
 			</button>
 		</div>
 		<div :class="$style.middle">
@@ -179,8 +180,11 @@ function more(ev: MouseEvent) {
 
 	.instanceIcon {
 		display: inline-block;
-		width: 38px;
-		aspect-ratio: 1;
+		height: 64px;
+	}
+
+	.instance:hover > .animLogo {
+		animation: 500ms linear 0s 1 longLogoHoverAnim;
 	}
 
 	.bottom {
@@ -563,6 +567,24 @@ function more(ev: MouseEvent) {
 			right: 4px;
 			font-size: 10px;
 		}
+	}
+}
+
+@keyframes longLogoHoverAnim {
+	0% {
+		transform: rotate(0);
+	}
+	25% {
+		transform: rotate(5deg);
+	}
+	50% {
+		transform: rotate(-5deg);
+	}
+	75% {
+		transform: rotate(5deg);
+	}
+	100% {
+		transform: rotate(0deg);
 	}
 }
 </style>

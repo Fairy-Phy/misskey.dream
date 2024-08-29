@@ -5718,6 +5718,10 @@ export interface Locale extends ILocale {
          */
         "iconUrl": string;
         /**
+         * 横長アイコン画像のURL
+         */
+        "longIconUrl": string;
+        /**
          * {host}がアプリとして表示される際のアイコンを指定します。
          */
         "appIconDescription": ParameterizedString<"host">;
