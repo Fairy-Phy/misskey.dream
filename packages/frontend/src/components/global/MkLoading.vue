@@ -164,11 +164,12 @@ const props = withDefaults(defineProps<{
 	position: absolute;
 	width: 100%;
 }
-.line, .starT {
-	stroke-width:3px;
+.starT {
+	stroke-width: 4px;
 }
 
 .line {
+	stroke-width: 5px;
 	stroke-miterlimit:10;
 	stroke-dasharray: 144;
 	stroke-dashoffset: 0;
@@ -188,7 +189,7 @@ const props = withDefaults(defineProps<{
 }
 
 .starC {
-	stroke-width:5px;
+	stroke-width: 6px;
 	stroke:#7DB9F5;
 	--endL: 69%;
 	--endT: 68%;
@@ -203,7 +204,7 @@ const props = withDefaults(defineProps<{
 	width: 15%;
 }
 .starB {
-	stroke-width:2px;
+	stroke-width: 3px;
 	stroke:#7DF5B9;
 	--startT: 25%;
 	--endL: 47%;
