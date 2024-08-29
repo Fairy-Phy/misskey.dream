@@ -232,10 +232,14 @@ onMounted(() => {
 .menu {
 	position: absolute;
 	top: 8px;
-	right: 44px;
+	right: 8px;
 	padding: 6px;
 	background: var(--panel);
 	border-radius: 999px;
+}
+
+.menu + .follow {
+	right: 44px;
 }
 
 .follow {
