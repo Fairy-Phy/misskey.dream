@@ -40,6 +40,33 @@ const headerTabs = computed(() => []);
 const changelogs = [
 	{
 		isDefault: true,
+		version: 'Dream 1.12.0',
+		context: [
+			'・ Update: 本家misskeyバージョンに追従し、2024.8.0にアップデートしました。',
+			'・ Add: 絵文字の自作フラグの追加',
+			'　・ この変更により従来の「ライセンス」という表記から「使用許諾と根拠」に変更になりました',
+			'　・ この変更に伴い絵文字ガイドラインが更新されます',
+			'・ Add: エンドポイント get-emoji-logs の追加',
+			'・ Add: 横長ロゴの追加と表示対応',
+			'　・ これにより以下が追加されています。',
+			'　・ Add: メタデータに「longIconUrl」を追加',
+			'　・ Add: long-logo.pngからデフォルトの横長ロゴを取得できように',
+			'・ Change: 流れ星ローディングの太さを変更',
+			'・ Change: 初期ロード時に横長ロゴのアニメーションを変更',
+			'・ Change: 初期ロード時に回転ではなく星型ロードアイコンを使用するように変更',
+			'・ Fix: 独自追加したエンドポイントのkindが設定されていない問題の修正',
+			'　・ これにより権限「write:community-role」と「read:admin:emoji-log」が追加されました',
+			'-----ここから下は直接的に動作に関係のないもの-----',
+			'・ Fix: プロフィールにて適切な処理を踏んでいない問題の修正',
+			'・ Fix: テストにコミュニティーロールを含めるように',
+			'・ Fix: dockleのイメージ名を変更',
+			'・ Fix: frontend及びbackendのtype error及びlintエラーの解消',
+			'・ Update: misskey-jsのapi更新',
+			'・ Fix: 非推奨i18n処理の変更',
+		],
+	},
+	{
+		isDefault: false,
 		version: 'Dream 1.11.0',
 		context: [
 			'・ Update: 本家misskeyバージョンに追従し、2024.5.0にアップデートしました。',
