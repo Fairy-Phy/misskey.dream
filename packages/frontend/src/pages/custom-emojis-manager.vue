@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
 						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
+						<MkButton inline @click="setSelfmadeBulk">Enable Self made</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination" :displayLimit="100">
@@ -237,6 +238,20 @@ const setLicenseBulk = async () => {
 	await os.apiWithDialog('admin/emoji/set-license-bulk', {
 		ids: selectedEmojis.value,
 		license: result,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const setSelfmadeBulk = async () => {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.noneLicenseBulk,
+		okText: i18n.ts.yes,
+		cancelText: i18n.ts.no,
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/enable-selfmade-bulk', {
+		ids: selectedEmojis.value,
 	});
 	emojisPaginationComponent.value.reload();
 };

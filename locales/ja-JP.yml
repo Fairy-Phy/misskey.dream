@@ -1313,6 +1313,7 @@ pleaseEnterTheLicenseNonSelf: "使用許諾を入力してください"
 checkLicenseNonSelf: "使用許諾と根拠: {license}\n あなたが追加しようとしている画像を絵文字として登録する権利を有していますか？"
 nonLicenseCannotAddNonSelf: "使用許諾と根拠のない絵文字は登録することができません。\n絵文字ガイドラインをご確認ください。"
 clipNoteLimitExceeded: "これ以上このクリップにノートを追加できません。"
+noneLicenseBulk: "ライセンスのない絵文字には自動的に名前が挿入されます。\n場合によってライセンス不明確となる場合がありますがよろしいですか？"
 
 _delivery:
   status: "配信状態"

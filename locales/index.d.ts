@@ -5270,6 +5270,11 @@ export interface Locale extends ILocale {
      * これ以上このクリップにノートを追加できません。
      */
     "clipNoteLimitExceeded": string;
+    /**
+     * ライセンスのない絵文字には自動的に名前が挿入されます。
+     * 場合によってライセンス不明確となる場合がありますがよろしいですか？
+     */
+    "noneLicenseBulk": string;
     "_delivery": {
         /**
          * 配信状態
