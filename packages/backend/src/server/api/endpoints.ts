@@ -55,6 +55,7 @@ import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-li
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_emoji_getEmojiLog from './endpoints/admin/emoji/get-emoji-log.js';
 import * as ep___admin_emoji_getEmojiLogs from './endpoints/admin/emoji/get-emoji-logs.js';
+import * as ep___admin_emoji_enableSelfmadeBulk from './endpoints/admin/emoji/enable-selfmade-bulk.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata
 	from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
@@ -446,6 +447,7 @@ const eps = [
 	['admin/emoji/update', ep___admin_emoji_update],
 	['admin/emoji/get-emoji-log', ep___admin_emoji_getEmojiLog],
 	['admin/emoji/get-emoji-logs', ep___admin_emoji_getEmojiLogs],
+	['admin/emoji/enable-selfmade-bulk', ep___admin_emoji_enableSelfmadeBulk],
 	['admin/federation/delete-all-files', ep___admin_federation_deleteAllFiles],
 	['admin/federation/refresh-remote-instance-metadata', ep___admin_federation_refreshRemoteInstanceMetadata],
 	['admin/federation/remove-all-following', ep___admin_federation_removeAllFollowing],

@@ -50,6 +50,7 @@ import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-li
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_emoji_getEmojiLog from './endpoints/admin/emoji/get-emoji-log.js';
 import * as ep___admin_emoji_getEmojiLogs from './endpoints/admin/emoji/get-emoji-logs.js';
+import * as ep___admin_emoji_enableSelfmadeBulk from './endpoints/admin/emoji/enable-selfmade-bulk.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
@@ -442,6 +443,7 @@ const $admin_emoji_setLicenseBulk: Provider = { provide: 'ep:admin/emoji/set-lic
 const $admin_emoji_update: Provider = { provide: 'ep:admin/emoji/update', useClass: ep___admin_emoji_update.default };
 const $admin_emoji_getEmojiLog: Provider = { provide: 'ep:admin/emoji/get-emoji-log', useClass: ep___admin_emoji_getEmojiLog.default };
 const $admin_emoji_getEmojiLogs: Provider = { provide: 'ep:admin/emoji/get-emoji-logs', useClass: ep___admin_emoji_getEmojiLogs.default };
+const $admin_emoji_enableSelfmadeBulk: Provider = { provide: 'ep:admin/emoji/enable-selfmade-bulk', useClass: ep___admin_emoji_enableSelfmadeBulk.default };
 const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federation/delete-all-files', useClass: ep___admin_federation_deleteAllFiles.default };
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
 const $admin_federation_removeAllFollowing: Provider = { provide: 'ep:admin/federation/remove-all-following', useClass: ep___admin_federation_removeAllFollowing.default };
@@ -838,6 +840,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_emoji_update,
 		$admin_emoji_getEmojiLog,
 		$admin_emoji_getEmojiLogs,
+		$admin_emoji_enableSelfmadeBulk,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,
@@ -1228,6 +1231,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_emoji_update,
 		$admin_emoji_getEmojiLog,
 		$admin_emoji_getEmojiLogs,
+		$admin_emoji_enableSelfmadeBulk,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
 		$admin_federation_removeAllFollowing,

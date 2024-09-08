@@ -279,6 +279,34 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async filterNonLicenseEmojiIds(ids: MiEmoji['id'][]) {
+		const emojis = await this.emojisRepository.findBy({
+			id: In(ids),
+		});
+
+		return emojis
+			.filter((emoji) => emoji.license === null || emoji.license.trim().length === 0)
+			.map((emoji) => emoji.id);
+	}
+
+	@bindThis
+	public async setSelfMadeBulk(ids: MiEmoji['id'][], isSelfMadeResource: boolean) {
+		// 基本的にtrueでしか使えないはずだが、一応実装しておく
+		await this.emojisRepository.update({
+			id: In(ids),
+		}, {
+			updatedAt: new Date(),
+			isSelfMadeResource,
+		});
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
+
+	@bindThis
 	public async delete(id: MiEmoji['id'], userId?: MiUser['id'] | null, moderator?: MiUser) {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 
