@@ -405,6 +405,15 @@ export type paths = {
      */
     post: operations['admin___emoji___get-emoji-log'];
   };
+  '/admin/emoji/get-emoji-logs': {
+    /**
+     * admin/emoji/get-emoji-logs
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:emoji-log*
+     */
+    post: operations['admin___emoji___get-emoji-logs'];
+  };
   '/admin/federation/delete-all-files': {
     /**
      * admin/federation/delete-all-files
@@ -5027,6 +5036,7 @@ export type components = {
       infoImageUrl: string | null;
       notFoundImageUrl: string | null;
       iconUrl: string | null;
+      longIconUrl: string | null;
       maxNoteTextLength: number;
       ads: {
           /**
@@ -5157,6 +5167,7 @@ export type operations = {
             infoImageUrl: string | null;
             notFoundImageUrl: string | null;
             iconUrl: string | null;
+            longIconUrl: string | null;
             app192IconUrl: string | null;
             app512IconUrl: string | null;
             enableEmail: boolean;
@@ -7813,6 +7824,63 @@ export type operations = {
     };
   };
   /**
+   * admin/emoji/get-emoji-logs
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:emoji-log*
+   */
+  'admin___emoji___get-emoji-logs': {
+    requestBody: {
+      content: {
+        'application/json': {
+          ids: string[];
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+              /** Format: misskey:id */
+              id: string;
+              logs: components['schemas']['EmojiChangeLogs'];
+            }[];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * admin/federation/delete-all-files
    * @description No description provided.
    *
@@ -9471,6 +9539,7 @@ export type operations = {
           infoImageUrl?: string | null;
           notFoundImageUrl?: string | null;
           iconUrl?: string | null;
+          longIconUrl?: string | null;
           app192IconUrl?: string | null;
           app512IconUrl?: string | null;
           backgroundImageUrl?: string | null;

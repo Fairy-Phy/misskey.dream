@@ -176,6 +176,12 @@ type AdminEmojiGetEmojiLogRequest = operations['admin___emoji___get-emoji-log'][
 type AdminEmojiGetEmojiLogResponse = operations['admin___emoji___get-emoji-log']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiGetEmojiLogsRequest = operations['admin___emoji___get-emoji-logs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiGetEmojiLogsResponse = operations['admin___emoji___get-emoji-logs']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminEmojiImportZipRequest = operations['admin___emoji___import-zip']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1290,6 +1296,8 @@ declare namespace entities {
         AdminEmojiUpdateRequest,
         AdminEmojiGetEmojiLogRequest,
         AdminEmojiGetEmojiLogResponse,
+        AdminEmojiGetEmojiLogsRequest,
+        AdminEmojiGetEmojiLogsResponse,
         AdminFederationDeleteAllFilesRequest,
         AdminFederationRefreshRemoteInstanceMetadataRequest,
         AdminFederationRemoveAllFollowingRequest,
