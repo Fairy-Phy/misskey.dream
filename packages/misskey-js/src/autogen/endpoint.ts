@@ -974,6 +974,7 @@ export type Endpoints = {
 	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
 }
 
+<<<<<<< HEAD
 export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'multipart/form-data'> = {
 	'admin/meta': 'application/json',
 	'admin/abuse-user-reports': 'application/json',
@@ -1363,3 +1364,11 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'reversi/surrender': 'application/json',
 	'reversi/verify': 'application/json',
 };
+=======
+/**
+ * NOTE: The content-type for all endpoints not listed here is application/json.
+ */
+export const endpointReqTypes = {
+	'drive/files/create': 'multipart/form-data',
+} as const satisfies { [K in keyof Endpoints]?: 'multipart/form-data'; };
+>>>>>>> upstream/develop

@@ -140,7 +140,8 @@ const decorationsForPreview = computed(() => {
 		scale: scale.value,
 		moveX: moveX.value,
 		moveY: moveY.value,
-		opacity: opacity.value
+		opacity: opacity.value,
+		blink: true,
 	};
 	const decorations = [...$i.avatarDecorations];
 	if (props.usingIndex != null) {
@@ -164,7 +165,7 @@ async function update() {
 		scale: scale.value,
 		moveX: moveX.value,
 		moveY: moveY.value,
-		opacity: opacity.value
+		opacity: opacity.value,
 	});
 	dialog.value.close();
 }
@@ -179,7 +180,7 @@ async function attach() {
 		scale: scale.value,
 		moveX: moveX.value,
 		moveY: moveY.value,
-		opacity: opacity.value
+		opacity: opacity.value,
 	});
 	dialog.value.close();
 }

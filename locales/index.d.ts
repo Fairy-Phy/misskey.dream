@@ -5266,6 +5266,10 @@ export interface Locale extends ILocale {
      * 絵文字ガイドラインをご確認ください。
      */
     "nonLicenseCannotAddNonSelf": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    "clipNoteLimitExceeded": string;
     "_delivery": {
         /**
          * 配信状態
