@@ -40,6 +40,14 @@ const headerTabs = computed(() => []);
 const changelogs = [
 	{
 		isDefault: true,
+		version: 'Dream 1.12.1',
+		context: [
+			'・ Update: 本家misskeyバージョンに追従しました。',
+			'・ Add: 絵文字の自作フラグの一括有効化に対応しました',
+		],
+	},
+	{
+		isDefault: false,
 		version: 'Dream 1.12.0',
 		context: [
 			'・ Update: 本家misskeyバージョンに追従し、2024.8.0にアップデートしました。',
